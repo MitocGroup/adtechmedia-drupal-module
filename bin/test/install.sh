@@ -30,4 +30,5 @@ if [ "$__IS_CONCURRENT_SCRIPT" == "$__NONE" ] || [ "$__IS_CONCURRENT_SCRIPT" == 
   ##########################
   ### todo: install deps ###
   ##########################
+  echo "Need to add install dependencies here"
 fi
