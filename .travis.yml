@@ -1,8 +1,9 @@
-language: node_js
-sudo: required
+language: php
+sudo: false
+php:
+  - 5.5
 node_js:
   - '4.3'
-  - '6.6'
 cache:
   edge: true
   directories:
@@ -16,6 +17,7 @@ branches:
     - dev
     - stage
     - test
+    - php
 before_install:
   - cp bin/test/package.json .
 after_success:
