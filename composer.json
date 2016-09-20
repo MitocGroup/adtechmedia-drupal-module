@@ -23,13 +23,6 @@
     "tm/tooly-composer-script": "^1.0"
   },
   "scripts": {
-    "preinstall": "bin/test/preinstall.sh",
-    "install": "bin/test/install.sh ${TEST_SUITE}",
-    "pretest": "bin/test/pretest.sh",
-    "phpunit": "echo 'No test specified' && exit 0",
-    "posttest": "bin/test/posttest.sh && npm run prepare-coverage",
-    "prepare-coverage": "bin/test/prepare-coverage.sh ${TEST_SUITE}",
-    "coverage": "bin/test/coverage.sh ${TEST_SUITE}",
-    "remove-coverage": "bin/test/remove-coverage.sh"
+    "phpunit": "echo 'No php test specified' && npm test && exit 0"
   }
 }
