@@ -11,7 +11,7 @@ echo "Preinstall npm"
 ### Install dependencies globally if don't exist ###
 ####################################################
 (npm list -g codeclimate-test-reporter --depth=0 || sudo npm install -g codeclimate-test-reporter) &&\
-(npm list -g istanbul-combine --depth=0 || sudo npm install -g  istanbul-combine) &&\
+(npm list -g istanbul-combine --depth=0 || sudo npm install istanbul-combine) &&\
 
 ###################################################
 ### Install dependencies locally if don't exist ###
@@ -63,3 +63,5 @@ cp bin/test/package.json .
 node $(dirname $0)/node-scripts/GitDiffWalker.js
 
 echo "Done preinstall npm"
+
+exit 0
