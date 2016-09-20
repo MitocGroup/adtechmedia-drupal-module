@@ -5,6 +5,8 @@
 
 source $(dirname $0)/_head.sh
 
+echo "Preinstall npm"
+
 ####################################################
 ### Install dependencies globally if don't exist ###
 ####################################################
