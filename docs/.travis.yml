@@ -33,8 +33,7 @@ before_install:
   - cp bin/test/package.json .
 
 install:
-  - composer install
-  - npm install
+  - composer install-deps
 
 script:
   - composer test
