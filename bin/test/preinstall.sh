@@ -14,22 +14,8 @@ echo "Preinstall npm"
 (npm list -g babel-polyfill --depth=0 || sudo npm install -g babel-polyfill) &&\
 (npm list -g babel-preset-es2015 --depth=0 || sudo npm install -g babel-preset-es2015) &&\
 ( (npm list -g deepify@$(npm show deepify version) --depth=0 || sudo npm install -g deepify) && CHECK_DEEP_PACKAGE_MANAGER) &&\
-(npm list -g jspm --depth=0 || sudo npm install -g jspm@0.16.15)  &&\
-(npm list -g browserify --depth=0 || sudo npm install -g browserify@11.2.x) &&\
-(npm list -g jscs --depth=0 || sudo npm install -g jscs@2.1.x) &&\
-(npm list -g mocha@2.5.x --depth=0 || sudo npm install -g mocha@2.5.x) &&\
-(npm list -g chai --depth=0 || sudo npm install -g chai@3.3.x) &&\
-(npm list -g jasmine-core --depth=0 || sudo npm install -g jasmine-core@2.3.x) &&\
 (npm list -g istanbul@^1.0.0-alpha --depth=0 || sudo npm install -g istanbul@^1.0.0-alpha) &&\
 (npm list -g istanbul-combine --depth=0 || sudo npm install -g istanbul-combine@0.3.x) &&\
-(npm list -g karma --depth=0 || sudo npm install -g karma@0.13.x) &&\
-(npm list -g karma-jspm --depth=0 || sudo npm install -g karma-jspm@2.0.x) &&\
-(npm list -g karma-jasmine --depth=0 || sudo npm install -g karma-jasmine@0.3.x) &&\
-(npm list -g karma-babel-preprocessor --depth=0 || sudo npm install -g karma-babel-preprocessor@5.2.x) &&\
-(npm list -g karma-coverage@1.0.x --depth=0 || sudo npm install -g karma-coverage@1.0.x) &&\
-(npm list -g karma-verbose-reporter --depth=0 || sudo npm install -g karma-verbose-reporter@0.0.x) &&\
-(npm list -g karma-phantomjs-launcher --depth=0 || sudo npm install -g karma-phantomjs-launcher@0.2.x) &&\
-(npm list -g karma-ng-html2js-preprocessor --depth=0 || sudo npm install -g karma-ng-html2js-preprocessor@0.2.x) &&\
 (npm list -g codeclimate-test-reporter --depth=0 || sudo npm install -g codeclimate-test-reporter) &&\
 
 ###################################################
@@ -37,7 +23,6 @@ echo "Preinstall npm"
 ###################################################
 (if [ ! -d "node_modules/codelyzer" ]; then sudo npm install codelyzer; fi) &&\
 (if [ ! -d "node_modules/tslint-eslint-rules" ]; then sudo npm install tslint-eslint-rules; fi) &&\
-(if [ ! -d "node_modules/isparta" ]; then sudo npm install isparta@3.1.x; fi) &&\
 (if [ ! -d "node_modules/sync-exec" ]; then sudo npm install sync-exec@^0.6.x; fi) &&\
 (if [ ! -d "node_modules/fs-extra" ]; then sudo npm install fs-extra@0.x.x; fi) &&\
 (if [ ! -d "node_modules/github" ]; then sudo npm install github; fi) &&\
