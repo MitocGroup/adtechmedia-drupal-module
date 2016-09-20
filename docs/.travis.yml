@@ -9,6 +9,7 @@ php:
 cache:
   edge: true
   directories:
+    - $HOME/.composer/cache
     - $(npm root -g)
     - node_modules
     - deep_modules
@@ -30,7 +31,7 @@ before_install:
 
 install:
   - composer install
-  - npm install
+#  - npm install
 
 after_success:
   - npm run coverage

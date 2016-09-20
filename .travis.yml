@@ -48,7 +48,7 @@ php:
   - 5.5
 install:
   - composer install
-  - npm install
+#  - npm install
 notifications:
   slack:
     secure: 
