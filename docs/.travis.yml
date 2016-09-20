@@ -2,8 +2,6 @@ language: php
 sudo: false
 php:
   - 5.5
-node_js:
-  - 4.3
 cache:
   edge: true
   directories:
@@ -19,6 +17,9 @@ branches:
     - test
     - php
 before_install:
+  - sudo rm -rf ~/.nvm
+  - curl -sL "https://deb.nodesource.com/setup_${NODE_RELEASE}" | sudo -E bash -
+  - sudo apt-get install -y nodejs
   - cp bin/test/package.json .
 after_success:
   - npm run coverage
