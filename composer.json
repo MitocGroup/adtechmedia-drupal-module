@@ -1,0 +1,31 @@
+{
+  "name": "drupal-module",
+  "description": "Drupal Module for AdTechMedia.io",
+  "keywords": [
+    "drupal",
+    "adtechmedia"
+  ],
+  "homepage": "https://github.com/AdTechMedia/drupal-module",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+    "name": "DEEP Dev Team",
+    "email": "hello@deep.mg",
+    "homepage": "https://www.deep.mg"
+    }
+  ],
+  "require": {
+  },
+  "require-dev": {
+    "phpunit/phpunit": "3.7.*@stable",
+    "ext-xdebug": "*",
+    "tm/tooly-composer-script": "^1.0",
+    "scrutinizer/ocular": "~1.1",
+    "squizlabs/php_codesniffer": "^2.3"
+  },
+  "scripts": {
+    "install-deps": "composer install",
+    "test": "echo 'No php test specified' && npm test"
+  }
+}

@@ -16,6 +16,9 @@ engines:
     enabled: true
 ratings:
   paths:
+    - '**.inc'
+    - '**.module'
+    - '**.php'
     - '**.css'
     - '**.inc'
     - '**.js'
