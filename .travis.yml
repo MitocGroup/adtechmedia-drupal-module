@@ -25,7 +25,7 @@ after_script:
   - npm run remove-coverage
 env:
   global:
-    - NODE_RELEASE=5.x
+    - NODE_RELEASE=4.x
     - 'MAJOR_VERSIONS=master,stage'
     - DEEP_NO_INTERACTION=1
     - E2E_TESTING=none

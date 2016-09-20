@@ -41,7 +41,7 @@ after_script:
 env:
   global:
   # Node version
-  - NODE_RELEASE=5.x
+  - NODE_RELEASE=4.x
   # To enable run full CI build for specified branches
   - MAJOR_VERSIONS=master,stage
   # Disable interactive user mode ###
