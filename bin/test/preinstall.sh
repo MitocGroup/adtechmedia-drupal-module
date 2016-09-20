@@ -22,7 +22,7 @@ echo "Preinstall npm"
 (if [ ! -d "node_modules/github" ]; then sudo npm install github; fi) &&\
 (if [ ! -d "node_modules/aws-sdk" ]; then sudo npm install aws-sdk; fi) &&\
 (if [ ! -d "node_modules/s3" ]; then sudo npm install s3; fi) &&\
-(if [ ! -d "node_modules/istanbul-combine" ]; then sudo npm install istanbul-combine@0.3.x; fi) &&\
+(if [ ! -d "node_modules/istanbul-combine" ]; then sudo npm install istanbul-combine; fi) &&\
 (if [ ! -d "node_modules/node-dir" ]; then sudo npm install node-dir; fi)
 
 if [ "$TRAVIS" == "true" ]; then
