@@ -1,5 +1,6 @@
 sudo: required
 dist: trusty
+group: edge
 
 language: php
 
@@ -31,7 +32,9 @@ before_install:
 
 install:
   - composer install
-#  - npm install
+
+script:
+  - composer test
 
 after_success:
   - npm run coverage

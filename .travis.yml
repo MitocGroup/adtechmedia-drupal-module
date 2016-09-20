@@ -1,8 +1,12 @@
 language: php
 sudo: required
+node_js:
+  - '4.3'
+  - '6.6'
 cache:
   edge: true
   directories:
+    - $HOME/.composer/cache
     - $(npm root -g)
     - node_modules
     - deep_modules
@@ -19,8 +23,6 @@ before_install:
   - 'curl -sL "https://deb.nodesource.com/setup_${NODE_RELEASE}" | sudo -E bash -'
   - sudo apt-get install -y nodejs
   - cp bin/test/package.json .
-script:
-  - composer test
 after_success:
   - npm run coverage
 after_script:
@@ -51,7 +53,8 @@ php:
   - 5.5
 install:
   - composer install
-#  - npm install
+script:
+  - composer test
 notifications:
   slack:
     secure: 
