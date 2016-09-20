@@ -10,12 +10,6 @@ echo "Preinstall npm"
 ####################################################
 ### Install dependencies globally if don't exist ###
 ####################################################
-(npm list -g babel-cli --depth=0 || sudo npm install -g babel-cli) &&\
-(npm list -g babel-polyfill --depth=0 || sudo npm install -g babel-polyfill) &&\
-(npm list -g babel-preset-es2015 --depth=0 || sudo npm install -g babel-preset-es2015) &&\
-( (npm list -g deepify@$(npm show deepify version) --depth=0 || sudo npm install -g deepify) && CHECK_DEEP_PACKAGE_MANAGER) &&\
-(npm list -g istanbul@^1.0.0-alpha --depth=0 || sudo npm install -g istanbul@^1.0.0-alpha) &&\
-(npm list -g istanbul-combine --depth=0 || sudo npm install -g istanbul-combine@0.3.x) &&\
 (npm list -g codeclimate-test-reporter --depth=0 || sudo npm install -g codeclimate-test-reporter) &&\
 
 ###################################################
@@ -28,64 +22,8 @@ echo "Preinstall npm"
 (if [ ! -d "node_modules/github" ]; then sudo npm install github; fi) &&\
 (if [ ! -d "node_modules/aws-sdk" ]; then sudo npm install aws-sdk; fi) &&\
 (if [ ! -d "node_modules/s3" ]; then sudo npm install s3; fi) &&\
+(if [ ! -d "node_modules/istanbul-combine" ]; then sudo npm install istanbul-combine@0.3.x; fi) &&\
 (if [ ! -d "node_modules/node-dir" ]; then sudo npm install node-dir; fi)
-
-#############################################################################
-### Configure jspm and git if we are in CI                                ###
-### for JSPM: https://gist.github.com/topheman/25241e48a1b4f91ec6d4       ###
-### for NPM: https://github.com/npm/npm/issues/5257#issuecomment-60441477 ###
-#############################################################################
-if [ -z $TRAVIS_BUILD_NUMBER ]; then
-  echo "Running locally - no need to jspm config"
-else
-  echo "Running in CI - configuring jspm registries"
-  jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
-  git config --local url.https://github.com/.insteadOf git://github.com/
-
-  ##########################
-  ### Configure git user ###
-  ##########################
-  if [ -z $GITHUB_OAUTH_TOKEN ]; then
-    echo "No GitHub token"
-  else
-    deepify registry config github --set "devs-deep:${GITHUB_OAUTH_TOKEN}"
-  fi
-
-fi
-
-##################################################################
-### Installing dependencies for E2E tests stuff written in ES6 ###
-##################################################################
-if [ "${__E2E_WITH_PUBLIC_REPO}" = "${E2E_TESTING}" ] || [ "${__E2E_WITH_PRIVATE_REPO}" = "${E2E_TESTING}" ]; then
-  bash `dirname $0`/protractor.sh
-
-  #######################################################
-  ### Install module to be able to rerun failed tests ###
-  #######################################################
-  (npm list -g protractor-flake --depth=0 || sudo npm install -g protractor-flake) &&\
-
-  ###############################################################
-  ### Install locally, protractor doesn't find babel globally ###
-  ###############################################################
-  (if [ ! -d "node_modules/babel-register" ]; then sudo npm install babel-register; fi) &&\
-  (if [ ! -d "node_modules/babel-cli" ]; then sudo npm install babel-cli; fi) &&\
-  (if [ ! -d "node_modules/babel-preset-es2015" ]; then sudo npm install babel-preset-es2015; fi) &&\
-  (if [ ! -d "node_modules/babel-plugin-add-module-exports" ]; then sudo npm install babel-plugin-add-module-exports; fi) &&\
-  (if [ ! -d "node_modules/jasmine2-custom-message" ]; then sudo npm install jasmine2-custom-message@0.8.x; fi) &&\
-  (if [ ! -d "node_modules/jasmine-utils" ]; then sudo npm install jasmine-utils@0.2.x; fi)
-fi
-
-##########################################################
-### Install skeleton dependecies if we are in skeleton ###
-##########################################################
-if [ $(git config --get remote.origin.url) == "https://github.com/MitocGroup/deep-microservices-skeleton" ]; then
-  sh $(dirname $0)/../tools/skeleton-install.sh
-fi
-
-###################################################
-### Install Phantomjs for frontend unit testing ###
-###################################################
-bash `dirname $0`/phantomjs.sh
 
 if [ "$TRAVIS" == "true" ]; then
   ##########################################################################################
@@ -121,14 +59,5 @@ fi
 ### Copy package.json again - fixes issue when .gitignore doesn't contain "/package.json" ###
 #############################################################################################
 cp bin/test/package.json .
-
-############################################################################################
-### Transpile from ES6 to ES5 by using deepify and execute to retrieve the changed stuff ###
-############################################################################################
-deepify compile es6 $(dirname $0)/node-scripts/GitDiffWalker.es6 --source > $(dirname $0)/node-scripts/GitDiffWalker.js
-deepify compile es6 $(dirname $0)/node-scripts/S3CoverageSynchronizer.es6 --source > $(dirname $0)/node-scripts/S3CoverageSynchronizer.js
-deepify compile es6 $(dirname $0)/node-scripts/CoverageComparator.es6 --source > $(dirname $0)/node-scripts/CoverageComparator.js
-deepify compile es6 $(dirname $0)/node-scripts/GitHubMsgPublisher.es6 --source > $(dirname $0)/node-scripts/GitHubMsgPublisher.js
-deepify compile es6 $(dirname $0)/node-scripts/CoverageManager.es6 --source > $(dirname $0)/node-scripts/CoverageManager.js
 
 node $(dirname $0)/node-scripts/GitDiffWalker.js
