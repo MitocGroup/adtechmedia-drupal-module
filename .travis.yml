@@ -19,6 +19,8 @@ before_install:
   - 'curl -sL "https://deb.nodesource.com/setup_${NODE_RELEASE}" | sudo -E bash -'
   - sudo apt-get install -y nodejs
   - cp bin/test/package.json .
+script:
+  - composer test
 after_success:
   - npm run coverage
 after_script:
@@ -44,6 +46,7 @@ env:
     - secure: 
         GRldSn7KhI5phBZX31xgdDjXibnXwbUQvvrm6HEjpTdRhoFKsV8XZLyOxF0fAP9YYKaH3PBhPsP6/gz8cWOM7756xpskH7utI+TLGUiduS5jeFf7OiLYWV2IHq4ZwXkNxYc9hgSyCJNFZdCG167YRaGRlqAdgb+k5t2swcHUQg7YXiQLIG1RnNv+Cpn6rZUJMibwPPpJ3uRIpn4NXFtgRyT1Ta/9OhJJ8T/N7hnD6z7RYXySrlqz/ks737tZi8QeGn8Api0GYG5Pu7uo+kiEwUZVpzuaqspEOxScJYfvPKMxo931o4jEcIDytzJFYLrFVmVdDkCk/ykD0DtS6fnJqyzfERo/A1HWMVeh9gq1wsw/rYLcK306Hl4Be58jgNwdzCYNCWZhvZ3tSjZwWJKBlFmozqZroO4uuLQYcxOhTqm6XrpvtBjMIQpuSTkenCob+vUvNgi3XpRm/QbL85S/pj58yoA0kuah8F1WSDwNZDCvB2xY4RqMX5+58EUh77tzDklZynxYu9/Uh8IWsrk0lz7gHdaDY9dtLrpf9YPwd0Lmo/sjJCuT803GBDU3gwqZTWcII6vjJ3DUpFIRgjsSFpo6BsZ8L2CKfRBAM6Xhh2a5l6LJ0nea+IHygxhF4KMH+uwdFQbBDHdxn01r0hMYzq9PafLUCVNSzXvtrFwoojU=
 dist: trusty
+group: edge
 php:
   - 5.5
 install:
