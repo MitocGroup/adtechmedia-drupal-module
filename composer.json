@@ -23,7 +23,7 @@
     "tm/tooly-composer-script": "^1.0"
   },
   "scripts": {
-    "install-deps": "composer install && npm install && exit 0",
+    "install-deps": "composer install",
     "test": "echo 'No php test specified' && npm test"
   }
 }
