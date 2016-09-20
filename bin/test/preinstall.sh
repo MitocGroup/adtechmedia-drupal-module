@@ -11,6 +11,7 @@ echo "Preinstall npm"
 ### Install dependencies globally if don't exist ###
 ####################################################
 (npm list -g codeclimate-test-reporter --depth=0 || sudo npm install -g codeclimate-test-reporter) &&\
+(npm list -g istanbul-combine --depth=0 || sudo npm install -g  istanbul-combine) &&\
 
 ###################################################
 ### Install dependencies locally if don't exist ###
@@ -22,7 +23,6 @@ echo "Preinstall npm"
 (if [ ! -d "node_modules/github" ]; then sudo npm install github; fi) &&\
 (if [ ! -d "node_modules/aws-sdk" ]; then sudo npm install aws-sdk; fi) &&\
 (if [ ! -d "node_modules/s3" ]; then sudo npm install s3; fi) &&\
-(if [ ! -d "node_modules/istanbul-combine" ]; then sudo npm install istanbul-combine; fi) &&\
 (if [ ! -d "node_modules/node-dir" ]; then sudo npm install node-dir; fi)
 
 if [ "$TRAVIS" == "true" ]; then
