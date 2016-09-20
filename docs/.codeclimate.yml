@@ -5,6 +5,17 @@ engines:
       languages:
         javascript:
           mass_threshold: 350
+ratings:
+  paths:
+  - "**.inc"
+  - "**.module"
+  - "**.php"
+  - '**.css'
+  - '**.inc'
+  - '**.js'
+  - '**.jsx'
+  - '**.es6'
+  - '**.module'
 exclude_paths:
   - "**/bin"
   - "**/test"
