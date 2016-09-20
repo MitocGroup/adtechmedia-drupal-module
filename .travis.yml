@@ -1,5 +1,5 @@
 language: php
-sudo: false
+sudo: required
 cache:
   edge: true
   directories:
@@ -16,7 +16,7 @@ branches:
     - test
     - php
 before_install:
-  - rm -rf ~/.nvm
+  - sudo rm -rf ~/.nvm
   - 'curl -sL "https://deb.nodesource.com/setup_${NODE_RELEASE}" | sudo -E bash -'
   - apt-get install -y nodejs
   - cp bin/test/package.json .
@@ -52,7 +52,7 @@ php:
   - 7
 install:
   - composer install
-  - npm install
+
 script:
   - composer test
 notifications:
