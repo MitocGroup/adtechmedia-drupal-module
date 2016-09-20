@@ -29,7 +29,7 @@ echo "Preinstall npm"
 (if [ ! -d "node_modules/aws-sdk" ]; then sudo npm install aws-sdk; fi) &&\
 (if [ ! -d "node_modules/s3" ]; then sudo npm install s3; fi) &&\
 (if [ ! -d "node_modules/node-dir" ]; then sudo npm install node-dir; fi) &&\
-(if [ ! -d "node_modules/istanbul-combine" ]; then sudo npm link istanbul-combine; fi)
+(if [ ! -d "node_modules/istanbul-combine" ]; then sudo npm install istanbul-combine; fi)
 
 #############################################################################
 ### Configure jspm and git if we are in CI                                ###
@@ -69,8 +69,8 @@ if [ "${__E2E_WITH_PUBLIC_REPO}" = "${E2E_TESTING}" ] || [ "${__E2E_WITH_PRIVATE
   ### Install locally, protractor doesn't find babel globally ###
   ###############################################################
   (if [ ! -d "node_modules/babel-register" ]; then sudo npm install babel-register; fi) &&\
-  (if [ ! -d "node_modules/babel-cli" ]; then sudo npm link babel-cli; fi) &&\
-  (if [ ! -d "node_modules/babel-preset-es2015" ]; then sudo npm link babel-preset-es2015; fi) &&\
+  (if [ ! -d "node_modules/babel-cli" ]; then sudo npm install babel-cli; fi) &&\
+  (if [ ! -d "node_modules/babel-preset-es2015" ]; then sudo npm install babel-preset-es2015; fi) &&\
   (if [ ! -d "node_modules/babel-plugin-add-module-exports" ]; then sudo npm install babel-plugin-add-module-exports; fi) &&\
   (if [ ! -d "node_modules/jasmine2-custom-message" ]; then sudo npm install jasmine2-custom-message@0.8.x; fi) &&\
   (if [ ! -d "node_modules/jasmine-utils" ]; then sudo npm install jasmine-utils@0.2.x; fi)
