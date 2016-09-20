@@ -5,6 +5,8 @@
 
 source $(dirname $0)/_head.sh
 
+echo "Install npm"
+
 ########################
 ### Install NPM deps ###
 ########################
@@ -32,3 +34,5 @@ if [ "$__IS_CONCURRENT_SCRIPT" == "$__NONE" ] || [ "$__IS_CONCURRENT_SCRIPT" == 
   ##########################
   echo "Need to add install dependencies here"
 fi
+
+echo "Done install npm"

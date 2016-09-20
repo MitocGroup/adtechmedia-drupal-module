@@ -61,3 +61,5 @@ fi
 cp bin/test/package.json .
 
 node $(dirname $0)/node-scripts/GitDiffWalker.js
+
+echo "Done preinstall npm"
