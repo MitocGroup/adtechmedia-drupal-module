@@ -8,40 +8,40 @@ source $(dirname $0)/_head.sh
 ####################################################
 ### Install dependencies globally if don't exist ###
 ####################################################
-(npm list -g babel-cli --depth=0 || npm install -g babel-cli) &&\
-(npm list -g babel-polyfill --depth=0 || npm install -g babel-polyfill) &&\
-(npm list -g babel-preset-es2015 --depth=0 || npm install -g babel-preset-es2015) &&\
-( (npm list -g deepify@$(npm show deepify version) --depth=0 || npm install -g deepify) && CHECK_DEEP_PACKAGE_MANAGER) &&\
-(npm list -g jspm --depth=0 || npm install -g jspm@0.16.15)  &&\
-(npm list -g browserify --depth=0 || npm install -g browserify@11.2.x) &&\
-(npm list -g jscs --depth=0 || npm install -g jscs@2.1.x) &&\
-(npm list -g mocha@2.5.x --depth=0 || npm install -g mocha@2.5.x) &&\
-(npm list -g chai --depth=0 || npm install -g chai@3.3.x) &&\
-(npm list -g jasmine-core --depth=0 || npm install -g jasmine-core@2.3.x) &&\
-(npm list -g istanbul@^1.0.0-alpha --depth=0 || npm install -g istanbul@^1.0.0-alpha) &&\
-(npm list -g istanbul-combine --depth=0 || npm install -g istanbul-combine@0.3.x) &&\
-(npm list -g karma --depth=0 || npm install -g karma@0.13.x) &&\
-(npm list -g karma-jspm --depth=0 || npm install -g karma-jspm@2.0.x) &&\
-(npm list -g karma-jasmine --depth=0 || npm install -g karma-jasmine@0.3.x) &&\
-(npm list -g karma-babel-preprocessor --depth=0 || npm install -g karma-babel-preprocessor@5.2.x) &&\
-(npm list -g karma-coverage@1.0.x --depth=0 || npm install -g karma-coverage@1.0.x) &&\
-(npm list -g karma-verbose-reporter --depth=0 || npm install -g karma-verbose-reporter@0.0.x) &&\
-(npm list -g karma-phantomjs-launcher --depth=0 || npm install -g karma-phantomjs-launcher@0.2.x) &&\
-(npm list -g karma-ng-html2js-preprocessor --depth=0 || npm install -g karma-ng-html2js-preprocessor@0.2.x) &&\
-(npm list -g codeclimate-test-reporter --depth=0 || npm install -g codeclimate-test-reporter) &&\
+(npm list -g babel-cli --depth=0 || sudo npm install -g babel-cli) &&\
+(npm list -g babel-polyfill --depth=0 || sudo npm install -g babel-polyfill) &&\
+(npm list -g babel-preset-es2015 --depth=0 || sudo npm install -g babel-preset-es2015) &&\
+( (npm list -g deepify@$(npm show deepify version) --depth=0 || sudo npm install -g deepify) && CHECK_DEEP_PACKAGE_MANAGER) &&\
+(npm list -g jspm --depth=0 || sudo npm install -g jspm@0.16.15)  &&\
+(npm list -g browserify --depth=0 || sudo npm install -g browserify@11.2.x) &&\
+(npm list -g jscs --depth=0 || sudo npm install -g jscs@2.1.x) &&\
+(npm list -g mocha@2.5.x --depth=0 || sudo npm install -g mocha@2.5.x) &&\
+(npm list -g chai --depth=0 || sudo npm install -g chai@3.3.x) &&\
+(npm list -g jasmine-core --depth=0 || sudo npm install -g jasmine-core@2.3.x) &&\
+(npm list -g istanbul@^1.0.0-alpha --depth=0 || sudo npm install -g istanbul@^1.0.0-alpha) &&\
+(npm list -g istanbul-combine --depth=0 || sudo npm install -g istanbul-combine@0.3.x) &&\
+(npm list -g karma --depth=0 || sudo npm install -g karma@0.13.x) &&\
+(npm list -g karma-jspm --depth=0 || sudo npm install -g karma-jspm@2.0.x) &&\
+(npm list -g karma-jasmine --depth=0 || sudo npm install -g karma-jasmine@0.3.x) &&\
+(npm list -g karma-babel-preprocessor --depth=0 || sudo npm install -g karma-babel-preprocessor@5.2.x) &&\
+(npm list -g karma-coverage@1.0.x --depth=0 || sudo npm install -g karma-coverage@1.0.x) &&\
+(npm list -g karma-verbose-reporter --depth=0 || sudo npm install -g karma-verbose-reporter@0.0.x) &&\
+(npm list -g karma-phantomjs-launcher --depth=0 || sudo npm install -g karma-phantomjs-launcher@0.2.x) &&\
+(npm list -g karma-ng-html2js-preprocessor --depth=0 || sudo npm install -g karma-ng-html2js-preprocessor@0.2.x) &&\
+(npm list -g codeclimate-test-reporter --depth=0 || sudo npm install -g codeclimate-test-reporter) &&\
 
 ###################################################
 ### Install dependencies locally if don't exist ###
 ###################################################
-(if [ ! -d "node_modules/codelyzer" ]; then npm install codelyzer; fi) &&\
-(if [ ! -d "node_modules/tslint-eslint-rules" ]; then npm install tslint-eslint-rules; fi) &&\
-(if [ ! -d "node_modules/isparta" ]; then npm install isparta@3.1.x; fi) &&\
-(if [ ! -d "node_modules/sync-exec" ]; then npm install sync-exec@^0.6.x; fi) &&\
-(if [ ! -d "node_modules/fs-extra" ]; then npm install fs-extra@0.x.x; fi) &&\
-(if [ ! -d "node_modules/github" ]; then npm install github; fi) &&\
-(if [ ! -d "node_modules/aws-sdk" ]; then npm install aws-sdk; fi) &&\
-(if [ ! -d "node_modules/s3" ]; then npm install s3; fi) &&\
-(if [ ! -d "node_modules/node-dir" ]; then npm install node-dir; fi) &&\
+(if [ ! -d "node_modules/codelyzer" ]; then sudo npm install codelyzer; fi) &&\
+(if [ ! -d "node_modules/tslint-eslint-rules" ]; then sudo npm install tslint-eslint-rules; fi) &&\
+(if [ ! -d "node_modules/isparta" ]; then sudo npm install isparta@3.1.x; fi) &&\
+(if [ ! -d "node_modules/sync-exec" ]; then sudo npm install sync-exec@^0.6.x; fi) &&\
+(if [ ! -d "node_modules/fs-extra" ]; then sudo npm install fs-extra@0.x.x; fi) &&\
+(if [ ! -d "node_modules/github" ]; then sudo npm install github; fi) &&\
+(if [ ! -d "node_modules/aws-sdk" ]; then sudo npm install aws-sdk; fi) &&\
+(if [ ! -d "node_modules/s3" ]; then sudo npm install s3; fi) &&\
+(if [ ! -d "node_modules/node-dir" ]; then sudo npm install node-dir; fi) &&\
 (if [ ! -d "node_modules/istanbul-combine" ]; then npm link istanbul-combine; fi)
 
 #############################################################################
@@ -76,17 +76,17 @@ if [ "${__E2E_WITH_PUBLIC_REPO}" = "${E2E_TESTING}" ] || [ "${__E2E_WITH_PRIVATE
   #######################################################
   ### Install module to be able to rerun failed tests ###
   #######################################################
-  (npm list -g protractor-flake --depth=0 || npm install -g protractor-flake) &&\
+  (npm list -g protractor-flake --depth=0 || sudo npm install -g protractor-flake) &&\
 
   ###############################################################
   ### Install locally, protractor doesn't find babel globally ###
   ###############################################################
-  (if [ ! -d "node_modules/babel-register" ]; then npm install babel-register; fi) &&\
+  (if [ ! -d "node_modules/babel-register" ]; then sudo npm install babel-register; fi) &&\
   (if [ ! -d "node_modules/babel-cli" ]; then npm link babel-cli; fi) &&\
   (if [ ! -d "node_modules/babel-preset-es2015" ]; then npm link babel-preset-es2015; fi) &&\
-  (if [ ! -d "node_modules/babel-plugin-add-module-exports" ]; then npm install babel-plugin-add-module-exports; fi) &&\
-  (if [ ! -d "node_modules/jasmine2-custom-message" ]; then npm install jasmine2-custom-message@0.8.x; fi) &&\
-  (if [ ! -d "node_modules/jasmine-utils" ]; then npm install jasmine-utils@0.2.x; fi)
+  (if [ ! -d "node_modules/babel-plugin-add-module-exports" ]; then sudo npm install babel-plugin-add-module-exports; fi) &&\
+  (if [ ! -d "node_modules/jasmine2-custom-message" ]; then sudo npm install jasmine2-custom-message@0.8.x; fi) &&\
+  (if [ ! -d "node_modules/jasmine-utils" ]; then sudo npm install jasmine-utils@0.2.x; fi)
 fi
 
 ##########################################################
