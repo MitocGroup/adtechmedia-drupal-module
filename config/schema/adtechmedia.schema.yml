@@ -1,0 +1,37 @@
+adtechmedia.settings:
+  type: config_object
+  label: AdTechMedia settings
+  mapping:
+    atm_api_key:
+      type: string
+      label: 'API key'
+    atm_api_value:
+      type: string
+      label: 'API value'
+    country:
+      type: string
+      label: Country
+    revenue_model:
+      type: string
+      label: 'Revenue Model'
+    content_preview:
+      type: string
+      label: 'Content Preview'
+    locking_algorithm:
+      type: string
+      label: 'Locking Algorithm'
+    content_pricing:
+      type: string
+      label: 'Content Pricing'
+    content_currency:
+      type: string
+      label: 'Content Currency'
+    content_paywall:
+      type: string
+      label: 'Content Paywall'
+    template_management:
+      type: string
+      label: 'Template Management'
+    dns_access:
+      type: string
+      label: 'DNS Access'
