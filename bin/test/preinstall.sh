@@ -64,6 +64,10 @@ node $(dirname $0)/node-scripts/GitDiffWalker.js
 
 ls -la ./node_modules
 
+sudo chown -R travis:travis "./node_modules"
+
+ls -la ./node_modules
+
 echo "Done preinstall npm"
 
 exit 0
