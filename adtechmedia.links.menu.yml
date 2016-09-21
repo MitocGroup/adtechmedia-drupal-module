@@ -1,0 +1,5 @@
+adtechmedia.settings:
+  title: AdTechMedia
+  description: 'AdTechMedia configuration.'
+  route_name: adtechmedia.settings
+  parent: system.admin_config_services

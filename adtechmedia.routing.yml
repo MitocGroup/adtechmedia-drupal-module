@@ -1,0 +1,7 @@
+adtechmedia.settings:
+  path: '/admin/config/system/adtechmedia'
+  defaults:
+    _form: 'Drupal\adtechmedia\Form\AdTechMediaConfigForm'
+    _title: 'AdTech Media configuration'
+  requirements:
+    _permission: 'administer adtechmedia'
