@@ -11,7 +11,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'adtechmedia_settings';
+    return 'adtechmedia_settings_form';
   }
 
   /**
