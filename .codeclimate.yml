@@ -7,6 +7,8 @@ engines:
       languages:
         javascript:
           mass_threshold: 350
+        php:
+          mass_threshold: 350
     exclude_paths:
       - '**/tests'
   eslint:
@@ -14,6 +16,15 @@ engines:
     channel: eslint-2
   fixme:
     enabled: true
+  phpcodesniffer:
+    enabled: true
+  phpmd:
+    enabled: true
+    checks:
+      CleanCode/ElseExpression:
+        enabled: false
+      Controversial/Superglobals:
+        enabled: false
 ratings:
   paths:
     - '**.inc'
