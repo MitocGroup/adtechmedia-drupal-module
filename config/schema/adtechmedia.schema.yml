@@ -2,10 +2,10 @@ adtechmedia.settings:
   type: config_object
   label: AdTechMedia settings
   mapping:
-    atm_api_key:
+    api_key:
       type: string
       label: 'API key'
-    atm_api_value:
+    api_value:
       type: string
       label: 'API value'
     country:
@@ -35,3 +35,6 @@ adtechmedia.settings:
     dns_access:
       type: string
       label: 'DNS Access'
+    email:
+      label: Email
+      type: string

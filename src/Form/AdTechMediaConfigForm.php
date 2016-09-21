@@ -27,33 +27,29 @@ class AdTechMediaConfigForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('adtechmedia.settings');
 
-    $form['atm_api_key'] = array(
+    $form['general'] = array(
+      '#type' => 'details',
+      '#title' => $this->t('General configuration'),
+      '#open' => TRUE,
+    );
+
+    $form['general']['api_key'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('ATM API key'),
-      '#default_value' => $config->get('atm_api_key'),
+      '#title' => $this->t('API Key'),
+      '#default_value' => $config->get('api_key'),
       '#required' => TRUE,
     );
 
-    $form['atm_api_value'] = array(
+    $form['general']['api_value'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('ATM API value'),
-      '#default_value' => $config->get('atm_api_value'),
+      '#title' => $this->t('API Value'),
+      '#default_value' => $config->get('api_value'),
       '#required' => TRUE,
     );
 
-    $form['country'] = array(
+    $form['general']['revenue_model'] = array(
       '#type' => 'select',
-      '#title' => $this->t('Country'),
-      '#options' => array(
-        'usa' => $this->t('USA'),
-        'md' => $this->t('Moldova')
-      ), //@todo from api.
-      '#default_value' => $config->get('country'),
-    );
-
-    $form['revenue_model'] = array(
-      '#type' => 'select',
-      '#title' => $this->t('Revenue model'),
+      '#title' => $this->t('Revenue Model'),
       '#options' => array(
         'advertising' => $this->t('Advertising'),
         'micropayments' => $this->t('Micropayments'),
@@ -63,33 +59,42 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#description' => $this->t('Select revenue model'),
     );
 
-    $form['content_preview'] = array(
+    $form['general']['country'] = array(
       '#type' => 'select',
-      '#title' => $this->t('Content preview'),
+      '#title' => $this->t('Country'),
       '#options' => array(
-        '100_words' => $this->t('100 words'),
-        '3_paragraphs' => $this->t('3 paragraphs'),
-      ),
-      '#default_value' => $config->get('content_preview'),
-      '#description' => $this->t('Select how content should be displayed.'),
+        'usa' => $this->t('USA'),
+        'md' => $this->t('Moldova')
+      ), //@todo from api.
+      '#default_value' => $config->get('country'),
     );
 
-    $form['locking_algorithm'] = array(
-      '#type' => 'select',
-      '#title' => $this->t('Content locking algorithm'),
-      '#options' => array(
-        'blur' => $this->t('Blur'),
-        'scramble' => $this->t('Scramble'),
-        'keywords' => $this->t('Keywords'),
-        'blur_scramble' => $this->t('Blur & Scramble'),
-      ),
-      '#default_value' => $config->get('locking_algorithm'),
-      '#description' => $this->t('How locked content should look.'),
+    $form['general']['email'] = array(
+      '#type' => 'email',
+      '#title' => $this->t('Email'),
+      '#default_value' => $config->get('email'),
     );
 
-    $form['content_pricing'] = array(
+    $form['content'] = array(
+      '#type' => 'details',
+      '#title' => $this->t('General configuration'),
+      '#open' => TRUE,
+    );
+
+    $form['content']['content_paywall'] = array(
       '#type' => 'select',
-      '#title' => $this->t('Content pricing'),
+      '#title' => $this->t('Content Paywall'),
+      '#options' => array(
+        '3_transactions' => $this->t('3 transactions'),
+        '100_cents' => $this->t('100 cents'),
+      ),
+      '#default_value' => $config->get('content_paywall'),
+      '#description' => $this->t('Remove paywall after.'),
+    );
+
+    $form['content']['content_pricing'] = array(
+      '#type' => 'select',
+      '#title' => $this->t('Content Pricing'),
       '#options' => array(
         'autopricing' => $this->t('Autopricing'),
         29 => $this->t('29 cents'),
@@ -99,7 +104,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#description' => $this->t('Select content price.'),
     );
 
-    $form['content_currency'] = array(
+    $form['content']['content_currency'] = array(
       '#type' => 'select',
       '#title' => $this->t('Content currency'),
       '#options' => array(
@@ -110,20 +115,57 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#description' => $this->t('Select content currency.'),
     );
 
-    $form['content_paywall'] = array(
+    $form['content']['content_preview'] = array(
       '#type' => 'select',
-      '#title' => $this->t('Content paywall'),
+      '#title' => $this->t('Content Preview'),
       '#options' => array(
-        '3_transactions' => $this->t('3 transactions'),
-        '100_cents' => $this->t('100 cents'),
+        '100_words' => $this->t('100 words'),
+        '3_paragraphs' => $this->t('3 paragraphs'),
       ),
-      '#default_value' => $config->get('content_paywall'),
-      '#description' => $this->t('Remove paywall after.'),
+      '#default_value' => $config->get('content_preview'),
+      '#description' => $this->t('Select how content should be displayed.'),
     );
 
-    $form['template_management'] = array(
+    $form['content']['locking_algorithm'] = array(
       '#type' => 'select',
+      '#title' => $this->t('Content Locking Algorithm'),
+      '#options' => array(
+        'blur' => $this->t('Blur'),
+        'scramble' => $this->t('Scramble'),
+        'keywords' => $this->t('Keywords'),
+        'blur_scramble' => $this->t('Blur & Scramble'),
+      ),
+      '#default_value' => $config->get('locking_algorithm'),
+      '#description' => $this->t('How locked content should look.'),
+    );
+
+    $form['content']['dns_access'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('DNS access'),
+      '#default_value' => $config->get('dns_access'),
+      '#description' => $this->t('Route 53 AWS key.'),
+    );
+
+    $form['content']['social_media'] = array(
+      '#type' => 'select',
+      '#title' => $this->t('Social Media Access'),
+      '#options' => array(
+        'facebook' => $this->t('Facebook'),
+        'twitter' => $this->t('Twitter'),
+      ),
+      '#default_value' => $config->get('social_media'),
+      '#description' => $this->t('Select social media.'),
+    );
+
+    $form['template'] = array(
+      '#type' => 'details',
       '#title' => $this->t('Templates management'),
+      '#open' => TRUE,
+    );
+
+    $form['template']['template_management'] = array(
+      '#type' => 'select',
+      '#title' => $this->t('Templates Management'),
       '#options' => array(
         'pledge_view' => $this->t('Pledge View'),
         'pay_view' => $this->t('Pay View'),
@@ -131,13 +173,6 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       ),
       '#default_value' => $config->get('template_management'),
       '#description' => $this->t('Template management.'),
-    );
-
-    $form['dns_access'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('DNS access'),
-      '#default_value' => $config->get('dns_access'),
-      '#description' => $this->t('Route 53 AWS key.'),
     );
 
     return parent::buildForm($form, $form_state);
