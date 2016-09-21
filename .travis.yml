@@ -21,6 +21,7 @@ before_install:
   - sudo apt-get install -y nodejs
   - cp bin/test/package.json .
   - pwd
+  - sudo ls -la /usr
   - sudo chown -R travis:travis "./node_modules"
   - npm prefix -g
   - ls -lad $(npm prefix -g)/node_modules
