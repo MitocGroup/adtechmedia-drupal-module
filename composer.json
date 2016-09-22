@@ -22,10 +22,11 @@
     "ext-xdebug": "*",
     "tm/tooly-composer-script": "^1.0",
     "scrutinizer/ocular": "~1.1",
-    "squizlabs/php_codesniffer": "^2.3"
+    "squizlabs/php_codesniffer": "^2.3",
+    "drupal/coder": "*"
   },
   "scripts": {
-    "install-deps": "composer install",
-    "test": "echo 'No php test specified' && npm test"
+    "post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer",
+    "test": "echo 'No php test specified' && exit 0"
   }
 }

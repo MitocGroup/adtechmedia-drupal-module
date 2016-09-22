@@ -50,10 +50,11 @@ php:
   - 5.6
   - 7
 install:
-  - composer install-deps
+  - composer install
   - npm install
 script:
   - composer test
+  - npm test
 notifications:
   slack:
     secure: 
