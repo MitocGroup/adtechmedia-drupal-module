@@ -27,6 +27,6 @@
   },
   "scripts": {
     "post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer",
-    "test": "echo 'No php test specified' && npm test"
+    "test": "echo 'No php test specified' && exit 0"
   }
 }

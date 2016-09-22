@@ -18,11 +18,11 @@ engines:
     enabled: true
   phpcodesniffer:
     enabled: true
-    config: null
-    file_extensions: 'php,inc,lib'
-    standard: Drupal
-    ignore_warnings: true
-    encoding: utf-8
+    config:
+      file_extensions: 'php,inc,lib'
+      standard: Drupal
+      ignore_warnings: true
+      encoding: utf-8
   phpmd:
     enabled: true
     checks:

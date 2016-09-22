@@ -10,10 +10,10 @@ engines:
   phpcodesniffer:
     enabled: true
     config:
-    file_extensions: "php,inc,lib"
-    standard: "Drupal"
-    ignore_warnings: true
-    encoding: utf-8
+      file_extensions: "php,inc,lib"
+      standard: "Drupal"
+      ignore_warnings: true
+      encoding: utf-8
   phpmd:
     enabled: true
     checks:
