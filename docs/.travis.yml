@@ -26,6 +26,7 @@ before_install:
 
 install:
   - composer install-deps
+  - npm install
 
 script:
   - composer test

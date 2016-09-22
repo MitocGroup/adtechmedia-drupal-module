@@ -51,6 +51,7 @@ php:
   - 7
 install:
   - composer install-deps
+  - npm install
 script:
   - composer test
 notifications:
