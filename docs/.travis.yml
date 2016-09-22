@@ -25,7 +25,7 @@ before_install:
   - cp bin/test/package.json .
 
 install:
-  - composer install-deps
+  - composer install
   - npm install
 
 script:
