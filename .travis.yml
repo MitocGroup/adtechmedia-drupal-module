@@ -54,6 +54,7 @@ install:
   - npm install
 script:
   - composer test
+  - npm test
 notifications:
   slack:
     secure: 

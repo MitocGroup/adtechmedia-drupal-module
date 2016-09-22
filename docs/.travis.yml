@@ -30,6 +30,7 @@ install:
 
 script:
   - composer test
+  - npm test
 
 env:
   global:
