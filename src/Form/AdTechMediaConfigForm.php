@@ -163,17 +163,42 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#open' => TRUE,
     );
 
-    $form['template']['template_management'] = array(
-      '#type' => 'select',
-      '#title' => $this->t('Templates Management'),
-      '#options' => array(
-        'pledge_view' => $this->t('Pledge View'),
-        'pay_view' => $this->t('Pay View'),
-        'login_view' => $this->t('Login View'),
-      ),
-      '#default_value' => $config->get('template_management'),
-      '#description' => $this->t('Template management.'),
+    $form['template']['vertical_tabs'] = array(
+      '#type' => 'vertical_tabs',
+      '#default_tab' => 'edit-tab',
     );
+
+    $templates = array(
+      'pledge_view' => array(
+        'title' => $this->t('Pledge View'),
+      ),
+      'confirm_view' => array(
+        'title' => $this->t('Confirm View'),
+      ),
+      'refund_view' => array(
+        'title' => $this->t('Refund View'),
+      ),
+      'pay_view' => array(
+        'title' => $this->t('Pay View'),
+      ),
+      'login_view' => array(
+        'title' => $this->t('Login View'),
+      ),
+    );
+
+    foreach ($templates as $name => $template) {
+      $form['template']['tab_' . $name] = array(
+        '#type' => 'details',
+        '#title' => $template['title'],
+        '#group' => 'vertical_tabs',
+      );
+
+      $form['template']['tab_' . $name][$name] = array(
+        '#type' => 'textarea',
+        '#default_value' => $config->get($name),
+        '#rows' => 10,
+      );
+    }
 
     return parent::buildForm($form, $form_state);
   }

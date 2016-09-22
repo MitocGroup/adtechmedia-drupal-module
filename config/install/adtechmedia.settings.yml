@@ -7,6 +7,10 @@ locking_algorithm:
 content_pricing:
 content_currency: mdl
 content_paywall:
-template_management:
 dns_access:
 email:
+pledge_view: 'some text for pledge'
+confirm_view: 'some text for confirm'
+refund_view: 'some text for refund'
+pay_view: 'some text for pay'
+login_view: 'some text for login'

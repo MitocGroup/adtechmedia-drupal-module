@@ -29,12 +29,24 @@ adtechmedia.settings:
     content_paywall:
       type: string
       label: 'Content Paywall'
-    template_management:
-      type: string
-      label: 'Template Management'
     dns_access:
       type: string
       label: 'DNS Access'
     email:
       label: Email
+      type: string
+    pledge_view:
+      label: 'Pledge View'
+      type: string
+    confirm_view:
+      label: 'Confirm View'
+      type: string
+    refund_view:
+      label: 'Refund View'
+      type: string
+    pay_view:
+      label: 'Pay View'
+      type: string
+    login_view:
+      label: 'Login View'
       type: string
