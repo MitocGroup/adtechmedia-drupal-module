@@ -194,9 +194,10 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       );
 
       $form['template']['tab_' . $name][$name] = array(
-        '#type' => 'textarea',
-        '#default_value' => $config->get($name),
-        '#rows' => 10,
+        '#type' => 'text_format',
+        '#format' => $config->get($name)['format'],
+        '#default_value' => $config->get($name)['value'],
+        '#rows' => 14,
       );
     }
 

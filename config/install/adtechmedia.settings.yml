@@ -1,5 +1,4 @@
 atm_api_key:
-atm_api_value:
 country:
 revenue_method:
 content_preview:
@@ -9,8 +8,18 @@ content_currency: mdl
 content_paywall:
 dns_access:
 email:
-pledge_view: 'some text for pledge'
-confirm_view: 'some text for confirm'
-refund_view: 'some text for refund'
-pay_view: 'some text for pay'
-login_view: 'some text for login'
+pledge_view:
+  value: 'some text for pledge'
+  format: full_html
+confirm_view:
+  value: 'some text for confirm'
+  format: full_html
+refund_view:
+  value: 'some text for refund'
+  format: full_html
+pay_view:
+  value: 'some text for pay'
+  format: full_html
+login_view:
+  value: 'some text for login'
+  format: full_html

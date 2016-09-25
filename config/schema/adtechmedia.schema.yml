@@ -5,9 +5,6 @@ adtechmedia.settings:
     api_key:
       type: string
       label: 'API key'
-    api_value:
-      type: string
-      label: 'API value'
     country:
       type: string
       label: Country
@@ -37,16 +34,16 @@ adtechmedia.settings:
       type: string
     pledge_view:
       label: 'Pledge View'
-      type: string
+      type: text_format
     confirm_view:
       label: 'Confirm View'
-      type: string
+      type: text_format
     refund_view:
       label: 'Refund View'
-      type: string
+      type: text_format
     pay_view:
       label: 'Pay View'
-      type: string
+      type: text_format
     login_view:
       label: 'Login View'
-      type: string
+      type: text_format
