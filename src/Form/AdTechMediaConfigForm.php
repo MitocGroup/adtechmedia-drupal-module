@@ -2,10 +2,44 @@
 
 namespace Drupal\adtechmedia\Form;
 
+use Drupal\adtechmedia\AtmClient;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\InvokeCommand;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * AdTechMedia Service configuration.
+ */
 class AdTechMediaConfigForm extends ConfigFormBase {
+
+  /**
+   * ATM Guzzle client.
+   *
+   * @var \Drupal\adtechmedia\AtmClient
+   */
+  private $atmClient;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(ConfigFactoryInterface $config_factory, AtmClient $atm_client) {
+    parent::__construct($config_factory);
+
+    $this->atmClient = $atm_client;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('config.factory'),
+      $container->get('atm.client')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -40,11 +74,15 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#required' => TRUE,
     );
 
-    $form['general']['api_value'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('API Value'),
-      '#default_value' => $config->get('api_value'),
-      '#required' => TRUE,
+    $form['general']['generate'] = array(
+      '#type' => 'button',
+      '#value' => $this->t('Regenerate'),
+      '#ajax' => array(
+        'callback' => array($this, 'regenerateApiKeyCallback'),
+        'event' => 'click',
+        'wrapper' => 'edit-api-key',
+        'method' => 'replaceWith',
+      ),
     );
 
     $form['general']['revenue_model'] = array(
@@ -77,7 +115,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
 
     $form['content'] = array(
       '#type' => 'details',
-      '#title' => $this->t('General configuration'),
+      '#title' => $this->t('Content configuration'),
       '#open' => TRUE,
     );
 
@@ -216,6 +254,20 @@ class AdTechMediaConfigForm extends ConfigFormBase {
     $config->save();
 
     parent::submitForm($form, $form_state);
+  }
+
+  /**
+   * Ajax callback to regenerate new api key.
+   */
+  public function regenerateApiKeyCallback($form, $form_state) {
+    $response = new AjaxResponse();
+    $response->addCommand(new InvokeCommand(
+      '#edit-api-key',
+      'val',
+      [$this->atmClient->regenerateApiKey()['Key']]
+    ));
+
+    return $response;
   }
 
 }
