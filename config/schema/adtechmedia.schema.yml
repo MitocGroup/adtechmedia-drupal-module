@@ -47,3 +47,14 @@ adtechmedia.settings:
     login_view:
       label: 'Login View'
       type: text_format
+
+adtechmedia.admin_settings:
+  type: config_object
+  label: AdTechMedia admin settings
+  mapping:
+    use_atm:
+      label: 'Enable AdTechMedia service'
+      type: boolean
+    development:
+      label: 'Enable development mode'
+      type: boolean
