@@ -1,0 +1,9 @@
+adtechmedia.settings:
+  route_name: adtechmedia.settings
+  title: 'ATM Service'
+  base_route: adtechmedia.settings
+
+adtechmedia.config:
+  route_name: adtechmedia.config
+  title: 'Configuration'
+  base_route: adtechmedia.settings
