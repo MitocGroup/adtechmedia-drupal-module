@@ -9,7 +9,7 @@ use Drupal\adtechmedia\Plugin\Field\FieldFormatter\AtmTextFormatterTrait;
 /**
  *
  */
-class AtmTextDefaultFormatter extends TextSummaryOrTrimmedFormatter {
+class AtmTextTrimmedFormatter extends TextSummaryOrTrimmedFormatter {
 
   use AtmTextFormatterTrait;
 
