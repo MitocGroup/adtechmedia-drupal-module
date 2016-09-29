@@ -15,3 +15,12 @@ function adtechmedia_theme($existing, $type, $theme, $path) {
     ],
   );
 }
+
+/**
+ * Implements hook_field_formatter_info_alter().
+ */
+function adtechmedia_field_formatter_info_alter(array &$info) {
+  $info['text_default']['class'] = 'Drupal\adtechmedia\Plugin\Field\FieldFormatter\AtmTextDefaultFormatter';
+  $info['text_trimmed']['class'] = 'Drupal\adtechmedia\Plugin\Field\FieldFormatter\AtmTextTrimmedFormatter';
+  $info['text_summary_or_trimmed']['class'] = 'Drupal\adtechmedia\Plugin\Field\FieldFormatter\AtmTextSummaryOrTrimmedFormatter';
+}
