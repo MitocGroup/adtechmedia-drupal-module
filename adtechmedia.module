@@ -5,6 +5,8 @@
  * AdTechMedia advertising module.
  */
 
+use Drupal\Core\Asset\AttachedAssetsInterface;
+
 /**
  * Implements hook_theme().
  */
@@ -23,4 +25,18 @@ function adtechmedia_field_formatter_info_alter(array &$info) {
   $info['text_default']['class'] = 'Drupal\adtechmedia\Plugin\Field\FieldFormatter\AtmTextDefaultFormatter';
   $info['text_trimmed']['class'] = 'Drupal\adtechmedia\Plugin\Field\FieldFormatter\AtmTextTrimmedFormatter';
   $info['text_summary_or_trimmed']['class'] = 'Drupal\adtechmedia\Plugin\Field\FieldFormatter\AtmTextSummaryOrTrimmedFormatter';
+}
+
+/**
+ * Implements hook_css_alter().
+ */
+function adtechmedia_css_alter(&$css, AttachedAssetsInterface $assets) {
+  // Modify weight to load module css after admin theme.
+  if (isset($css['modules/adtechmedia/css/materialdesignicons.css'])
+    &&  $css['modules/adtechmedia/css/main.css']) {
+    $css['modules/adtechmedia/css/materialdesignicons.css']['weight'] = 300;
+    $css['modules/adtechmedia/css/materialdesignicons.css']['group'] = 100;
+    $css['modules/adtechmedia/css/main.css']['weight'] = 300;
+    $css['modules/adtechmedia/css/main.css']['group'] = 100;
+  }
 }
