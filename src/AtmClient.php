@@ -69,11 +69,11 @@ class AtmClient extends Client {
       $request = $client->put($this->atmHost . '/' . self::ATM_BASE_PATH . '/atm-admin/api-gateway-key/create', [
         'json' => [
           'Name' => 'Test',
-//          'Hostname' =>  '',
-//          'Ip' => \Drupal::requestStack()->getCurrentRequest()->getClientIp(),
-//          'Platform' =>  '',
-//          'PlatformVersion' =>  '',
-//          'PluginVersion' =>  '',
+      // 'Hostname' =>  '',
+      //          'Ip' => \Drupal::requestStack()->getCurrentRequest()->getClientIp(),
+      //          'Platform' =>  '',
+      //          'PlatformVersion' =>  '',
+      //          'PluginVersion' =>  '',.
         ],
       ]);
 

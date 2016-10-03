@@ -23,9 +23,9 @@ class AtmModal extends BlockBase {
       'description' => [
         'value' => $this->t('Support quality journalism. Get involved and PLEDGE 5¢ now.'),
         'format' => 'full_html',
-      ]
+      ],
     ] + parent::defaultConfiguration();
- }
+  }
 
   /**
    * {@inheritdoc}

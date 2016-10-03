@@ -4,7 +4,6 @@ namespace Drupal\AdTechMedia\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\text\Plugin\Field\FieldFormatter\TextSummaryOrTrimmedFormatter;
-use Drupal\adtechmedia\Plugin\Field\FieldFormatter\AtmTextFormatterTrait;
 
 /**
  *

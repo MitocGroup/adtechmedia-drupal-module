@@ -88,7 +88,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
         'wrapper' => 'edit-api-key',
         'method' => 'replaceWith',
       ),
-      //'#prefix' => '<i class="mdi mdi-autorenew"></i>',
+      // '#prefix' => '<i class="mdi mdi-autorenew"></i>',.
     );
 
     $form['general']['country'] = array(
@@ -96,7 +96,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#title' => $this->t('Country'),
       '#options' => array(
         'usa' => $this->t('USA'),
-        'md' => $this->t('Moldova')
+        'md' => $this->t('Moldova'),
       ),
       '#default_value' => $config->get('country'),
     );
@@ -126,12 +126,12 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#attributes' => array(
         'class' => array('btn', 'activate'),
       ),
-//      '#ajax' => array(
-//        'callback' => array($this, 'regenerateApiKeyCallback'),
-//        'event' => 'click',
-//        'wrapper' => 'edit-api-key',
-//        'method' => 'replaceWith',
-//      ),
+    // '#ajax' => array(
+    //        'callback' => array($this, 'regenerateApiKeyCallback'),
+    //        'event' => 'click',
+    //        'wrapper' => 'edit-api-key',
+    //        'method' => 'replaceWith',
+    //      ),.
     );
 
     $form['content'] = array(
