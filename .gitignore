@@ -150,13 +150,12 @@ deeploy.json*
 *.provisioning.json*
 
 # Tests resources
-GitDiffWalker.js
-S3CoverageSynchronizer.js
-CoverageComparator.js
-CoverageManager.js
-GitHubMsgPublisher.js
 _vars.sh
 /package.json
 **/.sass-cache/
 **/coverage/
 **/coverages/
+
+# Composer stuff
+composer.lock
+**/vendor
