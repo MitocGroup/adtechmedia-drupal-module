@@ -49,7 +49,7 @@ echo -e "\nValidating PHP:\n"
 
 for PHP_FILE in $STAGED_PHP_FILES
 do
-  phpcs "$PHP_FILE"
+  ./vendor/bin/phpcs --standard=Drupal "$PHP_FILE"
 
   if [[ "$?" == 0 ]]; then
     echo -e "\t\033[32mPHP code sniffer Passed: $PHP_FILE\033[0m"

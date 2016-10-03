@@ -1,5 +1,8 @@
 language: php
 sudo: required
+node_js:
+  - '4.3'
+  - '6.7'
 cache:
   edge: true
   directories:
@@ -23,6 +26,18 @@ after_success:
   - npm run coverage
 after_script:
   - npm run remove-coverage
+dist: trusty
+group: edge
+php:
+  - 5.5
+  - 5.6
+  - 7
+install:
+  - composer install
+  - npm install
+script:
+  - composer test
+  - npm test
 env:
   global:
     - NODE_RELEASE=4.x
@@ -43,16 +58,6 @@ env:
         X40ZWRlfpXoZLlvwiW5n6/LWfI18BnKW/IH+0Dz6f1xGCbc9p/wYSUDdKIeDBUysZmuEu+U19S2a360Sqpms0pNb8ppPn6L6uZv9KmPPxR0T+OHnnuM3ni2U5peCIBuVluoHmgUXmJLNwnqeUaru6YDXL6jH6VTmg+93eY9cOHAwu8byiggahKObK1fj/y3OoN7Oo6wDJLeSrA3Wsxn8NMOq2orD28LupWnKn4S7Y+I6I5A0dWeUO29u3KkOUB/jVc0WjHAcax7I2qjtMjgBoL2gLkJDgeYWaXZlSvD5tn1gCZtF/Scn4k2ErRY8kp0Vnj5+F0AfnHXYLQA296xBeQFPUBXRbiL6PL1RXEDLazh+MvbRi72001+7ouQEV5NY9cnMJan7uBKbV0pxoDgZ6JkGJZVGeJN28T7tP3vyGHoom1EcBya66rqA0yA/M7BHln/ZKh5byjyu+0PfA5Jdh3w3RI0623mLfr+3mKAYx4XY5NRKLvmLsvlhLrRa773a6fdPJmgU8ju80qzMqHDKw/63+ZlzTAHUFuNkexEofraeB4x6jrujfo+ZgH98h1NlCp0DXKokCZPpf4nTM7vIN7OaZa/5SV7L5Eu7AeyORePES9N2sofvgWlK4V1d5YoEzphJd3FymJElyRUjsVFbbuyE0Yn30rw2tmp57h1Mumw=
     - secure: 
         GRldSn7KhI5phBZX31xgdDjXibnXwbUQvvrm6HEjpTdRhoFKsV8XZLyOxF0fAP9YYKaH3PBhPsP6/gz8cWOM7756xpskH7utI+TLGUiduS5jeFf7OiLYWV2IHq4ZwXkNxYc9hgSyCJNFZdCG167YRaGRlqAdgb+k5t2swcHUQg7YXiQLIG1RnNv+Cpn6rZUJMibwPPpJ3uRIpn4NXFtgRyT1Ta/9OhJJ8T/N7hnD6z7RYXySrlqz/ks737tZi8QeGn8Api0GYG5Pu7uo+kiEwUZVpzuaqspEOxScJYfvPKMxo931o4jEcIDytzJFYLrFVmVdDkCk/ykD0DtS6fnJqyzfERo/A1HWMVeh9gq1wsw/rYLcK306Hl4Be58jgNwdzCYNCWZhvZ3tSjZwWJKBlFmozqZroO4uuLQYcxOhTqm6XrpvtBjMIQpuSTkenCob+vUvNgi3XpRm/QbL85S/pj58yoA0kuah8F1WSDwNZDCvB2xY4RqMX5+58EUh77tzDklZynxYu9/Uh8IWsrk0lz7gHdaDY9dtLrpf9YPwd0Lmo/sjJCuT803GBDU3gwqZTWcII6vjJ3DUpFIRgjsSFpo6BsZ8L2CKfRBAM6Xhh2a5l6LJ0nea+IHygxhF4KMH+uwdFQbBDHdxn01r0hMYzq9PafLUCVNSzXvtrFwoojU=
-dist: trusty
-group: edge
-php:
-  - 5.5
-  - 5.6
-  - 7
-install:
-  - composer install-deps
-script:
-  - composer test
 notifications:
   slack:
     secure: 

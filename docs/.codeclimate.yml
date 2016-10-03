@@ -5,6 +5,22 @@ engines:
       languages:
         javascript:
           mass_threshold: 350
+        php:
+          mass_threshold: 350
+  phpcodesniffer:
+    enabled: true
+    config:
+      file_extensions: "php,inc,lib"
+      standard: "Drupal"
+      ignore_warnings: true
+      encoding: utf-8
+  phpmd:
+    enabled: true
+    checks:
+      CleanCode/ElseExpression:
+        enabled: false
+      Controversial/Superglobals:
+        enabled: false
 ratings:
   paths:
   - "**.inc"
