@@ -126,12 +126,6 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#attributes' => array(
         'class' => array('btn', 'activate'),
       ),
-    // '#ajax' => array(
-    //        'callback' => array($this, 'regenerateApiKeyCallback'),
-    //        'event' => 'click',
-    //        'wrapper' => 'edit-api-key',
-    //        'method' => 'replaceWith',
-    //      ),.
     );
 
     $form['content'] = array(
@@ -294,11 +288,14 @@ class AdTechMediaConfigForm extends ConfigFormBase {
    * Ajax callback to regenerate new api key.
    */
   public function regenerateApiKeyCallback($form, $form_state) {
+    $request = new AtmClient();
+    $atm_response = $request->regenerateApiKey();
+
     $response = new AjaxResponse();
     $response->addCommand(new InvokeCommand(
       '#edit-api-key',
       'val',
-      [$this->atmClient->regenerateApiKey()['Key']]
+      [isset($atm_response['Key']) ? $atm_response['Key'] : '']
     ));
 
     return $response;
