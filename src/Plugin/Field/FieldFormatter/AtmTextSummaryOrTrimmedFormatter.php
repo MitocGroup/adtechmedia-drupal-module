@@ -18,10 +18,10 @@ class AtmTextSummaryOrTrimmedFormatter extends TextSummaryOrTrimmedFormatter {
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = parent::viewElements($items, $langcode);
+    $entity = $items->getEntity();
 
-    // @todo figure out if field is visible, view mode is full (exclude teaser)
     foreach ($elements as $key => &$element) {
-      $element['#text'] = self::atmContentLock($element['#text']);
+      $element['#text'] = self::atmContentProcess($element['#text'], $entity);
     }
 
     return $elements;

@@ -18,9 +18,10 @@ class AtmTextTrimmedFormatter extends TextSummaryOrTrimmedFormatter {
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = parent::viewElements($items, $langcode);
+    $entity = $items->getEntity();
 
     foreach ($elements as $key => &$element) {
-      $element['#text'] = self::atmContentLock($element['#text']);
+      $element['#text'] = self::atmContentProcess($element['#text'], $entity);
     }
 
     return $elements;

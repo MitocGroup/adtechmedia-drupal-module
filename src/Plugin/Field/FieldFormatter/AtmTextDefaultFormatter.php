@@ -4,6 +4,7 @@ namespace Drupal\AdTechMedia\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\text\Plugin\Field\FieldFormatter\TextSummaryOrTrimmedFormatter;
+use Drupal\adtechmedia\Plugin\Field\FieldFormatter\AtmTextFormatterTrait;
 
 /**
  *
@@ -17,9 +18,10 @@ class AtmTextDefaultFormatter extends TextSummaryOrTrimmedFormatter {
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = parent::viewElements($items, $langcode);
+    $entity = $items->getEntity();
 
     foreach ($elements as $key => &$element) {
-      $element['#text'] = self::atmContentLock($element['#text']);
+      $element['#text'] = self::atmContentProcess($element['#text'], $entity);
     }
 
     return $elements;
