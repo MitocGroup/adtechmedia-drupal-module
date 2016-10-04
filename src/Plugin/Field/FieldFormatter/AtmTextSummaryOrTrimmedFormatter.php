@@ -7,7 +7,7 @@ use Drupal\text\Plugin\Field\FieldFormatter\TextSummaryOrTrimmedFormatter;
 use Drupal\adtechmedia\Plugin\Field\FieldFormatter\AtmTextFormatterTrait;
 
 /**
- *
+ * Altering TextSummaryOrTrimmedFormatter plugin by adding ATM text processing.
  */
 class AtmTextSummaryOrTrimmedFormatter extends TextSummaryOrTrimmedFormatter {
 
@@ -20,7 +20,7 @@ class AtmTextSummaryOrTrimmedFormatter extends TextSummaryOrTrimmedFormatter {
     $elements = parent::viewElements($items, $langcode);
     $entity = $items->getEntity();
 
-    foreach ($elements as $key => &$element) {
+    foreach ($elements as &$element) {
       $element['#text'] = self::atmContentProcess($element['#text'], $entity);
     }
 

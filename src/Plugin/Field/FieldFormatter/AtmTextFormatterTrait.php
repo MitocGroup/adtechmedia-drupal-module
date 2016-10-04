@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\adtechmedia\Plugin\Field\FieldFormatter;
+
 use Drupal\adtechmedia\AtmClient;
 use Drupal\Core\Entity\EntityInterface;
 
@@ -12,7 +13,7 @@ trait AtmTextFormatterTrait {
   /**
    * Process text with ATM Service and apply locking algorithm.
    *
-   * @param $text
+   * @param string $text
    *   The text to be processed.
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity parent.

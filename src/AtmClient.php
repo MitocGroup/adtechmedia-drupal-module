@@ -64,7 +64,6 @@ class AtmClient extends Client {
 
     $config['base_uri'] = $this->atmHost;
     $config['headers']['X-Api-Key'] = $atm_conf->get('api_key');
-    $config['debug'] = TRUE;
 
     parent::__construct($config);
   }
@@ -84,8 +83,8 @@ class AtmClient extends Client {
   /**
    * PUT request to regenerate ATM API key.
    *
-   * @return mixed|null
-   *   Request content response or NULL.
+   * @return mixed|false
+   *   Request content response or FALSE on error.
    */
   public function regenerateApiKey() {
     $client = new Client($this->getConfig());
@@ -114,17 +113,17 @@ class AtmClient extends Client {
    *
    * @param string $content_id
    *   Content identifier.
-   * @param $property_id
+   * @param string $property_id
    *   Property identifier.
    *
-   * @return mixed|null
+   * @return mixed|false
    *   Request content response or FALSE on error.
    */
   public function retrieveLockedContent($content_id, $property_id) {
     $client = new Client($this->getConfig());
     $this->options['ContentId'] = $content_id;
     $this->options['PropertyId'] = $property_id;
-    $this->options['debug'] = TRUE;
+    $this->options['payload'] = 1;
 
     try {
       $request = $client
@@ -145,12 +144,12 @@ class AtmClient extends Client {
    *
    * @param string $content_id
    *   Content identifier.
-   * @param $property_id
+   * @param string $property_id
    *   Property identifier.
    * @param string $text
    *   Text that should be processed.
    *
-   * @return mixed|null
+   * @return mixed|false
    *   Request content response or FALSE on error.
    */
   public function createLockedContent($content_id, $property_id, $text) {

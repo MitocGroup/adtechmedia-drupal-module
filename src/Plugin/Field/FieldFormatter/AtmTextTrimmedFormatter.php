@@ -3,13 +3,13 @@
 namespace Drupal\AdTechMedia\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\text\Plugin\Field\FieldFormatter\TextSummaryOrTrimmedFormatter;
+use Drupal\text\Plugin\Field\FieldFormatter\TextTrimmedFormatter;
 use Drupal\adtechmedia\Plugin\Field\FieldFormatter\AtmTextFormatterTrait;
 
 /**
- *
+ * Altering TextSummaryOrTrimmedFormatter plugin by adding ATM text processing.
  */
-class AtmTextTrimmedFormatter extends TextSummaryOrTrimmedFormatter {
+class AtmTextTrimmedFormatter extends TextTrimmedFormatter {
 
   use AtmTextFormatterTrait;
 
@@ -20,7 +20,7 @@ class AtmTextTrimmedFormatter extends TextSummaryOrTrimmedFormatter {
     $elements = parent::viewElements($items, $langcode);
     $entity = $items->getEntity();
 
-    foreach ($elements as $key => &$element) {
+    foreach ($elements as &$element) {
       $element['#text'] = self::atmContentProcess($element['#text'], $entity);
     }
 
