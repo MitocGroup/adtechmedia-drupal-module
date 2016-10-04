@@ -1,0 +1,6 @@
+adtechmedia.api:
+  version: 1.0
+  css:
+    theme:
+      css/materialdesignicons.css: { }
+      css/main.css: {}
