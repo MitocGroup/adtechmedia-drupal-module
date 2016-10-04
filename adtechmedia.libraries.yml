@@ -4,3 +4,12 @@ adtechmedia.api:
     theme:
       css/materialdesignicons.css: { }
       css/main.css: {}
+
+adtechmedia.atmjs:
+  remote: https://github.com/AdTechMedia/drupal-module
+  version: 1.0
+  license:
+    name: MIT
+    url: https://github.com/AdTechMedia/drupal-module/blob/master/LICENSE
+  js:
+    https://www.adtechmedia.io/library/atm.min.js: { type: external, minified: true }
