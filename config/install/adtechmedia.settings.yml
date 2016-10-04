@@ -9,17 +9,17 @@ content_paywall:
 dns_access:
 email:
 pledge_view:
-  value: 'some text for pledge'
+  value: ''
   format: full_html
 confirm_view:
-  value: 'some text for confirm'
+  value: ''
   format: full_html
 refund_view:
-  value: 'some text for refund'
+  value: ''
   format: full_html
 pay_view:
-  value: 'some text for pay'
+  value: ''
   format: full_html
 login_view:
-  value: 'some text for login'
+  value: ''
   format: full_html

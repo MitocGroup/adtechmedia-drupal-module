@@ -3,11 +3,13 @@
 namespace Drupal\adtechmedia\Form;
 
 use Drupal\adtechmedia\AtmClient;
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -235,18 +237,27 @@ class AdTechMediaConfigForm extends ConfigFormBase {
     $templates = array(
       'pledge_view' => array(
         'title' => $this->t('Pledge View'),
+        'name' => 'pledgeComponent',
       ),
-      'confirm_view' => array(
-        'title' => $this->t('Confirm View'),
-      ),
-      'refund_view' => array(
-        'title' => $this->t('Refund View'),
+      'ad_view' => array(
+        'title' => $this->t('Advertising View'),
+        'name' => 'adComponent',
       ),
       'pay_view' => array(
         'title' => $this->t('Pay View'),
+        'name' => 'payComponent',
       ),
-      'login_view' => array(
-        'title' => $this->t('Login View'),
+      'refund_view' => array(
+        'title' => $this->t('Refund View'),
+        'name' => 'refundComponent',
+      ),
+      'unlock_view' => array(
+        'title' => $this->t('Unlock View'),
+        'name' => 'pledgeComponent',
+      ),
+      'price_view' => array(
+        'title' => $this->t('Price View'),
+        'name' => 'payComponent',
       ),
     );
 
@@ -257,10 +268,15 @@ class AdTechMediaConfigForm extends ConfigFormBase {
         '#group' => 'vertical_tabs',
       );
 
+      $default_template = $config->get($name)['value'];
+      if (empty($config->get($name)['value'])) {
+        $default_template = self::getTemplate($template['name']);
+      }
+
       $form['template']['tab_' . $name][$name] = array(
         '#type' => 'text_format',
         '#format' => $config->get($name)['format'],
-        '#default_value' => $config->get($name)['value'],
+        '#default_value' => $default_template,
         '#rows' => 14,
       );
     }
@@ -281,6 +297,9 @@ class AdTechMediaConfigForm extends ConfigFormBase {
     }
     $config->save();
 
+    // Create ATM Property.
+    $this->atmClient->createAtmProperty();
+
     parent::submitForm($form, $form_state);
   }
 
@@ -299,6 +318,21 @@ class AdTechMediaConfigForm extends ConfigFormBase {
     ));
 
     return $response;
+  }
+
+  /**
+   * Get template code.
+   *
+   * @param string $name
+   *   Template name.
+   * @return mixed
+   *   Template markup.
+   */
+  public static function getTemplate($name) {
+    $client = new AtmClient();
+    $templates = $client->templatesLoad();
+
+    return $templates[$name];
   }
 
 }
