@@ -123,7 +123,7 @@ class AtmClient extends Client {
     $client = new Client($this->getConfig());
     $this->options['ContentId'] = $content_id;
     $this->options['PropertyId'] = $property_id;
-    $this->options['payload'] = 1;
+    $this->options['Payload'] = 1;
 
     try {
       $request = $client
@@ -168,6 +168,94 @@ class AtmClient extends Client {
       if ($request->getStatusCode() == 200) {
         return TRUE;
       }
+    }
+    catch (RequestException $e) {
+      watchdog_exception('adtechmedia', $e->getMessage());
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Create new ATM Property.
+   *
+   * @return array|bool
+   *   An array of property config options or false on error.
+   */
+  public function createAtmProperty() {
+    $client = new Client($this->getConfig());
+
+    try {
+      $request = $client->put($this->atmHost . '/atm-admin/property/create', [
+        'headers' => $this->getConfig('headers'),
+        'json' => [
+          'Name' => 'Drupal:' . \Drupal::config('system.site')->get('name'),
+          'Website' => \Drupal::request()->getHost(),
+        ],
+      ]);
+
+      $response = Json::decode($request->getBody()->getContents());
+
+      return $response;
+    }
+    catch (RequestException $e) {
+      watchdog_exception('adtechmedia', $e->getMessage());
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Create new ATM Property.
+   *
+   * @return array|bool
+   *   An array of property config options or false on error.
+   */
+  public function retrieveAtmProperty() {
+    $client = new Client($this->getConfig());
+    $this->options['Name'] = 'Drupal:' . \Drupal::config('system.site')->get('name');
+
+    try {
+      $request = $client
+        ->get($this->atmHost . '/atm-admin/property/retrieve', $this->options);
+      $response = Json::decode($request->getBody()->getContents());
+
+      return $response;
+    }
+    catch (RequestException $e) {
+      watchdog_exception('adtechmedia', $e->getMessage());
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Load an ATM template.
+   *
+   * @param string|null $name
+   *   Load template by name or null to load all templates.
+   *
+   * @return string|array|bool
+   *   Template markup, an array of all templates markup or FALSE on fail.
+   */
+  public function templatesLoad($name = NULL) {
+    $client = new Client();
+
+    try {
+      $request = $client->get('https://demo.adtechmedia.io/atm-admin/atm-build/templates.json');
+      $response = Json::decode($request->getBody()->getContents());
+
+      if (!empty($name)) {
+        return base64_decode($response[$name]);
+      }
+
+      // Return all templates.
+      $templates = [];
+      foreach ($response as $key => $value) {
+        $templates[$key] = base64_decode($value);
+      }
+
+      return $templates;
     }
     catch (RequestException $e) {
       watchdog_exception('adtechmedia', $e->getMessage());
