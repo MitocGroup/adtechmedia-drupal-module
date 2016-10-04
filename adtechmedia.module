@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Asset\AttachedAssetsInterface;
+use Drupal\adtechmedia\AtmClient;
 
 /**
  * Implements hook_theme().
@@ -38,5 +39,25 @@ function adtechmedia_css_alter(&$css, AttachedAssetsInterface $assets) {
     $css['modules/adtechmedia/css/materialdesignicons.css']['group'] = 100;
     $css['modules/adtechmedia/css/main.css']['weight'] = 300;
     $css['modules/adtechmedia/css/main.css']['group'] = 100;
+  }
+}
+
+/**
+ * Implements hook_library_info_alter().
+ */
+function adtechmedia_library_info_alter(&$libraries, $extension) {
+  // Inject dynamically generated ATM js.
+  if ($extension == 'adtechmedia') {
+    $client = new AtmClient();
+    $property = $client->createAtmProperty();
+
+    if (isset($property['Config']['base']) && isset($property['BuildPath'])) {
+      $atm = implode('/', [
+        $property['Config']['base'],
+        $property['BuildPath'],
+      ]);
+      $settings = reset($libraries['adtechmedia.atmjs']['js']);
+      $libraries['adtechmedia.atmjs']['js'][$atm] = $settings;
+    }
   }
 }
