@@ -47,14 +47,21 @@ adtechmedia.settings:
     login_view:
       label: 'Login View'
       type: text_format
-
-adtechmedia.admin_settings:
-  type: config_object
-  label: AdTechMedia admin settings
-  mapping:
     use_atm:
       label: 'Enable AdTechMedia service'
       type: boolean
+    atm_host:
+      label: 'ATM Host'
+      type: string
+    atm_base_path:
+      label: 'ATM base path'
+      type: string
     development:
       label: 'Enable development mode'
       type: boolean
+    atm_dev_host:
+      label: 'ATM ev host'
+      type: string
+    atm_dev_base_path:
+      label: 'ATM dev base path'
+      type: string

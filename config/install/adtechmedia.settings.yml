@@ -23,3 +23,9 @@ pay_view:
 login_view:
   value: ''
   format: full_html
+use_atm: false
+atm_host: 'https://atm.adtechmedia.io'
+atm_base_path: 'prod'
+development: false
+atm_dev_host: 'https://atm-dev.adtechmedia.io'
+atm_dev_base_path: 'dev'
