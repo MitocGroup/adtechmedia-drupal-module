@@ -29,3 +29,4 @@ atm_base_path: 'prod'
 development: false
 atm_dev_host: 'https://atm-dev.adtechmedia.io'
 atm_dev_base_path: 'dev'
+property_id: ''

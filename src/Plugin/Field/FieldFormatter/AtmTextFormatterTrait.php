@@ -29,16 +29,12 @@ trait AtmTextFormatterTrait {
       $entity->id(),
     ]);
 
-    // Get property from config.
-    $atm_settings = \Drupal::configFactory()->get('adtechmedia.settings');
-    $property_id = $atm_settings->get('locking_algorithm');
-
     $client = new AtmClient();
-    $locked_text = $client->retrieveLockedContent($content_id, $property_id);
+    $locked_text = $client->retrieveLockedContent($content_id);
 
     if (empty($locked_text)) {
-      if ($client->createLockedContent($content_id, $property_id, $text)) {
-        $locked_text = $client->retrieveLockedContent($content_id, $property_id);
+      if ($client->createLockedContent($content_id, $text)) {
+        $locked_text = $client->retrieveLockedContent($content_id);
       }
     }
 

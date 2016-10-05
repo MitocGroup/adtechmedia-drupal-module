@@ -65,3 +65,6 @@ adtechmedia.settings:
     atm_dev_base_path:
       label: 'ATM dev base path'
       type: string
+    property_id:
+      label: 'Property Id'
+      type: string

@@ -89,7 +89,6 @@ class AdTechMediaConfigForm extends ConfigFormBase {
         'method' => 'replaceWith',
       ],
       '#limit_validation_errors' => [],
-      '#submit' => [],
     ];
 
     $form['general']['country'] = [
@@ -298,7 +297,13 @@ class AdTechMediaConfigForm extends ConfigFormBase {
     $config->save();
 
     // Create ATM Property.
-    $this->atmClient->createAtmProperty();
+    $client = new AtmClient();
+    $property = $client->createAtmProperty();
+
+    if (isset($property['Id'])) {
+      $config->set('property_id', $property['Id']);
+      $config->save();
+    }
 
     parent::submitForm($form, $form_state);
   }
@@ -307,8 +312,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
    * Ajax callback to regenerate new api key.
    */
   public function regenerateApiKeyCallback($form, $form_state) {
-    //$request = new AtmClient();
-    $request = $this->atmClient;
+    $request = new AtmClient();
     $atm_response = $request->regenerateApiKey();
 
     $response = new AjaxResponse();
