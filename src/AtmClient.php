@@ -12,28 +12,7 @@ use GuzzleHttp\Exception\RequestException;
 class AtmClient extends Client {
 
   /**
-   * AdTechMedia Service URI.
-   *
-   * @var string
-   */
-  const ATM_HOST = 'https://atm-dev.adtechmedia.io';
-
-  /**
-   * AdTechMedia Development Service URI.
-   *
-   * @var string
-   */
-  const ATM_DEV_HOST = 'https://atm-dev.adtechmedia.io';
-
-  /**
-   * AdTechMedia base path.
-   *
-   * @var string
-   */
-  const ATM_BASE_PATH = 'dev';
-
-  /**
-   * AdTechMedia active host.
+   * AdTechMedia host.
    *
    * @var string
    */
@@ -47,23 +26,31 @@ class AtmClient extends Client {
   private $options;
 
   /**
+   * ATM property id.
+   *
+   * @var string
+   */
+  private $propertyId;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct(array $config = []) {
-    $atm_conf = \Drupal::config('adtechmedia.settings');
-    $atm_dev_conf = \Drupal::config('adtechmedia.admin_settings');
+    $atm = \Drupal::config('adtechmedia.settings');
 
-    $this->atmHost = self::ATM_HOST . '/' . self::ATM_BASE_PATH;
+    $this->propertyId = $atm->get('property_id');
+    $this->atmHost = $atm->get('atm_host') . '/' . $atm->get('atm_base_path');
 
-    if ($atm_dev_conf->get('development')) {
-      $this->atmHost = self::ATM_DEV_HOST;
-      $config['debug'] = TRUE;
+    if ($atm->get('development')) {
+      $this->atmHost = $atm->get('atm_dev_host') . '/' . $atm->get('atm_dev_base_path');
     }
 
-    $this->setHeader('X-Api-Key', $atm_conf->get('api_key'));
+    $this->setHeader('X-Api-Key', $atm->get('api_key'));
+    $this->setHeader('Content-Type', 'application/json');
 
     $config['base_uri'] = $this->atmHost;
-    $config['headers']['X-Api-Key'] = $atm_conf->get('api_key');
+    $config['headers']['X-Api-Key'] = $atm->get('api_key');
+    $config['headers']['Content-Type'] = 'application/json';
 
     parent::__construct($config);
   }
@@ -81,6 +68,18 @@ class AtmClient extends Client {
   }
 
   /**
+   * Set request query.
+   *
+   * @param string $name
+   *   Header property name.
+   * @param string $value
+   *   Header property value.
+   */
+  private function setQuery($name, $value) {
+    $this->options['query'][$name] = $value;
+  }
+
+  /**
    * PUT request to regenerate ATM API key.
    *
    * @return mixed|false
@@ -93,7 +92,7 @@ class AtmClient extends Client {
       // Generate ATM API key.
       $request = $client->put($this->atmHost . '/atm-admin/api-gateway-key/create', [
         'json' => [
-          'Name' => 'Drupal',
+          'Name' => 'Drupal:' . \Drupal::config('system.site')->get('name'),
         ],
       ]);
 
@@ -113,21 +112,34 @@ class AtmClient extends Client {
    *
    * @param string $content_id
    *   Content identifier.
-   * @param string $property_id
-   *   Property identifier.
    *
    * @return mixed|false
    *   Request content response or FALSE on error.
    */
-  public function retrieveLockedContent($content_id, $property_id) {
+  public function retrieveLockedContent($content_id) {
     $client = new Client($this->getConfig());
-    $this->options['ContentId'] = $content_id;
-    $this->options['PropertyId'] = $property_id;
-    $this->options['Payload'] = 1;
+    $this->setQuery('ContentId', $content_id);
+    $this->setQuery('PropertyId', $this->propertyId);
+
+    // Get ATM config.
+    $config = \Drupal::configFactory()->get('adtechmedia.settings');
+    $this->setQuery('ScrambleStrategy', $config->get('locking_algorithm'));
+
+    if (!empty($config->get('content_preview_type'))) {
+      //$this->setQuery('OffsetType', $config->get('content_preview_type'));
+    }
+
+    if (!empty($config->get('content_preview'))) {
+      //$this->setQuery('Offset', $config->get('content_preview'));
+      //$this->setQuery('OffsetElementSelector', $config->get('content_preview'));
+    }
 
     try {
-      $request = $client
-        ->get($this->atmHost . '/atm-admin/content/retrieve', $this->options);
+      $request = $client->get(
+        $this->atmHost . '/atm-admin/content/retrieve',
+        $this->options
+      );
+
       $response = Json::decode($request->getBody()->getContents());
 
       return $response;
@@ -144,15 +156,13 @@ class AtmClient extends Client {
    *
    * @param string $content_id
    *   Content identifier.
-   * @param string $property_id
-   *   Property identifier.
    * @param string $text
    *   Text that should be processed.
    *
    * @return mixed|false
    *   Request content response or FALSE on error.
    */
-  public function createLockedContent($content_id, $property_id, $text) {
+  public function createLockedContent($content_id, $text) {
     $client = new Client($this->getConfig());
 
     try {
@@ -160,7 +170,7 @@ class AtmClient extends Client {
         'headers' => $this->getConfig('headers'),
         'json' => [
           'ContentId' => $content_id,
-          'PropertyId' => $property_id,
+          'PropertyId' => $this->propertyId,
           'Content' => $text,
         ],
       ]);
@@ -213,7 +223,7 @@ class AtmClient extends Client {
    */
   public function retrieveAtmProperty() {
     $client = new Client($this->getConfig());
-    $this->options['Name'] = 'Drupal:' . \Drupal::config('system.site')->get('name');
+    $this->setQuery('Id', $this->propertyId);
 
     try {
       $request = $client
