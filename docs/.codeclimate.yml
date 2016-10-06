@@ -14,13 +14,6 @@ engines:
       standard: "Drupal"
       ignore_warnings: true
       encoding: utf-8
-  phpmd:
-    enabled: true
-    checks:
-      CleanCode/ElseExpression:
-        enabled: false
-      Controversial/Superglobals:
-        enabled: false
 ratings:
   paths:
   - "**.inc"
