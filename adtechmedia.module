@@ -51,13 +51,9 @@ function adtechmedia_library_info_alter(&$libraries, $extension) {
     $client = new AtmClient();
     $property = $client->createAtmProperty();
 
-    if (isset($property['Config']['base']) && isset($property['BuildPath'])) {
-      $atm = implode('/', [
-        $property['Config']['base'],
-        $property['BuildPath'],
-      ]);
+    if (isset($property['BuildPath'])) {
       $settings = reset($libraries['adtechmedia.atmjs']['js']);
-      $libraries['adtechmedia.atmjs']['js'][$atm] = $settings;
+      $libraries['adtechmedia.atmjs']['js'][$property['BuildPath']] = $settings;
     }
   }
 }

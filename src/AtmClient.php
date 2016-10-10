@@ -126,12 +126,11 @@ class AtmClient extends Client {
     $this->setQuery('ScrambleStrategy', $config->get('locking_algorithm'));
 
     if (!empty($config->get('content_preview_type'))) {
-      //$this->setQuery('OffsetType', $config->get('content_preview_type'));
+      $this->setQuery('OffsetType', $config->get('content_preview_type'));
     }
 
     if (!empty($config->get('content_preview'))) {
-      //$this->setQuery('Offset', $config->get('content_preview'));
-      //$this->setQuery('OffsetElementSelector', $config->get('content_preview'));
+      $this->setQuery('Offset', $config->get('content_preview'));
     }
 
     try {
