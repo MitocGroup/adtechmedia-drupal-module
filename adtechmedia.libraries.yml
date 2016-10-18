@@ -1,4 +1,4 @@
-adtechmedia.api:
+adtechmedia.admin:
   version: 1.0
   css:
     theme:
@@ -12,4 +12,4 @@ adtechmedia.atmjs:
     name: MIT
     url: https://github.com/AdTechMedia/drupal-module/blob/master/LICENSE
   js:
-    https://www.adtechmedia.io/library/atm.min.js: { type: external, minified: true }
+    https://adm.adtechmedia.io/atm-admin/{PropertyId}/atm.min.js: { type: external, minified: true }

@@ -53,7 +53,9 @@ function adtechmedia_library_info_alter(&$libraries, $extension) {
 
     if (isset($property['BuildPath'])) {
       $settings = reset($libraries['adtechmedia.atmjs']['js']);
-      $libraries['adtechmedia.atmjs']['js'][$property['BuildPath']] = $settings;
+      $libraries['adtechmedia.atmjs']['js'] = [
+        $property['BuildPath'] => $settings,
+      ];
     }
   }
 }
