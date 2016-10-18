@@ -14,6 +14,9 @@ adtechmedia.settings:
     content_preview:
       type: string
       label: 'Content Preview'
+    content_preview_type:
+      type: string
+      label: 'Content Preview Type'
     locking_algorithm:
       type: string
       label: 'Locking Algorithm'
@@ -59,12 +62,6 @@ adtechmedia.settings:
     development:
       label: 'Enable development mode'
       type: boolean
-    atm_dev_host:
-      label: 'ATM ev host'
-      type: string
-    atm_dev_base_path:
-      label: 'ATM dev base path'
-      type: string
     property_id:
       label: 'Property Id'
       type: string
