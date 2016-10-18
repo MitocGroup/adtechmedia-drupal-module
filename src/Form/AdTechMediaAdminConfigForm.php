@@ -69,19 +69,6 @@ class AdTechMediaAdminConfigForm extends ConfigFormBase {
       '#default_value' => $config->get('development'),
     ];
 
-    $form['debug']['atm_dev_host'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('ATM Dev Host'),
-      '#default_value' => $config->get('atm_dev_host'),
-      '#description' => $this->t('Configure AdTechMedia development service host.'),
-    ];
-
-    $form['debug']['atm_dev_base_path'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('ATM Dev Base Path'),
-      '#default_value' => $config->get('atm_dev_base_path'),
-    ];
-
     return parent::buildForm($form, $form_state);
   }
 

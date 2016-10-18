@@ -107,7 +107,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#options' => [
         'advertising' => $this->t('Advertising'),
         'micropayments' => $this->t('Micropayments'),
-        'advertising_micropayments' => $this->t('Advertising & Micropayments'),
+        'advertising+micropayments' => $this->t('Advertising & Micropayments'),
       ],
       '#default_value' => $config->get('revenue_model'),
       '#description' => $this->t('Select revenue model'),
@@ -200,7 +200,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
         'blur' => $this->t('Blur'),
         'scramble' => $this->t('Scramble'),
         'keywords' => $this->t('Keywords'),
-        'blur_scramble' => $this->t('Blur & Scramble'),
+        'blur+scramble' => $this->t('Blur & Scramble'),
       ],
       '#default_value' => $config->get('locking_algorithm'),
       '#description' => $this->t('How locked content should look.'),
@@ -280,7 +280,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       ];
     }
 
-    $form['#attached']['library'][] = 'adtechmedia/adtechmedia.api';
+    //$form['#attached']['library'][] = 'adtechmedia/adtechmedia.admin';
 
     return parent::buildForm($form, $form_state);
   }
@@ -304,6 +304,9 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       $config->set('property_id', $property['Id']);
       $config->save();
     }
+
+    // Update ATM Property settings.
+    $client->updateAtmProperty($config->getRawData());
 
     parent::submitForm($form, $form_state);
   }
