@@ -33,23 +33,26 @@ class AtmClient extends Client {
   private $propertyId;
 
   /**
+   * ATM configuration.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  private $atmConfig;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct(array $config = []) {
-    $atm = \Drupal::config('adtechmedia.settings');
+    $this->atmConfig = \Drupal::config('adtechmedia.settings');
 
-    $this->propertyId = $atm->get('property_id');
-    $this->atmHost = $atm->get('atm_host') . '/' . $atm->get('atm_base_path');
+    $this->propertyId = $this->atmConfig->get('property_id');
+    $this->atmHost = $this->atmConfig->get('atm_host') . '/' . $this->atmConfig->get('atm_base_path');
 
-    if ($atm->get('development')) {
-      $this->atmHost = $atm->get('atm_dev_host') . '/' . $atm->get('atm_dev_base_path');
-    }
-
-    $this->setHeader('X-Api-Key', $atm->get('api_key'));
+    $this->setHeader('X-Api-Key', $this->atmConfig->get('api_key'));
     $this->setHeader('Content-Type', 'application/json');
 
     $config['base_uri'] = $this->atmHost;
-    $config['headers']['X-Api-Key'] = $atm->get('api_key');
+    $config['headers']['X-Api-Key'] = $this->atmConfig->get('api_key');
     $config['headers']['Content-Type'] = 'application/json';
 
     parent::__construct($config);
@@ -205,6 +208,13 @@ class AtmClient extends Client {
 
       $response = Json::decode($request->getBody()->getContents());
 
+      if ($this->atmConfig->get('development')) {
+        \Drupal::logger('adtechmedia')
+          ->debug('ATM Property ID: @property',[
+            '@property' => $response['Id'],
+          ]);
+      }
+
       return $response;
     }
     catch (RequestException $e) {
@@ -215,7 +225,7 @@ class AtmClient extends Client {
   }
 
   /**
-   * Create new ATM Property.
+   * Retrieve ATM Property.
    *
    * @return array|bool
    *   An array of property config options or false on error.
@@ -227,6 +237,42 @@ class AtmClient extends Client {
     try {
       $request = $client
         ->get($this->atmHost . '/atm-admin/property/retrieve', $this->options);
+      $response = Json::decode($request->getBody()->getContents());
+
+      return $response;
+    }
+    catch (RequestException $e) {
+      watchdog_exception('adtechmedia', $e->getMessage());
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Update ATM Property.
+   *
+   * @param array $config
+   *   ATM properties.
+   * @return bool|mixed
+   */
+  public function updateAtmProperty($config) {
+    $client = new Client($this->getConfig());
+
+    try {
+      $request = $client->patch($this->atmHost . '/atm-admin/property/update-config', [
+        'headers' => $this->getConfig('headers'),
+        'json' => [
+          'Id' => $this->propertyId,
+          'ConfigDefaults' => [
+            'content' => [
+              'offsetType' => $config['content_preview_type'],
+              'offset' => $config['content_preview'],
+              'lock' => $config['locking_algorithm'],
+            ],
+          ],
+        ],
+      ]);
+
       $response = Json::decode($request->getBody()->getContents());
 
       return $response;
