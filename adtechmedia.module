@@ -34,7 +34,7 @@ function adtechmedia_field_formatter_info_alter(array &$info) {
 function adtechmedia_css_alter(&$css, AttachedAssetsInterface $assets) {
   // Modify weight to load module css after admin theme.
   if (isset($css['modules/adtechmedia/css/materialdesignicons.css'])
-    &&  $css['modules/adtechmedia/css/main.css']) {
+    &&  isset($css['modules/adtechmedia/css/main.css'])) {
     $css['modules/adtechmedia/css/materialdesignicons.css']['weight'] = 300;
     $css['modules/adtechmedia/css/materialdesignicons.css']['group'] = 100;
     $css['modules/adtechmedia/css/main.css']['weight'] = 300;
@@ -46,16 +46,18 @@ function adtechmedia_css_alter(&$css, AttachedAssetsInterface $assets) {
  * Implements hook_library_info_alter().
  */
 function adtechmedia_library_info_alter(&$libraries, $extension) {
-  // Inject dynamically generated ATM js.
-  if ($extension == 'adtechmedia') {
-    $client = new AtmClient();
-    $property = $client->createAtmProperty();
+  if ($extension != 'adtechmedia' || !\Drupal::config('adtechmedia.settings')->get('use_atm')) {
+    return;
+  }
 
-    if (isset($property['BuildPath'])) {
-      $settings = reset($libraries['adtechmedia.atmjs']['js']);
-      $libraries['adtechmedia.atmjs']['js'] = [
-        $property['BuildPath'] => $settings,
-      ];
-    }
+  // Inject dynamically generated ATM js.
+  $client = new AtmClient();
+  $property = $client->retrieveAtmProperty();
+
+  if (isset($property['BuildPath'])) {
+    $settings = reset($libraries['adtechmedia.atmjs']['js']);
+    $libraries['adtechmedia.atmjs']['js'] = [
+      $property['BuildPath'] => $settings,
+    ];
   }
 }
