@@ -264,11 +264,13 @@ class AtmClient extends Client {
         'json' => [
           'Id' => $this->propertyId,
           'ConfigDefaults' => [
+            'revenueMethod' => $config['revenue_model'],
             'content' => [
               'offsetType' => $config['content_preview_type'],
               'offset' => $config['content_preview'],
               'lock' => $config['locking_algorithm'],
             ],
+            'styles' => ['main' => $config['styles']],
           ],
         ],
       ]);

@@ -296,17 +296,16 @@ class AdTechMediaConfigForm extends ConfigFormBase {
     }
     $config->save();
 
-    // Create ATM Property.
-    $client = new AtmClient();
-    $property = $client->createAtmProperty();
+    // Prepare configuration to save in ATM service.
+    $atm_config = $config->getRawData();
 
-    if (isset($property['Id'])) {
-      $config->set('property_id', $property['Id']);
-      $config->save();
-    }
+    // Encode ATM modal css.
+    $styles = file_get_contents(drupal_get_path('module', 'adtechmedia') . '/css/atm-modal.css');
+    $atm_config['styles'] = base64_encode($styles);
 
     // Update ATM Property settings.
-    $client->updateAtmProperty($config->getRawData());
+    $client = new AtmClient();
+    $client->updateAtmProperty($atm_config);
 
     parent::submitForm($form, $form_state);
   }
@@ -315,8 +314,17 @@ class AdTechMediaConfigForm extends ConfigFormBase {
    * Ajax callback to regenerate new api key.
    */
   public function regenerateApiKeyCallback($form, $form_state) {
-    $request = new AtmClient();
-    $atm_response = $request->regenerateApiKey();
+    $client = new AtmClient();
+    $atm_response = $client->regenerateApiKey();
+
+    // Create ATM Property.
+    $property = $client->createAtmProperty();
+
+    if (isset($property['Id'])) {
+      $this->config('adtechmedia.settings')
+        ->set('property_id', $property['Id'])
+        ->save();
+    }
 
     $response = new AjaxResponse();
     $response->addCommand(new InvokeCommand(
