@@ -45,4 +45,17 @@ trait AtmTextFormatterTrait {
     return $text;
   }
 
+  /**
+   * Add ATM JS to pages where content should be locked.
+   *
+   * @param array $elements
+   *   Field elements.
+   */
+  public function applyAtmJs(&$elements) {
+    if (\Drupal::config('adtechmedia.settings')->get('use_atm')) {
+      // Add ATM.js library.
+      $elements['#attached']['library'][] = 'adtechmedia/adtechmedia.atmjs';
+    }
+  }
+
 }
