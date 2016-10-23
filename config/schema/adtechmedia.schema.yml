@@ -32,23 +32,29 @@ adtechmedia.settings:
     dns_access:
       type: string
       label: 'DNS Access'
+    social_media:
+      type: string
+      label: 'Social Media'
     email:
       label: Email
       type: string
     pledge_view:
       label: 'Pledge View'
       type: text_format
-    confirm_view:
-      label: 'Confirm View'
-      type: text_format
-    refund_view:
-      label: 'Refund View'
+    ad_view:
+      label: 'Ad View'
       type: text_format
     pay_view:
       label: 'Pay View'
       type: text_format
-    login_view:
-      label: 'Login View'
+    refund_view:
+      label: 'Refund View'
+      type: text_format
+    unlock_view:
+      label: 'Refund View'
+      type: text_format
+    price_view:
+      label: 'Price View'
       type: text_format
     use_atm:
       label: 'Enable AdTechMedia service'

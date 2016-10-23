@@ -1,27 +1,31 @@
 api_key:
 country:
-revenue_method:
+revenue_model: 'advertising'
 content_preview:
 content_preview_type: elements
-locking_algorithm:
+locking_algorithm: 'blur+scramble'
 content_pricing: 5
 content_currency: usd
 content_paywall: 2
 dns_access:
+social_media:
 email:
 pledge_view:
   value: ''
   format: full_html
-confirm_view:
-  value: ''
-  format: full_html
-refund_view:
+ad_view:
   value: ''
   format: full_html
 pay_view:
   value: ''
   format: full_html
-login_view:
+refund_view:
+  value: ''
+  format: full_html
+unlock_view:
+  value: ''
+  format: full_html
+price_view:
   value: ''
   format: full_html
 use_atm: false

@@ -56,6 +56,35 @@ class AdTechMediaConfigForm extends ConfigFormBase {
   }
 
   /**
+   * Get a list of all configuration options.
+   *
+   * @return array
+   *  A list of configuration options.
+   */
+  private function getConfigurationOptions() {
+    return [
+      'api_key',
+      'country',
+      'revenue_model',
+      'email',
+      'content_pricing',
+      'content_currency',
+      'content_paywall',
+      'content_paywall_type',
+      'content_preview',
+      'content_preview_type',
+      'locking_algorithm',
+      'dns_access',
+      'social_media',
+      'pledge_view',
+      'ad_view',
+      'pay_view',
+      'refund_view',
+      'price_view',
+    ];
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
@@ -291,13 +320,13 @@ class AdTechMediaConfigForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->config('adtechmedia.settings');
 
+    $atm_config = [];
     foreach ($form_state->getValues() as $key => $value) {
-      $config->set($key, $value);
+      if (in_array($key, $this->getConfigurationOptions())) {
+        $atm_config[$key] = $value;
+        $config->set($key, $value)->save();
+      }
     }
-    $config->save();
-
-    // Prepare configuration to save in ATM service.
-    $atm_config = $config->getRawData();
 
     // Encode ATM modal css.
     $styles = file_get_contents(drupal_get_path('module', 'adtechmedia') . '/css/atm-modal.css');
@@ -314,23 +343,27 @@ class AdTechMediaConfigForm extends ConfigFormBase {
    * Ajax callback to regenerate new api key.
    */
   public function regenerateApiKeyCallback($form, $form_state) {
+    $config = $this->config('adtechmedia.settings');
+
     $client = new AtmClient();
-    $atm_response = $client->regenerateApiKey();
+    $atm_key = $client->regenerateApiKey();
+
+    if (isset($atm_key['Key'])){
+      $config->set('api_key', $atm_key['Key'])->save();
+    }
 
     // Create ATM Property.
     $property = $client->createAtmProperty();
 
     if (isset($property['Id'])) {
-      $this->config('adtechmedia.settings')
-        ->set('property_id', $property['Id'])
-        ->save();
+      $config->set('property_id', $property['Id'])->save();
     }
 
     $response = new AjaxResponse();
     $response->addCommand(new InvokeCommand(
       '#edit-api-key',
       'val',
-      [isset($atm_response['Key']) ? $atm_response['Key'] : '']
+      [isset($atm_key['Key']) ? $atm_key['Key'] : '']
     ));
 
     return $response;
