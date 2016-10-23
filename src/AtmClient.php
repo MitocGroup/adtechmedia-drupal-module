@@ -210,7 +210,7 @@ class AtmClient extends Client {
 
       if ($this->atmConfig->get('development')) {
         \Drupal::logger('adtechmedia')
-          ->debug('ATM Property ID: @property',[
+          ->debug('ATM Property ID: @property', [
             '@property' => $response['Id'],
           ]);
       }
@@ -253,7 +253,9 @@ class AtmClient extends Client {
    *
    * @param array $config
    *   ATM properties.
+   *
    * @return bool|mixed
+   *   Updated property.
    */
   public function updateAtmProperty($config) {
     $client = new Client($this->getConfig());

@@ -59,7 +59,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
    * Get a list of all configuration options.
    *
    * @return array
-   *  A list of configuration options.
+   *   A list of configuration options.
    */
   private function getConfigurationOptions() {
     return [
@@ -309,7 +309,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       ];
     }
 
-    //$form['#attached']['library'][] = 'adtechmedia/adtechmedia.admin';
+    // $form['#attached']['library'][] = 'adtechmedia/adtechmedia.admin';.
 
     return parent::buildForm($form, $form_state);
   }
@@ -348,7 +348,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
     $client = new AtmClient();
     $atm_key = $client->regenerateApiKey();
 
-    if (isset($atm_key['Key'])){
+    if (isset($atm_key['Key'])) {
       $config->set('api_key', $atm_key['Key'])->save();
     }
 
@@ -374,6 +374,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
    *
    * @param string $name
    *   Template name.
+   *
    * @return mixed
    *   Template markup.
    */

@@ -2,7 +2,9 @@
     display: none;
     top: 48px;
     transition: top 0.2s cubic-bezier(0, 1, 1, 1);
-    -webkit-transition: top 0.2s cubic-bezier(0, 1, 1, 1); }
+    -webkit-transition: top 0.2s cubic-bezier(0, 1, 1, 1);
+    -moz-transition: top 0.2s cubic-bezier(0, 1, 1, 1);
+    -o-transition: top 0.2s cubic-bezier(0, 1, 1, 1); }
 .atm-targeted-container.modal-shown {
     display: block; }
 .ribbon-visible .atm-targeted-container {
@@ -107,9 +109,9 @@
     .atm-targeted-modal {
         width: 540px;
         margin-left: 0;
-        left: 45px !important;
+        left: 45px;
         position: absolute; } }
 @media (max-width: 599px) {
     .atm-targeted-modal {
         width: 100%;
-        left: 0 !important; } }
+        left: 0; } }
