@@ -37,6 +37,11 @@
 .atm-base-modal .atm-main .pledge-bottom small {
     font-size: 14px; }
 
+.atm-base-modal .atm-sidebar-left .atm-avatar img {
+    width: 90px;
+    height: 90px;
+}
+
 .atm-button {
     background: #6288a5; }
 .atm-button.pledge-targeted, .atm-button.refund-targeted {

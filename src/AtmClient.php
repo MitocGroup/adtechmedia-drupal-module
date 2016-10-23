@@ -271,6 +271,13 @@ class AtmClient extends Client {
               'lock' => $config['locking_algorithm'],
             ],
             'styles' => ['main' => $config['styles']],
+            'ads' => [
+              'relatedVideoCb' => "function(onReady) { onReady({ 'iPad,iPhone,Apple': ['https://www.youtube.com/watch?v=OzQh6wDb2oE&t=23s'] }) }",
+            ],
+            'targetModal' => [
+              'toggleCb' => "function (cb) { cb(true) }",
+              'targetCb' => "function (mainModal, cb) { mainModal.mount(document.querySelector('.page-title'), mainModal.constructor.MOUNT_BEFORE);cb() }",
+            ],
           ],
         ],
       ]);
