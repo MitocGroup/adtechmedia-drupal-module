@@ -24,6 +24,8 @@ class AtmTextTrimmedFormatter extends TextTrimmedFormatter {
       $element['#text'] = self::atmContentProcess($element['#text'], $entity);
     }
 
+    $this->applyAtmJs($elements);
+
     return $elements;
   }
 
