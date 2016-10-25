@@ -16,7 +16,6 @@
     border-top: none;
     border-radius: 0 0 9px 9px;
     width: 705px;
-    box-sizing: border-box;
     font-size: 16px;
     font-family: "nyt-cheltenham", georgia, "times new roman", times, serif; }
 .atm-targeted-modal .atm-head-modal .atm-modal-body p {
@@ -79,6 +78,7 @@
 .share-block-inner .sharetool a {
     width: 25px;
     height: 25px;
+    background: #000000;
     background: rgba(0, 0, 0, 0.8);
     color: #fff;
     border-radius: 50%;
@@ -115,3 +115,17 @@
     .atm-targeted-modal {
         width: 100%;
         left: 0; } }
+
+.atm-avatar-small {
+    float: left;
+    margin-right: 50px;
+}
+
+.atm-heading-info {
+    display: inline-block;
+}
+
+.text-right {
+    float: right;
+    margin-left: 50px;
+}
