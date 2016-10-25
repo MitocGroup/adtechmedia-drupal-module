@@ -14,6 +14,9 @@ adtechmedia.settings:
     content_preview:
       type: string
       label: 'Content Preview'
+    content_preview_type:
+      type: string
+      label: 'Content Preview Type'
     locking_algorithm:
       type: string
       label: 'Locking Algorithm'
@@ -29,32 +32,42 @@ adtechmedia.settings:
     dns_access:
       type: string
       label: 'DNS Access'
+    social_media:
+      type: string
+      label: 'Social Media'
     email:
       label: Email
       type: string
     pledge_view:
       label: 'Pledge View'
       type: text_format
-    confirm_view:
-      label: 'Confirm View'
-      type: text_format
-    refund_view:
-      label: 'Refund View'
+    ad_view:
+      label: 'Ad View'
       type: text_format
     pay_view:
       label: 'Pay View'
       type: text_format
-    login_view:
-      label: 'Login View'
+    refund_view:
+      label: 'Refund View'
       type: text_format
-
-adtechmedia.admin_settings:
-  type: config_object
-  label: AdTechMedia admin settings
-  mapping:
+    unlock_view:
+      label: 'Refund View'
+      type: text_format
+    price_view:
+      label: 'Price View'
+      type: text_format
     use_atm:
       label: 'Enable AdTechMedia service'
       type: boolean
+    atm_host:
+      label: 'ATM Host'
+      type: string
+    atm_base_path:
+      label: 'ATM base path'
+      type: string
     development:
       label: 'Enable development mode'
       type: boolean
+    property_id:
+      label: 'Property Id'
+      type: string

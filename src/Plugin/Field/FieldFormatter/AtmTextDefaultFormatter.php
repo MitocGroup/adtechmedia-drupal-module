@@ -24,6 +24,8 @@ class AtmTextDefaultFormatter extends TextSummaryOrTrimmedFormatter {
       $element['#text'] = self::atmContentProcess($element['#text'], $entity);
     }
 
+    $this->applyAtmJs($elements);
+
     return $elements;
   }
 

@@ -1,25 +1,35 @@
-atm_api_key:
+api_key:
 country:
-revenue_method:
+revenue_model: 'advertising'
 content_preview:
-locking_algorithm:
-content_pricing:
-content_currency: mdl
-content_paywall:
+content_preview_type: elements
+locking_algorithm: 'blur+scramble'
+content_pricing: 5
+content_currency: usd
+content_paywall: 2
 dns_access:
+social_media:
 email:
 pledge_view:
-  value: 'some text for pledge'
+  value: ''
   format: full_html
-confirm_view:
-  value: 'some text for confirm'
-  format: full_html
-refund_view:
-  value: 'some text for refund'
+ad_view:
+  value: ''
   format: full_html
 pay_view:
-  value: 'some text for pay'
+  value: ''
   format: full_html
-login_view:
-  value: 'some text for login'
+refund_view:
+  value: ''
   format: full_html
+unlock_view:
+  value: ''
+  format: full_html
+price_view:
+  value: ''
+  format: full_html
+use_atm: false
+atm_host: 'https://api.adtechmedia.io'
+atm_base_path: 'dev'
+development: false
+property_id:

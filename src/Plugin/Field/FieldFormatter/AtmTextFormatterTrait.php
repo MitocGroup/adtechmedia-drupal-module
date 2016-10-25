@@ -22,31 +22,20 @@ trait AtmTextFormatterTrait {
    *   Processed text by scrambling or blurring it.
    */
   public static function atmContentProcess($text, EntityInterface $entity) {
-    // Create a content identifier.
-    $content_id = implode('.', [
-      $entity->getEntityTypeId(),
-      $entity->bundle(),
-      $entity->id(),
-    ]);
-
-    // Get property from config.
-    $atm_settings = \Drupal::configFactory()->get('adtechmedia.settings');
-    $property_id = $atm_settings->get('locking_algorithm');
-
-    $client = new AtmClient();
-    $locked_text = $client->retrieveLockedContent($content_id, $property_id);
-
-    if (empty($locked_text)) {
-      if ($client->createLockedContent($content_id, $property_id, $text)) {
-        $locked_text = $client->retrieveLockedContent($content_id, $property_id);
-      }
-    }
-
-    if (!empty($locked_text['Content'])) {
-      $text = $locked_text['Content'];
-    }
-
     return $text;
+  }
+
+  /**
+   * Add ATM JS to pages where content should be locked.
+   *
+   * @param array $elements
+   *   Field elements.
+   */
+  public function applyAtmJs(&$elements) {
+    if (\Drupal::config('adtechmedia.settings')->get('use_atm')) {
+      // Add ATM.js library.
+      $elements['#attached']['library'][] = 'adtechmedia/adtechmedia.atmjs';
+    }
   }
 
 }

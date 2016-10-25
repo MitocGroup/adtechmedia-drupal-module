@@ -371,8 +371,16 @@ select {
   height: 31px;
   font-size: 14px;
   font-family: 'FuturaICG', sans-serif;
-  -webkit-appearance: none; }
+  -webkit-appearance: none;
+  line-height: 2;
+}
 
+input, input:focus {
+  outline: none;
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
 select:focus, select:hover {
   background: none;
   box-shadow: none;
@@ -520,10 +528,10 @@ select:focus, select:hover {
   border: none;
 }
 
-.details-wrapper {
+details > .details-wrapper {
   background: #fdfdfd;
   box-shadow: 0 1px 7px 0 rgba(0, 0, 0, 0.08);
-  padding: 50px 70px;
+  padding: 60px;
   margin: 20px 0;
   display: inline-block;
   width: 100%;
@@ -531,6 +539,8 @@ select:focus, select:hover {
 
 details summary {
   padding-top: 15px;
+  font-size: 16px;
+  font-weight: normal;
 }
 
 details summary:before {
@@ -584,8 +594,8 @@ details summary:before {
 }
 
 #edit-general .button {
-
   border-radius: 0;
+  margin: 22px 0 0 0;
 }
 
 #edit-general .button:hover, button:focus {

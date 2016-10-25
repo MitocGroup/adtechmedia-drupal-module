@@ -58,7 +58,8 @@ class AtmModal extends BlockBase {
       '#theme' => 'atm_modal',
     ];
 
-    $build['#attached']['library'][] = 'adtechmedia/adtechmedia.api';
+    // Add ATM.js library.
+    $build['#attached']['library'][] = 'adtechmedia/adtechmedia.atmjs';
 
     return $build;
   }
