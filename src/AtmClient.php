@@ -267,14 +267,22 @@ class AtmClient extends Client {
           'Id' => $this->propertyId,
           'ConfigDefaults' => [
             'revenueMethod' => $config['revenue_model'],
+            'payment' => [
+              'pledge' => $config['content_paywall'],
+              'price' => $config['content_pricing'],
+              'currency' => $config['content_currency'],
+            ],
             'content' => [
               'offsetType' => $config['content_preview_type'],
               'offset' => $config['content_preview'],
               'lock' => $config['locking_algorithm'],
+              'container' => 'div[property="schema:text"]',
+              'selector' => 'p,h1,h2,h3,h4,h5,h6,ol,ul',
+              'authorCb' => "function (onReady) { var metaNode = document.querySelector('.node__meta span[property=\"schema:name\"]'); onReady({ fullName: metaNode.textContent, avatar: 'https://avatars.io/twitter/nytimes' }) }",
             ],
             'styles' => ['main' => $config['styles']],
             'ads' => [
-              'relatedVideoCb' => "function(onReady) { onReady({ 'iPad,iPhone,Apple': ['https://www.youtube.com/watch?v=OzQh6wDb2oE&t=23s'] }) }",
+              'relatedVideoCb' => "function(onReady) { onReady('https://www.youtube.com/watch?v=OzQh6wDb2oE&t=23s') }",
             ],
             'targetModal' => [
               'toggleCb' => "function (cb) { cb(true) }",

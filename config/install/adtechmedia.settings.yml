@@ -1,7 +1,7 @@
 api_key:
 country:
 revenue_model: 'advertising'
-content_preview:
+content_preview: 3
 content_preview_type: elements
 locking_algorithm: 'blur+scramble'
 content_pricing: 5
