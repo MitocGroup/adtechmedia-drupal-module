@@ -17,7 +17,11 @@
     border-radius: 0 0 9px 9px;
     width: 705px;
     font-size: 16px;
-    font-family: "nyt-cheltenham", georgia, "times new roman", times, serif; }
+    font-family: "nyt-cheltenham", georgia, "times new roman", times, serif;
+    margin: 0 auto;
+    padding-top: 20px;
+    overflow-x: hidden;
+}
 .atm-targeted-modal .atm-head-modal .atm-modal-body p {
     font-size: 16px;
     font-family: "nyt-cheltenham", georgia, "times new roman", times, serif; }
@@ -88,33 +92,50 @@
 
 @media (max-width: 1649px) {
     .atm-targeted-modal {
-        margin-left: -30px; } }
+    }
+}
+
 @media (max-width: 1279px) {
     .atm-targeted-modal {
-        width: 660px; } }
+        width: 660px;
+    }
+}
+
 @media (max-width: 1199px) {
     .atm-targeted-modal {
-        margin-left: -15px; } }
+    }
+}
+
 @media (max-width: 1154px) {
     .atm-targeted-modal {
-        width: 630px; } }
+        width: 630px;
+    }
+}
+
 @media (min-width: 765px) and (max-width: 1019px) {
     .atm-targeted-modal {
         width: 705px;
-        margin-left: 0; } }
+    }
+}
+
 @media (max-width: 764px) {
     .atm-targeted-container {
-        width: 100%; }
+        width: 100%;
+    }
 
     .atm-targeted-modal {
         width: 540px;
-        margin-left: 0;
         left: 45px;
-        position: absolute; } }
+        position: absolute;
+    }
+}
+
 @media (max-width: 599px) {
     .atm-targeted-modal {
         width: 100%;
-        left: 0; } }
+        left: 0;
+    }
+}
 
 .atm-avatar-small {
     float: left;
@@ -122,10 +143,38 @@
 }
 
 .atm-heading-info {
-    display: inline-block;
+    display: inline-flex;
 }
 
 .text-right {
     float: right;
     margin-left: 50px;
+}
+
+.atm-base-modal {
+    overflow-x: hidden;
+}
+
+.atm-base-modal .fa, .atm-targeted-modal .fa {
+    font-style: normal;
+}
+
+.atm-base-modal .atm-button .fa,
+.atm-targeted-modal .atm-button .fa {
+    margin-right: 5px;
+}
+
+.atm-base-modal .atm-footer {
+    height: auto;
+    line-height: 0;
+    padding: 15px 0;
+}
+
+.atm-base-modal .connect-block form .user-items-last {
+    display: flex;
+    align-items: center;
+}
+
+.atm-base-modal .connect-block form .flex-item-2 {
+    margin: 16px 0 0 10px;
 }

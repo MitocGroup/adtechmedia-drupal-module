@@ -286,7 +286,7 @@ class AtmClient extends Client {
             ],
             'targetModal' => [
               'toggleCb' => "function (cb) { cb(true) }",
-              'targetCb' => "function (mainModal, cb) { mainModal.mount(document.querySelector('.page-title'), mainModal.constructor.MOUNT_BEFORE);cb() }",
+              'targetCb' => "function (mainModal, cb) { mainModal.mount(document.querySelector('.header'), mainModal.constructor.MOUNT_AFTER);cb() }",
             ],
           ],
         ],
