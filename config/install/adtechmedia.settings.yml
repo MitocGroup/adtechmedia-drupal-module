@@ -31,5 +31,6 @@ price_view:
 use_atm: false
 atm_host: 'https://api.adtechmedia.io'
 atm_base_path: 'dev'
+atm_templates_path: 'https://demo.adtechmedia.io/atm-admin/atm-build/templates.json'
 development: false
 property_id:

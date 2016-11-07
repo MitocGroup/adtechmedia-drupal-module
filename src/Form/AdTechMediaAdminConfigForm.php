@@ -58,6 +58,13 @@ class AdTechMediaAdminConfigForm extends ConfigFormBase {
       '#required' => TRUE,
     ];
 
+    $form['main']['atm_templates_path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('ATM templates path'),
+      '#default_value' => $config->get('atm_templates_path'),
+      '#required' => TRUE,
+    ];
+
     $form['debug'] = [
       '#type' => 'details',
       '#title' => $this->t('Development'),

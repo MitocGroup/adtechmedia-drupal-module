@@ -316,7 +316,7 @@ class AtmClient extends Client {
     $client = new Client();
 
     try {
-      $request = $client->get('https://demo.adtechmedia.io/atm-admin/atm-build/templates.json');
+      $request = $client->get($this->atmConfig->get('atm_templates_path'));
       $response = Json::decode($request->getBody()->getContents());
 
       if (!empty($name)) {

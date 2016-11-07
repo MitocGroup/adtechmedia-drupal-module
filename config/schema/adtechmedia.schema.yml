@@ -65,6 +65,9 @@ adtechmedia.settings:
     atm_base_path:
       label: 'ATM base path'
       type: string
+    atm_templates_path:
+      label: 'ATM templates path'
+      type: string
     development:
       label: 'Enable development mode'
       type: boolean
