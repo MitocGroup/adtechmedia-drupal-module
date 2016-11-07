@@ -21,6 +21,9 @@
     margin: 0 auto;
     padding-top: 20px;
     overflow-x: hidden;
+    z-index: 200;
+    position: fixed;
+    top: 0;
 }
 .atm-targeted-modal .atm-head-modal .atm-modal-body p {
     font-size: 16px;
@@ -115,18 +118,24 @@
 @media (min-width: 765px) and (max-width: 1019px) {
     .atm-targeted-modal {
         width: 705px;
+        left: 25%;
     }
 }
 
 @media (max-width: 764px) {
     .atm-targeted-container {
         width: 100%;
+        left: 3%;
     }
 
     .atm-targeted-modal {
         width: 540px;
         left: 45px;
         position: absolute;
+    }
+
+    .atm-button {
+        margin: 0 5px;
     }
 }
 
