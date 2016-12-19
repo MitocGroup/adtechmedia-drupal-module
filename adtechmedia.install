@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * AdTechMedia installation file.
+ */
+
+use Drupal\adtechmedia\AtmClient;
+
+/**
+ * Implements hook_install().
+ */
+function adtechmedia_install() {
+  $client = new AtmClient();
+  $atm_key = $client->regenerateApiKey();
+  $config = \Drupal::configFactory()->getEditable('adtechmedia.settings');
+
+  if (isset($atm_key['Key'])) {
+    $config->set('api_key', $atm_key['Key'])->save();
+  }
+
+  $configuration['headers']['X-Api-Key'] = $config->get('api_key');
+  $client = new AtmClient($configuration);
+
+  // Create ATM Property.
+  $property = $client->createAtmProperty();
+
+  if (isset($property['Id'])) {
+    $config->set('property_id', $property['Id'])->save();
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function adtechmedia_uninstall() {
+  // Remove Property and API Key from ATM service.
+  $client = new AtmClient();
+
+  $client->removeAtmProperty();
+  $client->removeAtmApiKey();
+}
