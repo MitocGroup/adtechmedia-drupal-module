@@ -12,7 +12,7 @@ adtechmedia.settings:
       type: string
       label: 'Revenue Model'
     content_preview:
-      type: string
+      type: integer
       label: 'Content Preview'
     content_preview_type:
       type: string
@@ -21,13 +21,13 @@ adtechmedia.settings:
       type: string
       label: 'Locking Algorithm'
     content_pricing:
-      type: string
+      type: integer
       label: 'Content Pricing'
     content_currency:
       type: string
       label: 'Content Currency'
     content_paywall:
-      type: string
+      type: integer
       label: 'Content Paywall'
     dns_access:
       type: string

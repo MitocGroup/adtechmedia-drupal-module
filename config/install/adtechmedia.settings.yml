@@ -1,15 +1,15 @@
-api_key:
-country:
-revenue_model: 'advertising+micropayments'
+api_key: ''
+country: ''
+revenue_model: ''
 content_preview: 3
 content_preview_type: elements
 locking_algorithm: 'blur+scramble'
 content_pricing: 5
-content_currency: usd
+content_currency: ''
 content_paywall: 2
-dns_access:
-social_media:
-email:
+dns_access: ''
+social_media: ''
+email: ''
 pledge_view:
   value: ''
   format: full_html
@@ -33,4 +33,4 @@ atm_host: 'https://api.adtechmedia.io'
 atm_base_path: 'dev'
 atm_templates_path: 'https://demo.adtechmedia.io/atm-admin/atm-build/templates.json'
 development: false
-property_id:
+property_id: ''
