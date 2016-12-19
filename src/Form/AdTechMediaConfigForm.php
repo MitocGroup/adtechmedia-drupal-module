@@ -90,6 +90,14 @@ class AdTechMediaConfigForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('adtechmedia.settings');
 
+    $methods = [];
+    $currencies = [];
+    if (!empty($config->get('api_key')) && !empty($config->get('property_id'))) {
+      $countries = $this->countryInfo();
+      $name = $config->get('country');
+      list($methods, $currencies) = $this->getCountryOptions($name);
+    }
+
     $form['general'] = [
       '#type' => 'details',
       '#title' => $this->t('General configuration'),
@@ -112,7 +120,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
         'class' => ['btn', 'regenerate'],
       ],
       '#ajax' => [
-        'callback' => [$this, 'regenerateApiKeyCallback'],
+        'callback' => '::regenerateApiKeyCallback',
         'event' => 'click',
         'wrapper' => 'edit-api-key',
         'method' => 'replaceWith',
@@ -123,23 +131,14 @@ class AdTechMediaConfigForm extends ConfigFormBase {
     $form['general']['country'] = [
       '#type' => 'select',
       '#title' => $this->t('Country'),
-      '#options' => [
-        'usa' => $this->t('USA'),
-        'md' => $this->t('Moldova'),
-      ],
+      '#options' => isset($countries['countries']) ? ['' => '- Select -'] + $countries['countries'] : [$this->t('- Select -')],
       '#default_value' => $config->get('country'),
-    ];
-
-    $form['general']['revenue_model'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Revenue Model'),
-      '#options' => [
-        'advertising' => $this->t('Advertising'),
-        'micropayments' => $this->t('Micropayments'),
-        'advertising+micropayments' => $this->t('Advertising & Micropayments'),
+      '#required' => TRUE,
+      '#ajax' => [
+        'callback' => '::updateCountryInfo',
+        'wrapper' => 'country-data',
+        'method' => 'replace',
       ],
-      '#default_value' => $config->get('revenue_model'),
-      '#description' => $this->t('Select revenue model'),
     ];
 
     $form['general']['email'] = [
@@ -163,6 +162,31 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#open' => TRUE,
     ];
 
+    $form['content']['country_data'] = [
+      '#type' => 'container',
+      '#attributes' => ['id' => 'country-data'],
+    ];
+
+    $form['content']['country_data']['revenue_model'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Revenue Model'),
+      '#options' => $methods,
+      '#default_value' => $config->get('revenue_model'),
+      '#description' => $this->t('Select revenue model'),
+      '#description_display' => TRUE,
+      '#validated' => TRUE,
+    ];
+
+    $form['content']['country_data']['content_currency'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Content currency'),
+      '#options' => $currencies,
+      '#default_value' => $config->get('content_currency'),
+      '#description' => $this->t('Select content currency.'),
+      '#description_display' => TRUE,
+      '#validated' => TRUE,
+    ];
+
     $form['content']['content_pricing'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Content pricing'),
@@ -170,17 +194,6 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#description' => $this->t('It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters'),
       '#placeholder' => $this->t('number'),
       '#title_display' => 'after',
-    ];
-
-    $form['content']['content_currency'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Content currency'),
-      '#options' => [
-        'usd' => $this->t('USD'),
-        'mdl' => $this->t('MDL'),
-      ],
-      '#default_value' => $config->get('content_currency'),
-      '#description' => $this->t('Select content currency.'),
     ];
 
     $form['content']['content_paywall'] = [
@@ -383,6 +396,92 @@ class AdTechMediaConfigForm extends ConfigFormBase {
     $templates = $client->templatesLoad();
 
     return $templates[$name];
+  }
+
+  /**
+   * Get information about available countries.
+   *
+   * @return array
+   *   An array of country data.
+   */
+  public function countryInfo() {
+    $client = new AtmClient();
+    $countries = $client->getSupportedCountries();
+
+    if (empty($countries['Countries'])) {
+      return [];
+    }
+
+    $info = [];
+    foreach ($countries['Countries'] as $country) {
+      $info['countries'][$country['UN']] = $country['Name'];
+      $info[$country['UN']] = [
+        'revenue_model' => array_combine($country['RevenueModel'], $country['RevenueModel']),
+        'content_currency' => array_combine($country['Currency'], $country['Currency']),
+      ];
+    }
+
+    return $info;
+  }
+
+  /**
+   * Get a list of populated options with country information.
+   *
+   * @param string $name
+   *    Country name.
+   *
+   * @return array
+   *   An array for revenue methods and available currencies.
+   */
+  public function getCountryOptions($name, $wrapped = FALSE) {
+    $methods = [];
+    $currencies = [];
+
+    if (!empty($name)) {
+      // Get countries information.
+      $countries = $this->countryInfo();
+      $methods = array_merge($methods, $countries[$name]['revenue_model']);
+      $currencies = array_merge($currencies, $countries[$name]['content_currency']);
+    }
+
+    return [$methods, $currencies];
+  }
+
+  /**
+   * Ajax callback to update fields which data depends of selected country.
+   */
+  public function updateCountryInfo(array &$form, FormStateInterface $form_state) {
+    // Get selected country name.
+    $name = $form_state->getValue('country');
+
+    // Save country to use later in form options.
+    $config = $this->config('adtechmedia.settings');
+    $config->set('country', $name)->save();
+
+    // Get country options.
+    list($methods, $currencies) = $this->getCountryOptions($name);
+
+    $form['content']['country_data']['revenue_model'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Revenue Model'),
+      '#options' => $methods,
+      '#default_value' => $config->get('revenue_model'),
+      '#description' => $this->t('Select revenue model'),
+      '#description_display' => TRUE,
+      '#validated' => TRUE,
+    ];
+
+    $form['content']['country_data']['content_currency'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Content currency'),
+      '#options' => $currencies,
+      '#default_value' => $config->get('content_currency'),
+      '#description' => $this->t('Select content currency.'),
+      '#description_display' => TRUE,
+      '#validated' => TRUE,
+    ];
+
+    return $form['content']['country_data'];
   }
 
 }
