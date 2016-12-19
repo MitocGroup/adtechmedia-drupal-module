@@ -111,6 +111,39 @@ class AtmClient extends Client {
   }
 
   /**
+   * Remove ATM Property.
+   *
+   * @return bool|mixed
+   *   Request status or FALSE.
+   */
+  public function removeAtmApiKey() {
+    $client = new Client($this->getConfig());
+    $api_key = $this->atmConfig->get('api_key');
+    $this->setQuery('Id', $api_key);
+
+    try {
+      $request = $client
+        ->delete($this->atmHost . '/atm-admin/api-gateway-key/delete', $this->options);
+
+      if ($request->getStatusCode() == '200') {
+        if ($this->atmConfig->get('development')) {
+          \Drupal::logger('adtechmedia')
+            ->debug('Removed ATM API Key: @key', [
+             '@key' => $api_key,
+            ]);
+        }
+      }
+
+      return $request->getStatusCode();
+    }
+    catch (RequestException $e) {
+      watchdog_exception('adtechmedia', $e->getMessage());
+    }
+
+    return FALSE;
+  }
+
+  /**
    * Retrieve locked content from ATM api.
    *
    * @param string $content_id
@@ -195,7 +228,9 @@ class AtmClient extends Client {
    *   An array of property config options or false on error.
    */
   public function createAtmProperty() {
-    $client = new Client($this->getConfig());
+    $this->setHeader('X-Api-Key', $this->atmConfig->get('api_key'));
+    $atm_config['headers']['X-Api-Key'] = $this->atmConfig->get('api_key');
+    $client = new AtmClient($atm_config);
 
     try {
       $request = $client->put($this->atmHost . '/atm-admin/property/create', [
@@ -286,11 +321,70 @@ class AtmClient extends Client {
             ],
             'targetModal' => [
               'toggleCb' => "function (cb) { cb(true) }",
-              'targetCb' => "function (mainModal, cb) { mainModal.mount(document.querySelector('.header'), mainModal.constructor.MOUNT_AFTER);cb() }",
+              'targetCb' => "function (mainModal, cb) { mainModal.mount(document.querySelector('article'), mainModal.constructor.MOUNT_BEFORE);cb() }",
             ],
           ],
         ],
       ]);
+
+      $response = Json::decode($request->getBody()->getContents());
+
+      return $response;
+    }
+    catch (RequestException $e) {
+      watchdog_exception('adtechmedia', $e->getMessage());
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Remove ATM Property.
+   *
+   * @return bool|mixed
+   *   Request status or FALSE.
+   */
+  public function removeAtmProperty() {
+    $client = new Client($this->getConfig());
+    $property_id = $this->atmConfig->get('property_id');
+    $this->setQuery('Id', $property_id);
+
+    try {
+      $request = $client
+        ->delete($this->atmHost . '/atm-admin/property/delete', $this->options);
+
+      if ($request->getStatusCode() == '200') {
+        if ($this->atmConfig->get('development')) {
+          \Drupal::logger('adtechmedia')
+          ->debug('Removed ATM Property ID: @property', [
+           '@property' => $property_id,
+          ]);
+        }
+      }
+
+      return $request->getStatusCode();
+    }
+    catch (RequestException $e) {
+      watchdog_exception('adtechmedia', $e->getMessage());
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Get supported countries and allowed currencies.
+   *
+   * @return bool|mixed
+   *   A list of supported countries and currencies or FALSE.
+   */
+  public function getSupportedCountries() {
+    $client = new Client($this->getConfig());
+
+    try {
+      $request = $client->get(
+        $this->atmHost . '/atm-admin/property/supported-countries',
+        $this->options
+      );
 
       $response = Json::decode($request->getBody()->getContents());
 
