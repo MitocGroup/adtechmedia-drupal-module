@@ -315,7 +315,48 @@ class AtmClient extends Client {
               'selector' => 'p,h1,h2,h3,h4,h5,h6,ol,ul',
               'authorCb' => "function (onReady) { var metaNode = document.querySelector('.node__meta span[property=\"schema:name\"]'); onReady({ fullName: metaNode.textContent, avatar: 'https://avatars.io/twitter/nytimes' }) }",
             ],
-            'styles' => ['main' => $config['styles']],
+            'ads' => [
+              'relatedVideoCb' => "function(onReady) { onReady('https://www.youtube.com/watch?v=OzQh6wDb2oE&t=23s') }",
+            ],
+            'targetModal' => [
+              'toggleCb' => "function (cb) { cb(true) }",
+              'targetCb' => "function (mainModal, cb) { mainModal.mount(document.querySelector('article'), mainModal.constructor.MOUNT_BEFORE);cb() }",
+            ],
+          ],
+        ],
+      ]);
+
+      $response = Json::decode($request->getBody()->getContents());
+
+      return $response;
+    }
+    catch (RequestException $e) {
+      watchdog_exception('adtechmedia', $e->getMessage());
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Update ATM Property Template.
+   *
+   * @param array $config
+   *   ATM properties.
+   *
+   * @return bool|mixed
+   *   Updated property.
+   */
+  public function updateAtmPropertyTemplate($config) {
+    $client = new Client($this->getConfig());
+
+    try {
+      $request = $client->patch($this->atmHost . '/atm-admin/property/update-config', [
+        'headers' => $this->getConfig('headers'),
+        'json' => [
+          'Id' => $this->propertyId,
+          'ConfigDefaults' => [
+            'styles' => $config['styles'],
+            'templates' => !empty($config['templates']) ? $config['templates'] : '{}',
             'ads' => [
               'relatedVideoCb' => "function(onReady) { onReady('https://www.youtube.com/watch?v=OzQh6wDb2oE&t=23s') }",
             ],
