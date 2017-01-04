@@ -74,3 +74,15 @@ adtechmedia.settings:
     property_id:
       label: 'Property Id'
       type: string
+    pledge_component:
+      label: 'Pledge Component'
+      type: string
+    pay_component:
+      label: 'Pledge Component'
+      type: string
+    refund_component:
+      label: 'Pledge Component'
+      type: string
+    other_component:
+      label: 'Pledge Component'
+      type: string

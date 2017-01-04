@@ -10,27 +10,13 @@ content_paywall: 2
 dns_access: ''
 social_media: ''
 email: ''
-pledge_view:
-  value: ''
-  format: full_html
-ad_view:
-  value: ''
-  format: full_html
-pay_view:
-  value: ''
-  format: full_html
-refund_view:
-  value: ''
-  format: full_html
-unlock_view:
-  value: ''
-  format: full_html
-price_view:
-  value: ''
-  format: full_html
 use_atm: false
 atm_host: 'https://api.adtechmedia.io'
-atm_base_path: 'dev'
-atm_templates_path: 'https://demo.adtechmedia.io/atm-admin/atm-build/templates.json'
+atm_base_path: 'prod'
+atm_templates_path: 'https://adm.adtechmedia.io/atm-core/atm-build/atmTpl.js'
 development: false
 property_id: ''
+pledge_component: ''
+pay_component: ''
+refund_component: ''
+other_component: ''
