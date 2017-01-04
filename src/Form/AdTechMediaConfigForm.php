@@ -102,6 +102,9 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#type' => 'details',
       '#title' => $this->t('General configuration'),
       '#open' => TRUE,
+      '#attributes' => [
+        'class' => ['general-settings'],
+      ],
     ];
 
     $form['general']['api_key'] = [
@@ -160,6 +163,9 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#type' => 'details',
       '#title' => $this->t('Content configuration'),
       '#open' => TRUE,
+      '#attributes' => [
+        'class' => ['content-settings'],
+      ],
     ];
 
     $form['content']['country_data'] = [
@@ -264,65 +270,7 @@ class AdTechMediaConfigForm extends ConfigFormBase {
       '#title_display' => 'after',
     ];
 
-    $form['template'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Templates management'),
-      '#open' => TRUE,
-    ];
-
-    $form['template']['vertical_tabs'] = [
-      '#type' => 'vertical_tabs',
-      '#default_tab' => 'edit-tab',
-    ];
-
-    $templates = [
-      'pledge_view' => [
-        'title' => $this->t('Pledge View'),
-        'name' => 'pledgeComponent',
-      ],
-      'ad_view' => [
-        'title' => $this->t('Advertising View'),
-        'name' => 'adComponent',
-      ],
-      'pay_view' => [
-        'title' => $this->t('Pay View'),
-        'name' => 'payComponent',
-      ],
-      'refund_view' => [
-        'title' => $this->t('Refund View'),
-        'name' => 'refundComponent',
-      ],
-      'unlock_view' => [
-        'title' => $this->t('Unlock View'),
-        'name' => 'pledgeComponent',
-      ],
-      'price_view' => [
-        'title' => $this->t('Price View'),
-        'name' => 'payComponent',
-      ],
-    ];
-
-    foreach ($templates as $name => $template) {
-      $form['template']['tab_' . $name] = [
-        '#type' => 'details',
-        '#title' => $template['title'],
-        '#group' => 'vertical_tabs',
-      ];
-
-      $default_template = $config->get($name)['value'];
-      if (empty($config->get($name)['value'])) {
-        $default_template = self::getTemplate($template['name']);
-      }
-
-      $form['template']['tab_' . $name][$name] = [
-        '#type' => 'text_format',
-        '#format' => $config->get($name)['format'],
-        '#default_value' => $default_template,
-        '#rows' => 14,
-      ];
-    }
-
-    // $form['#attached']['library'][] = 'adtechmedia/adtechmedia.admin';.
+    $form['#attached']['library'][] = 'adtechmedia/adtechmedia.admin';
 
     return parent::buildForm($form, $form_state);
   }
@@ -342,8 +290,9 @@ class AdTechMediaConfigForm extends ConfigFormBase {
     }
 
     // Encode ATM modal css.
-    $styles = file_get_contents(drupal_get_path('module', 'adtechmedia') . '/css/atm-modal.css');
-    $atm_config['styles'] = base64_encode($styles);
+    //$styles = file_get_contents(drupal_get_path('module', 'adtechmedia') . '/css/atm-modal.css');
+    //$atm_config['styles'] = base64_encode($styles);
+    //$atm_config['styles'] = base64_encode('body {background: red;}');
 
     // Update ATM Property settings.
     $client = new AtmClient();
@@ -380,22 +329,6 @@ class AdTechMediaConfigForm extends ConfigFormBase {
     ));
 
     return $response;
-  }
-
-  /**
-   * Get template code.
-   *
-   * @param string $name
-   *   Template name.
-   *
-   * @return mixed
-   *   Template markup.
-   */
-  public static function getTemplate($name) {
-    $client = new AtmClient();
-    $templates = $client->templatesLoad();
-
-    return $templates[$name];
   }
 
   /**
