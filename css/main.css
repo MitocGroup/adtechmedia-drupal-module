@@ -79,13 +79,16 @@ h1.heading {
   background: #fdfdfd;
   box-shadow: 0 1px 7px 0 rgba(0, 0, 0, 0.08);
   padding: 50px 70px;
-  margin: 20px 0; }
-  .content.templating {
-    padding: 50px; }
+  margin: 20px 0;
+}
+.content.templating {
+  padding: 50px;
+}
 
 .form-type-textfield, .form-type-email {
   padding-top: 20px;
-  position: relative; }
+  position: relative;
+}
   .form-type-textfield label, .form-type-email label {
     display: block;
     color: rgba(0, 0, 0, 0.38);
@@ -631,4 +634,43 @@ details summary:before {
 #edit-content .form-item-dns-access,
 #edit-content .form-item-social-media {
   width: 553px;
+}
+
+/** Template **/
+
+.test-template {
+  display: none;
+}
+
+.tab-content {
+  display: none;
+}
+
+.horizontal-tabs {
+  display: none;
+}
+
+.form-radios {
+  display: flex;
+}
+
+.template-settings label {
+  position: static;
+  transform: none;
+}
+
+.template-settings .form-type-textfield input,
+.template-settings .form-type-email input,
+.template-settings .form-type-color input {
+  width: 150px;
+}
+
+.template-settings .container {
+  display: flex;
+}
+
+
+.templates-views label {
+  margin: 10px;
+  font-weight: bold;
 }
