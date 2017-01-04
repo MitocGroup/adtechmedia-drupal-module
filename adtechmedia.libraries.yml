@@ -2,8 +2,17 @@ adtechmedia.admin:
   version: 1.0
   css:
     theme:
-      css/materialdesignicons.css: { }
+      css/materialdesignicons.css: {}
       css/main.css: {}
+
+adtechmedia.atmTpls:
+  remote: https://github.com/AdTechMedia/drupal-module
+  version: 1.0
+  license:
+    name: MIT
+    url: https://github.com/AdTechMedia/drupal-module/blob/master/LICENSE
+  js:
+    https://adm.adtechmedia.io/atm-core/atm-build/atmTpl.js: { type: external, minified: true }
 
 adtechmedia.atmjs:
   remote: https://github.com/AdTechMedia/drupal-module
@@ -13,3 +22,17 @@ adtechmedia.atmjs:
     url: https://github.com/AdTechMedia/drupal-module/blob/master/LICENSE
   js:
     https://adm.adtechmedia.io/atm-admin/{PropertyId}/atm.min.js: { type: external, minified: true }
+  css:
+    theme:
+      css/atm-modal.css: {}
+
+adtechmedia.atmconfig:
+  version: 1.0
+  js:
+    js/atm-config.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal
+    - core/drupalSettings
+    - core/underscore

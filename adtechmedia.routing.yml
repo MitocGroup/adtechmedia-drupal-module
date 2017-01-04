@@ -1,7 +1,7 @@
 adtechmedia.settings:
   path: '/admin/config/system/adtechmedia'
   defaults:
-    _form: 'Drupal\adtechmedia\Form\AdTechMediaConfigForm'
+    _controller: 'Drupal\adtechmedia\Controller\AdTechMediaController::atmConfigPage'
     _title: 'AdTechMedia service'
   requirements:
     _permission: 'administer adtechmedia'
@@ -10,5 +10,12 @@ adtechmedia.config:
   defaults:
     _form: 'Drupal\adtechmedia\Form\AdTechMediaAdminConfigForm'
     _title: 'AdTechMedia configuration'
+  requirements:
+    _permission: 'administer adtechmedia'
+adtechmedia.atm_tpls:
+  path: '/admin/config/system/adtechmedia/update-tpls'
+  defaults:
+    _controller: 'Drupal\adtechmedia\AtmTpls::updateTpls'
+    _title: 'Update ATM templates'
   requirements:
     _permission: 'administer adtechmedia'
