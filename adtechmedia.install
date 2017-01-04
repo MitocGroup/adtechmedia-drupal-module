@@ -20,6 +20,10 @@ function adtechmedia_install() {
   }
 
   $configuration['headers']['X-Api-Key'] = $config->get('api_key');
+
+  // Allow ATM service to process previous request before make another.
+  sleep(15);
+
   $client = new AtmClient($configuration);
 
   // Create ATM Property.
@@ -36,7 +40,6 @@ function adtechmedia_install() {
 function adtechmedia_uninstall() {
   // Remove Property and API Key from ATM service.
   $client = new AtmClient();
-
   $client->removeAtmProperty();
   $client->removeAtmApiKey();
 }
