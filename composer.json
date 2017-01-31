@@ -1,5 +1,6 @@
 {
-    "name": "adtechmedia/atm",
+    "name": "drupal-module",
+    "description": "Drupal Module for AdTechMedia.io",
     "keywords": [
         "drupal",
         "adtechmedia"
@@ -18,5 +19,17 @@
     ],
     "require": {
         
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*@stable",
+        "ext-xdebug": "*",
+        "tm/tooly-composer-script": "^1.0",
+        "scrutinizer/ocular": "~1.1",
+        "squizlabs/php_codesniffer": "^2.3",
+        "drupal/coder": "*"
+    },
+    "scripts": {
+        "post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer",
+        "test": "echo 'No php test specified' && exit 0"
     }
 }
