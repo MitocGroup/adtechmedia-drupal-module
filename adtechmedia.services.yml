@@ -1,6 +1,0 @@
-services:
-  atm.client:
-    class: Drupal\adtechmedia\AtmClient
-#    factory: atm.client.factory:atm
-#  atm.client.factory:
-#    class: Drupal\adtechmedia\AtmClient

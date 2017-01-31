@@ -1,0 +1,3 @@
+api:
+  js:
+    /atm/api-js: { minified: false }
