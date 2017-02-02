@@ -1,0 +1,88 @@
+adtechmedia.settings:
+  type: config_object
+  label: AdTechMedia settings
+  mapping:
+    api_key:
+      type: string
+      label: 'API key'
+    country:
+      type: string
+      label: Country
+    revenue_model:
+      type: string
+      label: 'Revenue Model'
+    content_preview:
+      type: integer
+      label: 'Content Preview'
+    content_preview_type:
+      type: string
+      label: 'Content Preview Type'
+    locking_algorithm:
+      type: string
+      label: 'Locking Algorithm'
+    content_pricing:
+      type: integer
+      label: 'Content Pricing'
+    content_currency:
+      type: string
+      label: 'Content Currency'
+    content_paywall:
+      type: integer
+      label: 'Content Paywall'
+    dns_access:
+      type: string
+      label: 'DNS Access'
+    social_media:
+      type: string
+      label: 'Social Media'
+    email:
+      label: Email
+      type: string
+    pledge_view:
+      label: 'Pledge View'
+      type: text_format
+    ad_view:
+      label: 'Ad View'
+      type: text_format
+    pay_view:
+      label: 'Pay View'
+      type: text_format
+    refund_view:
+      label: 'Refund View'
+      type: text_format
+    unlock_view:
+      label: 'Refund View'
+      type: text_format
+    price_view:
+      label: 'Price View'
+      type: text_format
+    use_atm:
+      label: 'Enable AdTechMedia service'
+      type: boolean
+    atm_host:
+      label: 'ATM Host'
+      type: string
+    atm_base_path:
+      label: 'ATM base path'
+      type: string
+    atm_templates_path:
+      label: 'ATM templates path'
+      type: string
+    development:
+      label: 'Enable development mode'
+      type: boolean
+    property_id:
+      label: 'Property Id'
+      type: string
+    pledge_component:
+      label: 'Pledge Component'
+      type: string
+    pay_component:
+      label: 'Pledge Component'
+      type: string
+    refund_component:
+      label: 'Pledge Component'
+      type: string
+    other_component:
+      label: 'Pledge Component'
+      type: string

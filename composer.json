@@ -1,5 +1,6 @@
 {
-    "name": "adtechmedia/atm",
+    "name": "drupal-module",
+    "description": "Drupal Module for AdTechMedia.io",
     "keywords": [
         "drupal",
         "adtechmedia"

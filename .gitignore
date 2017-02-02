@@ -158,5 +158,5 @@ _vars.sh
 
 # Composer stuff
 composer.lock
-**/vendor
 composer.phar
+**/vendor
