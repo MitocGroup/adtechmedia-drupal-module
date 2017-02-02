@@ -32,6 +32,11 @@ function atm_theme($existing, $type, $theme, $path) {
       'variables' => [
         'config_form' => NULL,
         'api_key_info_form' => NULL,
+        'overall_position_and_styling' => NULL,
+        'content_configuration' => NULL,
+        'content_templates' => NULL,
+        'general_configuration' => NULL,
+        'templates_management' => NULL,
       ],
       'template' => 'admin/config-page',
       'path' => $path . '/templates',

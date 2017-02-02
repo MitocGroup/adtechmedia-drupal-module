@@ -1,0 +1,9 @@
+.layout-column--one-sixth {
+  width: 16.66667%;
+}
+
+.clearfix {
+  clear: both;
+  float: none;
+  display: block;
+}

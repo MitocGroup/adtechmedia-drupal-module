@@ -1,0 +1,14 @@
+base_url: https://api.adtechmedia.io/prod
+country: US
+
+price: 5
+price_currency: usd
+
+payment_pledged: 2
+pledged_type: count
+
+content_offset: 2
+content_offset_type: paragraphs
+
+content_lock: blur+scramble
+ads_video: ''

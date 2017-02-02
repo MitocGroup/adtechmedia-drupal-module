@@ -2,6 +2,9 @@
 
 namespace Drupal\atm\Helper;
 
+/**
+ * Provides helper for ATM.
+ */
 class AtmApiHelper {
 
   /**
@@ -29,14 +32,14 @@ class AtmApiHelper {
    * Get API Name.
    */
   public function getApiName() {
-    return $this->getConfig()->get('Name');
+    return $this->getConfig()->get('name');
   }
 
   /**
    * Save API Name.
    */
   public function setApiName($name) {
-    $this->getConfig()->set('Name', $name)->save();
+    $this->getConfig()->set('name', $name)->save();
   }
 
   /**
@@ -80,4 +83,20 @@ class AtmApiHelper {
   public function get($key) {
     return $this->getConfig()->get($key);
   }
+
+  /**
+   * Genearete atm api key.
+   */
+  public function generateApiKey() {
+    /** @var \Drupal\atm\AtmHttpClient $http_client */
+    $http_client = \Drupal::service('atm.http_client');
+
+    $name = \Drupal::config('system.site')->get('name');
+
+    $api_key = $http_client->generateApiKey($name, TRUE);
+
+    $this->setApiKey($api_key);
+    $this->setApiName($name);
+  }
+
 }
