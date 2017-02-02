@@ -1,0 +1,11 @@
+api:
+  js:
+    /atm/api-js: { minified: false }
+  css:
+    component:
+      css/main.css: {}
+
+api.admin:
+  css:
+    component:
+      css/admin.css: {}

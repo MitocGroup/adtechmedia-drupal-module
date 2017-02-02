@@ -1,25 +1,22 @@
-atm_api_key:
-country:
-revenue_method:
-content_preview:
-locking_algorithm:
-content_pricing:
-content_currency: mdl
-content_paywall:
-dns_access:
-email:
-pledge_view:
-  value: 'some text for pledge'
-  format: full_html
-confirm_view:
-  value: 'some text for confirm'
-  format: full_html
-refund_view:
-  value: 'some text for refund'
-  format: full_html
-pay_view:
-  value: 'some text for pay'
-  format: full_html
-login_view:
-  value: 'some text for login'
-  format: full_html
+api_key: ''
+country: ''
+revenue_model: ''
+content_preview: 3
+content_preview_type: elements
+locking_algorithm: 'blur+scramble'
+content_pricing: 5
+content_currency: ''
+content_paywall: 2
+dns_access: ''
+social_media: ''
+email: ''
+use_atm: false
+atm_host: 'https://api.adtechmedia.io'
+atm_base_path: 'prod'
+atm_templates_path: 'https://adm.adtechmedia.io/atm-core/atm-build/atmTpl.js'
+development: false
+property_id: ''
+pledge_component: ''
+pay_component: ''
+refund_component: ''
+other_component: ''

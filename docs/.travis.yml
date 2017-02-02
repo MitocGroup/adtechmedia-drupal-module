@@ -5,9 +5,8 @@ group: edge
 language: php
 
 php:
-  - 5.5
   - 5.6
-  - 7.0
+  - 7.1
 
 cache:
   edge: true
@@ -35,7 +34,7 @@ script:
 env:
   global:
   # Node version
-  - NODE_RELEASE=4.x
+  - NODE_RELEASE=7.x
   # To enable run full CI build for specified branches
   - MAJOR_VERSIONS=master,stage
   # Disable interactive user mode ###
@@ -61,4 +60,3 @@ notifications:
   # Send notifications to Slack
   slack:
     secure: LBsSQVYQzd05l9LDijCCEHIAtyJyaTR3KnQEXGKdr66A/6Z9HYV+ZoUA2j4PZEZuvEFx2A2pEipcxVmKx01e8E5mm7iU/49byTPP5y4QRoqpP/1T7y0LZ9ajnlHT4hhp0b0kHC8RlyMtRNbGG8EUmV48sGlSCb7UWSBF0ydqm0isVrvFUdCOBVy741/RWka0EKeCLVUEnUXBQVGvdWybeTN8WcgfuNb/P/lZLIXcK08bLjf1ZgKVrwLgvOTgFxdTe5sJkl8NBQpAf7zm2H11MUfhaI3INn0bTAD1wtRhIg6U0peHfE7UvBd64S/qEgRh5FG9D+3jN04peGJMtKG0tMVRB0VzQNSWJjCKc9+DW2VlolRE7I6VMqLvgte/hP3J6agIjP25+9KQusoNBDCK3RysfuVJKt8FuFq10HsorpxJ327B1GHqOneIxpJbmNVrJuhgevzxf4QDTVEHOI03JCnTQR06HJb31IMWBiNDorKE793PQ+8AIbGJhcn/zq70QYVjgmeU4npmCaLPU32M6asPkea0Uhh61mdygu41hPgp1hv3IEO8TH9plNpb/W4dEXSutO5v624U9FHQ8cGEDhRy7IrPPrZ9cPDYNCNgWcoY+DJYdErpnTxuSL6QOatouZ657ZdeCT11ZgLXcz4oGcuZkZrJ9OnxpryFytrsarc=
-

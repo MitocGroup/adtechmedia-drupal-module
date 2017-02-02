@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * @file
+ * AdTechMedia advertising module.
+ */
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function atm_preprocess_html(&$variables) {
+  $variables['page_top']['atm'] = [
+    '#markup' => '<div id="atm-modal-content"></div>',
+  ];
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function atm_preprocess_node(&$variables) {
+  if ($variables['view_mode'] == 'full') {
+    $variables['attributes']['class'][] = 'atm--node--view-mode--full';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function atm_theme($existing, $type, $theme, $path) {
+  return [
+    'atm-admin-config-page' => [
+      'variables' => [
+        'config_form' => NULL,
+        'api_key_info_form' => NULL,
+        'overall_position_and_styling' => NULL,
+        'content_configuration' => NULL,
+        'content_templates' => NULL,
+        'general_configuration' => NULL,
+        'templates_management' => NULL,
+      ],
+      'template' => 'admin/config-page',
+      'path' => $path . '/templates',
+    ],
+  ];
+}
+
+/**
+ * Attach atm/js in page.
+ */
+function atm_page_attachments(array &$attachments) {
+  $attachments['#attached']['library'][] = 'atm/api';
+}

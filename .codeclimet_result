@@ -1,0 +1,6 @@
+Starting analysis
+
+== src/Form/AtmTemplatesForm.php (1 issue) ==
+295: TODO found [fixme]
+
+Analysis complete! Found 1 issue.

@@ -3,6 +3,7 @@ sudo: required
 node_js:
   - '4.3'
   - '6.7'
+  - 7
 cache:
   edge: true
   directories:
@@ -32,6 +33,7 @@ php:
   - 5.5
   - 5.6
   - 7
+  - 7.1
 install:
   - composer install
   - npm install
@@ -43,6 +45,7 @@ env:
     - NODE_RELEASE=4.x
     - 'MAJOR_VERSIONS=master,stage'
     - DEEP_NO_INTERACTION=1
+    - NODE_RELEASE=7.x
     - E2E_TESTING=none
     - secure: 
         NIHVj4RBAHpPyLFXfZX6Cvo0xhF8b2cXEY10P/++w0Zc4P2QPX3i6jMCoP87beIBKerawB3hfb+6tM7/23eNjfYCkW3IBEnpSo3KhyZYSRM8JUmkOMB589/MeNfJQqLAJlUZ/NP/91yzRcNxOBB0dMBj5bU0XklmKBxEt9jeAhbq67HHI4pq653ms4fzOW0P4tRQcASKgRCB2zO4Vr5fBPHHmXdgd7KI/pEs1v1JhZbIAoiT3aoMzD4j8z5gKlCYASvsT2omT5kauxCGToYFb0nKZVsYsdchZvMWvLcry1ttfYIXsF0jrKnoqcWfSTShTppuudaq3Mx3hzYhUgeXGPlD1/+DXdtv23Vs68+QuBtqjfCgXVRKhvVVX4p8NprtFkU00tRrglktwnBf9j9k74SNKsrMeRNx8iV7J5Egpebc7ulYvxVbMgeFskTQGcorffG1cVsZnM6JOI2UQ2v83DkuSJK8YewJrB1veDS057zq2zqXEb4qfGA79grp4AIm7G2ZTLYm68lBKd1eP2KK9ovVcu3iMtu2g0wr8UE1bf9KscdPkZtB3HYlPdJS+4+7I65vm4zXJZ6cv1i3yyp8btWXw0zPwkZydTaHD2QjRsxTrSbJ+fNFZt43HfnBqLqsTQWkU+UFxmWkVL6ve8zEgCXKwzIUJWjOMeTFT85gZoY=
