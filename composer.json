@@ -17,8 +17,7 @@
             "name": "Wise company"
         }
     ],
-    "require": {
-        
+    "require": {        
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*@stable",

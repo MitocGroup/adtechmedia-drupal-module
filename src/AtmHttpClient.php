@@ -2,17 +2,22 @@
 
 namespace Drupal\atm;
 
-use Drupal\atm\Helper\AtmApiHelper;
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 
+/**
+ * Class AtmHttpClient. Client for API.
+ */
 class AtmHttpClient {
+
+  use StringTranslationTrait;
 
   /**
    * Return AtmApiHelper.
    *
-   * @return AtmApiHelper
+   * @return \Drupal\atm\Helper\AtmApiHelper
    *   Return AtmApiHelper.
    */
   private function getHelper() {
@@ -23,13 +28,7 @@ class AtmHttpClient {
    * Return base url for api.
    */
   public function getBaseUrl() {
-    $base_url = \Drupal::configFactory()->getEditable('atm.settings')->get('base_url');
-
-    if (empty($base_url)) {
-      $base_url = 'https://api.adtechmedia.io/prod';
-    }
-
-    return $base_url;
+    return $this->getHelper()->get('base_url');
   }
 
   /**
@@ -38,7 +37,15 @@ class AtmHttpClient {
   private function sendRequest($path, $method, $params, $headers = []) {
     $client = new Client();
 
-    $response = $client->request($method, $this->getBaseUrl() . $path, [
+    $baseUrl = $this->getBaseUrl();
+
+    if (empty($baseUrl)) {
+      throw new AtmException(
+        $this->t("Base url for request is empty. Please reinstall atm module.")
+      );
+    }
+
+    $response = $client->request($method, $baseUrl . $path, [
       'json' => $params,
     ]);
 
@@ -62,8 +69,11 @@ class AtmHttpClient {
 
       return $body['Key'];
     }
-    catch (ClientException $e) {
-
+    catch (AtmException $exception) {
+      drupal_set_message($exception->getMessage(), 'error');
+    }
+    catch (ClientException $exception) {
+      drupal_set_message($exception->getMessage(), 'error');
     }
 
     return FALSE;
@@ -97,8 +107,18 @@ class AtmHttpClient {
   /**
    * Method provides request to API for generating atm.js.
    */
-  public function propertyCreate($name, $website, $email, $country) {
+  public function propertyCreate() {
     $client = new Client();
+
+    $website = $_SERVER['HTTP_HOST'];
+    $name = $this->getHelper()->getApiName();
+    $email = $this->getHelper()->getApiEmail();
+    $country = $this->getHelper()->getApiCountry();
+
+    $price = $this->getHelper()->get('price');
+    $payment_pledged = $this->getHelper()->get('payment_pledged');
+    $currency = $this->getHelper()->get('price_currency');
+    $pledged_type = $this->getHelper()->get('pledged_type');
 
     $response = $client->put($this->getBaseUrl() . '/atm-admin/property/create', [
       'headers' => [
@@ -112,28 +132,142 @@ class AtmHttpClient {
         'Country' => $country,
         'ConfigDefaults' => [
           "targetModal" => [
-            "targetCb" => "function(modalNode, cb) {
-                var mainModal = modalNode;
-                mainModal.mount(
-                  document.getElementById('atm-modal-content'), mainModal.constructor.MOUNT_APPEND
-                );
-                cb();
-              }",
-            "toggleCb" => "function(cb) { cb(true) }",
+            "targetCb" => $this->getTargetCbJs(),
+            "toggleCb" => $this->getToggleCbJs(),
           ],
           'content' => [
             'authorCb' => "function(onReady) {onReady({fullName: '$name', avatar: 'https://avatars.io/twitter/mitocgroup'})}",
             "container" => ".atm--node--view-mode--full",
-            "selector" => "p",
+            'offset' => $this->getHelper()->get('content_offset'),
+            'lock' => $this->getHelper()->get('content_lock'),
+            'offsetType' => $this->getHelper()->get('content_offset_type'),
+          ],
+          'revenueMethod' => 'micropayments',
+          'ads' => [
+            'relatedVideoCb' => "function (onReady) { }",
+          ],
+          'payment' => [
+            'price' => $price,
+            'pledged' => $payment_pledged,
+            'currency' => $currency,
+            'pledgedType' => $pledged_type,
+          ],
+          'styles' => [
+            'main' => base64_encode(
+              $this->getHelper()->getTemplateOwerallStyles()
+            ),
           ],
         ],
       ],
     ]);
 
     if ($response->getStatusCode() == 200) {
-      return Json::decode($response->getBody()->getContents());
+      $_response = Json::decode($response->getBody()->getContents());
+
+      $path_schema = file_default_scheme() . "://atm";
+
+      /** @var \Drupal\Core\File\FileSystem $file_system */
+      $file_system = \Drupal::service('file_system');
+
+      $path = \Drupal::service('file_system')->realpath($path_schema);
+
+      if (!is_dir($path)) {
+        $file_system->mkdir($path, 0777, TRUE);
+      }
+
+      $script = file_get_contents($_response['BuildPath']);
+      $script = gzdecode($script);
+
+      file_put_contents($path . '/atm.min.js', $script);
+
+      $url = file_create_url($path_schema . '/atm.min.js');
+
+      $this->getHelper()->set('build_path', $url);
+    }
+  }
+
+  /**
+   * Get JS to targetCb function.
+   *
+   * @return string
+   *   Return generated js.
+   */
+  public function getTargetCbJs() {
+    $sticky = $this->getHelper()->get('styles.target-cb.sticky');
+
+    if (!$width = $this->getHelper()->get('styles.target-cb.width')) {
+      $width = '600px';
     }
 
-    return FALSE;
+    if (!$offset_top = $this->getHelper()->get('styles.target-cb.offset-top')) {
+      $offset_top = '0px';
+    }
+
+    if (!$offset_left = $this->getHelper()->get('styles.target-cb.offset-left')) {
+      $offset_left = '0px';
+    }
+
+    $content = '';
+
+    if ($sticky) {
+      $content .= "mainModal.rootNode.style.position = 'fixed';\n";
+      $content .= "mainModal.rootNode.style.top = '$offset_top';\n";
+      $content .= "mainModal.rootNode.style.width = '$width';\n";
+      $offset_left = trim($offset_left);
+
+      if ('-' == $offset_left[0]) {
+        $offset_left[0] = ' ';
+        $content .= "mainModal.rootNode.style.left = 'calc(50% - $offset_left)';\n";
+      }
+      else {
+        $content .= "mainModal.rootNode.style.left = 'calc(50% + $offset_left)';\n";
+      }
+      $content .= "mainModal.rootNode.style.transform = 'translateX(-50%)';\n";
+    }
+    else {
+      $content .= "mainModal.rootNode.style.width = '100%';\n";
+    }
+
+    return "function(modalNode, cb) {
+      var mainModal = modalNode;
+      mainModal.mount(
+        document.getElementById('atm-modal-content'), mainModal.constructor.MOUNT_APPEND
+      );
+      mainModal.rootNode.classList.add('atm-targeted-container');
+      $content
+      cb();
+    }";
   }
+
+  /**
+   * Get JS to toggleCb function.
+   *
+   * @return string
+   *   Return generated js.
+   */
+  public function getToggleCbJs() {
+    $sticky = $this->getHelper()->get('styles.target-cb.sticky');
+
+    if (!$scrolling_offset_top = $this->getHelper()->get('styles.target-cb.scrolling-offset-top')) {
+      $scrolling_offset_top = 0;
+    }
+
+    if (!$sticky) {
+      $scrolling_offset_top = -10;
+    }
+
+    return "function(cb) {
+	  var adjustMarginTop = function (e) {
+        var modalOffset = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) >= $scrolling_offset_top;
+        if (modalOffset) {
+          cb(true);
+        } else {
+          cb(false);
+        }
+      };
+      document.addEventListener('scroll', adjustMarginTop);
+      adjustMarginTop(null);
+    }";
+  }
+
 }

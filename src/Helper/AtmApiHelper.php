@@ -2,6 +2,9 @@
 
 namespace Drupal\atm\Helper;
 
+/**
+ * Provides helper for ATM.
+ */
 class AtmApiHelper {
 
   /**
@@ -29,14 +32,14 @@ class AtmApiHelper {
    * Get API Name.
    */
   public function getApiName() {
-    return $this->getConfig()->get('Name');
+    return $this->getConfig()->get('name');
   }
 
   /**
    * Save API Name.
    */
   public function setApiName($name) {
-    $this->getConfig()->set('Name', $name)->save();
+    $this->getConfig()->set('name', $name)->save();
   }
 
   /**
@@ -80,4 +83,128 @@ class AtmApiHelper {
   public function get($key) {
     return $this->getConfig()->get($key);
   }
+
+  /**
+   * Genearete atm api key.
+   */
+  public function generateApiKey() {
+    /** @var \Drupal\atm\AtmHttpClient $http_client */
+    $http_client = \Drupal::service('atm.http_client');
+
+    $name = \Drupal::config('system.site')->get('name');
+
+    $api_key = $http_client->generateApiKey($name, TRUE);
+
+    $this->setApiKey($api_key);
+    $this->setApiName($name);
+  }
+
+  /**
+   * Get supported countries.
+   *
+   * @return array
+   *   List of countries.
+   */
+  public function getSupportedCountries() {
+    $cache = \Drupal::cache()->get(__FUNCTION__);
+    if ($cache) {
+      return $cache->data;
+    }
+
+    /** @var \Drupal\atm\AtmHttpClient $httpClient */
+    $httpClient = \Drupal::service('atm.http_client');
+
+    $countries = $httpClient->getPropertySupportedCountries();
+    \Drupal::cache()->set(__FUNCTION__, $countries);
+
+    return $countries;
+  }
+
+  /**
+   * Get list of currencies.
+   *
+   * @return array
+   *   Array of currencies.
+   */
+  public function getCurrencyList() {
+    $currencies = [];
+    $countries = $this->getSupportedCountries();
+
+    foreach ($countries as $country) {
+      if ($country['ISO'] == $this->getApiCountry()) {
+        $currencies = array_combine($country['Currency'], array_map('mb_strtoupper', $country['Currency']));
+      }
+    }
+
+    return $currencies;
+  }
+
+  /**
+   * Get revenue model list.
+   *
+   * @return array
+   *   Array of revenue model list.
+   */
+  public function getRevenueModelList() {
+    $revenueModels = [];
+    $countries = $this->getSupportedCountries();
+
+    foreach ($countries as $country) {
+      if ($country['ISO'] == $this->getApiCountry()) {
+        $revenueModels = array_combine($country['RevenueModel'], $country['RevenueModel']);
+      }
+    }
+
+    return $revenueModels;
+  }
+
+  /**
+   * Get css.
+   *
+   * @return string
+   *   Css.
+   */
+  public function getTemplateOwerallStyles() {
+    $bg = $this->get('styles.target-cb.background-color');
+    $fbg = $this->get('styles.target-cb.footer-background-color');
+    $fb = $this->get('styles.target-cb.footer-border');
+    $ff = $this->get('styles.target-cb.font-family');
+    $bs = $this->get('styles.target-cb.box-shadow');
+
+    return <<<CSS
+
+    .atm-base-modal {
+      background-color: #ffffff;
+    }
+    
+    .atm-targeted-modal .atm-head-modal .atm-modal-heading {
+      background-color: $bg;
+    }
+    
+    .atm-targeted-modal{
+      border: 1px solid #d3d3d3;
+    }
+    
+    .atm-targeted-modal{
+      box-shadow: $bs;
+    }
+    
+    .atm-base-modal .atm-footer {
+      background-color: $fbg;
+      border: $fb;
+    }
+    
+    .atm-targeted-container .mood-block-info,
+    .atm-targeted-modal,
+    .atm-targeted-modal .atm-head-modal .atm-modal-body p,
+    .atm-unlock-line .unlock-btn {
+      font-family: $ff;
+    }
+    
+    .atm-button {
+      line-height: normal;
+    }
+CSS;
+  }
+
 }

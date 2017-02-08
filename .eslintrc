@@ -228,3 +228,4 @@ globals:
   DeepFramework: true
   Stripe: true
   angular: true
+  Drupal: true,

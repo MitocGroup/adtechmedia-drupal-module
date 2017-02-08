@@ -1,3 +1,19 @@
 api:
   js:
     /atm/api-js: { minified: false }
+  css:
+    component:
+      css/main.css: {}
+
+api.admin:
+  version: VERSION
+  js:
+    js/jquery.set-options.js: {}
+    js/admin.js: {}
+    https://adm.adtechmedia.io/atm-core/atm-build/atmTpl.js:  { type: external }
+  dependencies:
+    - core/jquery
+    - core/drupal
+  css:
+    component:
+      css/admin.css: {}

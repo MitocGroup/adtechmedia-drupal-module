@@ -1,0 +1,29 @@
+base_url: https://api.adtechmedia.io/prod
+country: US
+
+price: 5
+price_currency: usd
+
+payment_pledged: 2
+pledged_type: count
+
+content_offset: 2
+content_offset_type: elements
+
+content_lock: blur+scramble
+ads_video: ''
+
+styles:
+  target-cb:
+    sticky: 1
+    width: 600px
+    offset-top: 0
+    offset-left: 0
+    scrolling-offset-top: 0
+
+    background-color: '#ffffff'
+    border: '1px solid #e3e3e3'
+    font-family: 'Merriweather, sans-serif'
+    box-shadow: '0 1px 2px 0 rgba(0, 0, 0, 0.1)'
+    footer-background-color: '#ffffff'
+    footer-border: '1px solid #d3d3d3'
