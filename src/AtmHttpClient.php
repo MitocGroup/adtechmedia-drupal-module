@@ -3,6 +3,7 @@
 namespace Drupal\atm;
 
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 
@@ -10,6 +11,8 @@ use GuzzleHttp\Exception\ClientException;
  * Class AtmHttpClient. Client for API.
  */
 class AtmHttpClient {
+
+  use StringTranslationTrait;
 
   /**
    * Return AtmApiHelper.
@@ -34,7 +37,15 @@ class AtmHttpClient {
   private function sendRequest($path, $method, $params, $headers = []) {
     $client = new Client();
 
-    $response = $client->request($method, $this->getBaseUrl() . $path, [
+    $baseUrl = $this->getBaseUrl();
+
+    if (empty($baseUrl)) {
+      throw new AtmException(
+        $this->t("Base url for request is empty. Please reinstall atm module.")
+      );
+    }
+
+    $response = $client->request($method, $baseUrl . $path, [
       'json' => $params,
     ]);
 
@@ -58,8 +69,11 @@ class AtmHttpClient {
 
       return $body['Key'];
     }
-    catch (ClientException $e) {
-
+    catch (AtmException $exception) {
+      drupal_set_message($exception->getMessage(), 'error');
+    }
+    catch (ClientException $exception) {
+      drupal_set_message($exception->getMessage(), 'error');
     }
 
     return FALSE;
@@ -124,7 +138,9 @@ class AtmHttpClient {
           'content' => [
             'authorCb' => "function(onReady) {onReady({fullName: '$name', avatar: 'https://avatars.io/twitter/mitocgroup'})}",
             "container" => ".atm--node--view-mode--full",
-            "selector" => "p",
+            'offset' => $this->getHelper()->get('content_offset'),
+            'lock' => $this->getHelper()->get('content_lock'),
+            'offsetType' => $this->getHelper()->get('content_offset_type'),
           ],
           'revenueMethod' => 'micropayments',
           'ads' => [
@@ -137,11 +153,9 @@ class AtmHttpClient {
             'pledgedType' => $pledged_type,
           ],
           'styles' => [
-            'main' => base64_encode('
-              .atm-button {
-                    line-height: 30px;
-              }
-            '),
+            'main' => base64_encode(
+              $this->getHelper()->getTemplateOwerallStyles()
+            ),
           ],
         ],
       ],
@@ -179,17 +193,17 @@ class AtmHttpClient {
    *   Return generated js.
    */
   public function getTargetCbJs() {
-    $sticky = $this->getHelper()->get('target-cb-sticky');
+    $sticky = $this->getHelper()->get('styles.target-cb.sticky');
 
-    if (!$width = $this->getHelper()->get('target-cb-width')) {
+    if (!$width = $this->getHelper()->get('styles.target-cb.width')) {
       $width = '600px';
     }
 
-    if (!$offset_top = $this->getHelper()->get('target-cb-offset-top')) {
+    if (!$offset_top = $this->getHelper()->get('styles.target-cb.offset-top')) {
       $offset_top = '0px';
     }
 
-    if (!$offset_left = $this->getHelper()->get('target-cb-offset-left')) {
+    if (!$offset_left = $this->getHelper()->get('styles.target-cb.offset-left')) {
       $offset_left = '0px';
     }
 
@@ -215,7 +229,7 @@ class AtmHttpClient {
     }
 
     return "function(modalNode, cb) {
-      var mainModal=modalNode;
+      var mainModal = modalNode;
       mainModal.mount(
         document.getElementById('atm-modal-content'), mainModal.constructor.MOUNT_APPEND
       );
@@ -232,9 +246,9 @@ class AtmHttpClient {
    *   Return generated js.
    */
   public function getToggleCbJs() {
-    $sticky = $this->getHelper()->get('target-cb-sticky');
+    $sticky = $this->getHelper()->get('styles.target-cb.sticky');
 
-    if (!$scrolling_offset_top = $this->getHelper()->get('target-cb-scrolling-offset-top')) {
+    if (!$scrolling_offset_top = $this->getHelper()->get('styles.target-cb.scrolling-offset-top')) {
       $scrolling_offset_top = 0;
     }
 

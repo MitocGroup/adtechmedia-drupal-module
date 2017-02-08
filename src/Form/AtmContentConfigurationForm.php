@@ -3,7 +3,10 @@
 namespace Drupal\atm\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\AlertCommand;
+use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element\StatusMessages;
 
 /**
  * Class AtmContentConfigurationForm.
@@ -39,10 +42,11 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
     $form['video-ad'] = $this->getVideoAd();
 
     $form['save'] = [
-      '#type' => 'submit',
+      '#type' => 'button',
       '#value' => $this->t('Save'),
       '#ajax' => [
         'event' => 'click',
+        'callback' => [$this, 'saveParams'],
       ],
     ];
 
@@ -73,14 +77,15 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
 
     $contentPricing['container']['price_currency'] = [
       '#type' => 'select',
-      '#options' => [
-        'usd' => 'USD',
-      ],
+      '#options' => [],
       '#prefix' => '<div class="layout-column layout-column--half">',
       '#suffix' => '</div>',
       '#default_value' => $this->getHelper()->get('price_currency'),
-      '#empty_option' => t('- Select -'),
     ];
+
+    foreach ($this->getHelper()->getCurrencyList() as $code => $currency) {
+      $contentPricing['container']['price_currency']['#options'][$code] = $currency;
+    }
 
     return $contentPricing;
   }
@@ -116,7 +121,6 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
       '#prefix'  => '<div class="layout-column layout-column--half">',
       '#suffix'  => '</div>',
       '#default_value' => $this->getHelper()->get('pledged_type'),
-      '#empty_option' => t('- Select -'),
     ];
 
     return $contentPricing;
@@ -147,13 +151,12 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
     $contentPricing['container']['content_offset_type'] = [
       '#type' => 'select',
       '#options' => [
-        'paragraphs' => 'paragraphs',
+        'elements' => 'paragraphs',
         'words' => 'words',
       ],
       '#prefix' => '<div class="layout-column layout-column--half">',
       '#suffix' => '</div>',
       '#default_value' => $this->getHelper()->get('content_offset_type'),
-      '#empty_option' => t('- Select -'),
     ];
 
     return $contentPricing;
@@ -178,7 +181,6 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
         'keywords' => 'keywords',
       ],
       '#default_value' => $this->getHelper()->get('content_lock'),
-      '#empty_option' => t('- Select -'),
     ];
 
     return $contentPricing;
@@ -211,6 +213,21 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
    *   The current state of the form.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+
+  }
+
+  /**
+   * Form submission handler.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *   Ajax response.
+   */
+  public function saveParams(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
 
     $this->getHelper()->set('price', $values['price']);
@@ -229,6 +246,16 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
     $this->getAtmHttpClient()->propertyCreate();
 
     $response = new AjaxResponse();
+
+    $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+    $response->setAttachments($form['#attached']);
+
+    $response->addCommand(
+      new OpenModalDialogCommand(
+        '', $this->getStatusMessage($this->t('Form data saved successfully'))
+      )
+    );
+
     return $response;
   }
 

@@ -2,6 +2,8 @@
 
 namespace Drupal\atm\Form;
 
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -36,7 +38,7 @@ class AtmOverallPositionAndStylingForm extends AtmAbstractForm {
     $form['sticky'] = [
       '#type' => 'checkbox',
       '#title' => t('Sticky'),
-      '#default_value' => $this->getHelper()->get('target-cb-sticky'),
+      '#default_value' => $this->getHelper()->get('styles.target-cb.sticky'),
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
     ];
@@ -44,6 +46,7 @@ class AtmOverallPositionAndStylingForm extends AtmAbstractForm {
     $form['width'] = [
       '#type' => 'textfield',
       '#title' => t('Width'),
+      '#default_value' => $this->getHelper()->get('styles.target-cb.width'),
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
     ];
@@ -51,6 +54,7 @@ class AtmOverallPositionAndStylingForm extends AtmAbstractForm {
     $form['offset-top'] = [
       '#type' => 'textfield',
       '#title' => t('Offset top'),
+      '#default_value' => $this->getHelper()->get('styles.target-cb.offset-top'),
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
     ];
@@ -58,6 +62,7 @@ class AtmOverallPositionAndStylingForm extends AtmAbstractForm {
     $form['offset-left'] = [
       '#type' => 'textfield',
       '#title' => t('Offset left'),
+      '#default_value' => $this->getHelper()->get('styles.target-cb.offset-left'),
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
     ];
@@ -65,6 +70,7 @@ class AtmOverallPositionAndStylingForm extends AtmAbstractForm {
     $form['scrolling-offset-top'] = [
       '#type' => 'textfield',
       '#title' => t('Scrolling Offset Top'),
+      '#default_value' => $this->getHelper()->get('styles.target-cb.scrolling-offset-top'),
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
     ];
@@ -72,6 +78,7 @@ class AtmOverallPositionAndStylingForm extends AtmAbstractForm {
     $form['background-color'] = [
       '#type' => 'color',
       '#title' => t('Background Color'),
+      '#default_value' => $this->getHelper()->get('styles.target-cb.background-color'),
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
     ];
@@ -79,6 +86,7 @@ class AtmOverallPositionAndStylingForm extends AtmAbstractForm {
     $form['border'] = [
       '#type' => 'textfield',
       '#title' => t('Border'),
+      '#default_value' => $this->getHelper()->get('styles.target-cb.border'),
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
     ];
@@ -86,6 +94,7 @@ class AtmOverallPositionAndStylingForm extends AtmAbstractForm {
     $form['font-family'] = [
       '#type' => 'textfield',
       '#title' => t('Font family'),
+      '#default_value' => $this->getHelper()->get('styles.target-cb.font-family'),
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
     ];
@@ -93,6 +102,7 @@ class AtmOverallPositionAndStylingForm extends AtmAbstractForm {
     $form['box-shadow'] = [
       '#type' => 'textfield',
       '#title' => t('Box shadow'),
+      '#default_value' => $this->getHelper()->get('styles.target-cb.box-shadow'),
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
     ];
@@ -100,6 +110,7 @@ class AtmOverallPositionAndStylingForm extends AtmAbstractForm {
     $form['footer-background-color'] = [
       '#type' => 'color',
       '#title' => t('Footer Background Color'),
+      '#default_value' => $this->getHelper()->get('styles.target-cb.footer-background-color'),
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
     ];
@@ -107,15 +118,17 @@ class AtmOverallPositionAndStylingForm extends AtmAbstractForm {
     $form['footer-border'] = [
       '#type' => 'textfield',
       '#title' => t('Footer border'),
+      '#default_value' => $this->getHelper()->get('styles.target-cb.footer-border'),
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
     ];
 
     $form['save'] = [
-      '#type' => 'submit',
+      '#type' => 'button',
       '#value' => t('Save'),
       '#ajax' => [
         'event' => 'click',
+        'callback' => [$this, 'saveParams'],
       ],
       '#prefix' => '<div class="clearfix">',
       '#suffix' => '</div>',
@@ -133,9 +146,38 @@ class AtmOverallPositionAndStylingForm extends AtmAbstractForm {
    *   The current state of the form.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $values = $form_state->getValues();
 
-    $this->getHelper()->set('target-cb-sticky', $values['sticky']);
+  }
+
+  /**
+   * Form submission handler.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   */
+  public function saveParams(array &$form, FormStateInterface $form_state) {
+    foreach ($form_state->getValues() as $elementName => $value) {
+      if (!in_array($elementName, $form_state->getCleanValueKeys())) {
+        $this->getHelper()->set('styles.target-cb.' . $elementName, $value);
+      }
+    }
+
+    $this->getAtmHttpClient()->propertyCreate();
+
+    $response = new AjaxResponse();
+
+    $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+    $response->setAttachments($form['#attached']);
+
+    $response->addCommand(
+      new OpenModalDialogCommand(
+        '', $this->getStatusMessage($this->t('Form data saved successfully'))
+      )
+    );
+
+    return $response;
   }
 
 }
