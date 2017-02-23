@@ -6,7 +6,7 @@
         "adtechmedia"
     ],
     "homepage": "https://github.com/AdTechMedia/drupal-module",
-    "type": "library",
+    "type": "project",
     "license": "MIT",
     "authors": [
         {
@@ -17,7 +17,14 @@
             "name": "Wise company"
         }
     ],
-    "require": {        
+    "repositories": {
+        "drupal": {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*@stable",

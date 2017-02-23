@@ -64,6 +64,18 @@ function atm_theme($existing, $type, $theme, $path) {
     'render element' => 'elements',
   ];
 
+  $items['atm-unlock-view-template-preview'] = [
+    'template' => 'admin/atm-unlock-view-template-preview',
+    'path' => $path . '/templates',
+    'render element' => 'elements',
+  ];
+
+  $items['atm-price-view-template-preview'] = [
+    'template' => 'admin/atm-price-view-template-preview',
+    'path' => $path . '/templates',
+    'render element' => 'elements',
+  ];
+
   return $items;
 }
 
@@ -74,13 +86,13 @@ function atm_page_attachments(array &$attachments) {
   $attachments['#attached']['library'][] = 'atm/api';
 }
 
-/**
- * Implements hook_ajax_render_alter().
- */
-function atm_ajax_render_alter(array &$data) {
-
-}
-
 function atm_admin_config_page_preprocess(&$variables) {
   $variables['module_dir'] = drupal_get_path('module', 'atm');
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function atm_preprocess_form_element(&$variables) {
+  $element = &$variables['element'];
 }

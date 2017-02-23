@@ -91,4 +91,17 @@ abstract class AtmAbstractForm extends FormBase {
     return $return;
   }
 
+  /**
+   * Convert `--` to `.` in element name.
+   *
+   * @param $elementName
+   *   Element name.
+   *
+   * @return mixed
+   *   Element name.
+   */
+  protected function prepareElementName($elementName) {
+    return str_replace('--', '.', $elementName);
+  }
+
 }

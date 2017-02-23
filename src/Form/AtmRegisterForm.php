@@ -2,13 +2,18 @@
 
 namespace Drupal\atm\Form;
 
+use Drupal\atm\Ajax\RedirectInNewTabCommand;
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\BaseCommand;
+use Drupal\Core\Ajax\InvokeCommand;
+use Drupal\Core\Ajax\OpenModalDialogCommand;
+use Drupal\Core\Ajax\RedirectCommand;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Class AtmRevenueModelForm.
  */
-class AtmRevenueModelForm extends AtmAbstractForm {
+class AtmRegisterForm extends AtmAbstractForm {
 
   /**
    * Returns a unique string identifying the form.
@@ -17,7 +22,7 @@ class AtmRevenueModelForm extends AtmAbstractForm {
    *   The unique string identifying the form.
    */
   public function getFormId() {
-    return 'atm-admin-revenue-model-form';
+    return 'atm-register';
   }
 
   /**
@@ -32,18 +37,6 @@ class AtmRevenueModelForm extends AtmAbstractForm {
    *   The form structure.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['revenue_method'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Revenue model'),
-      '#options' => [],
-      '#default_value' => $this->getHelper()->get('revenue_method'),
-      '#description' => $this->t('Choose the revenue model that will be used on this blog'),
-    ];
-
-    foreach ($this->getHelper()->getRevenueModelList() as $value => $name) {
-      $form['revenue_method']['#options'][$value] = $name;
-    }
-
     $description = [];
     $description[] = $this->t('<strong>IMPORTANT:</strong>');
     $description[] = $this->t('Registration step is not required to be able to use this plugin.');
@@ -55,12 +48,31 @@ class AtmRevenueModelForm extends AtmAbstractForm {
       '#markup' => implode(" ", $description),
     ];
 
+    $form['email'] = [
+      '#type' => 'email',
+      '#title' => t('Email'),
+      '#default_value' => \Drupal::config('system.site')->get('mail'),
+      '#description' => $this->t('Provide your email address that will be used to register, connect and interact with AdTechMedia.io platform'),
+      '#required' => TRUE,
+    ];
+
+    $form['terms'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('<a id="atm-terms">I agree to Terms of Use</a>'),
+      '#required' => TRUE,
+    ];
+
     $form['save'] = [
       '#type' => 'button',
-      '#value' => $this->t('Save'),
+      '#value' => t('Register'),
       '#ajax' => [
         'event' => 'click',
         'callback' => [$this, 'saveParams'],
+      ],
+      '#states' => [
+        'enabled' => [
+          ':input[name="terms"]' => ['checked' => TRUE],
+        ],
       ],
     ];
 
@@ -91,8 +103,36 @@ class AtmRevenueModelForm extends AtmAbstractForm {
    *   Ajax response.
    */
   public function saveParams(array &$form, FormStateInterface $form_state) {
-    $this->getHelper()->set('revenue_method', $form_state->getValue('revenue_method'));
-    return new AjaxResponse();
+    $values = $form_state->getValues();
+    $response = new AjaxResponse();
+
+    if ($form_state->getErrors()) {
+      $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+      $response->setAttachments($form['#attached']);
+
+      $_errors = [];
+      foreach ($form_state->getErrors() as $error) {
+        $_errors[] = $this->getErrorMessage($error);
+      }
+
+      $response->addCommand(
+        new OpenModalDialogCommand('Form errors', $_errors)
+      );
+
+      $form_state->clearErrors();
+
+      return $response;
+    }
+
+    $this->getHelper()->setApiEmail($values['email']);
+
+    $response->addCommand(
+      new RedirectInNewTabCommand(
+        $this->getHelper()->get('register_url')
+      )
+    );
+
+    return $response;
   }
 
 }
