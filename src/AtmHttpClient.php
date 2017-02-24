@@ -28,7 +28,7 @@ class AtmHttpClient {
    * Return base url for api.
    */
   public function getBaseUrl() {
-    return $this->getHelper()->get('base_url');
+    return $this->getHelper()->get('base_endpoint');
   }
 
   /**
