@@ -94,7 +94,7 @@ abstract class AtmAbstractForm extends FormBase {
   /**
    * Convert `--` to `.` in element name.
    *
-   * @param $elementName
+   * @param string $elementName
    *   Element name.
    *
    * @return mixed

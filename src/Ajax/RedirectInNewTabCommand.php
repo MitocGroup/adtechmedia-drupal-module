@@ -36,4 +36,5 @@ class RedirectInNewTabCommand implements CommandInterface {
       'url' => $this->url,
     );
   }
+
 }

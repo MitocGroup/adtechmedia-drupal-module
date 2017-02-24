@@ -88,7 +88,6 @@ class AtmGeneralConfigForm extends AtmAbstractForm {
       ],
     ];
 
-
     return $form;
   }
 
@@ -149,7 +148,6 @@ class AtmGeneralConfigForm extends AtmAbstractForm {
 
       $form_state->clearErrors();
     }
-
 
     return $response;
   }

@@ -220,7 +220,6 @@ class AtmHttpClient {
     }
   }
 
-
   /**
    * Get JS to targetCb function.
    *

@@ -1768,21 +1768,11 @@ class AtmTemplatesForm extends AtmAbstractForm {
    *   Ajax Response.
    */
   public function saveParams(array &$form, FormStateInterface $form_state) {
-    $values = $form_state->getValues();
-    $inputs = $form_state->getUserInput();
-
-    $f=1;
-
 
     foreach ($form_state->getValues() as $elementName => $value) {
       if (!in_array($elementName, $form_state->getCleanValueKeys())) {
         $elementName = $this->prepareElementName($elementName);
         $this->getHelper()->set('templates.' . $elementName, $value);
-
-        //$_value = $this->getHelper()->get('templates.' . $elementName);
-
-        $f=1;
-
       }
     }
 
@@ -1812,8 +1802,6 @@ class AtmTemplatesForm extends AtmAbstractForm {
         )
       );
     }
-
-
 
     return $response;
   }
