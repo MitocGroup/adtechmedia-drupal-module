@@ -170,13 +170,24 @@ class AtmHttpClient {
       $response = $client->put($this->getBaseUrl() . '/atm-admin/property/create', $options);
       $_response = Json::decode($response->getBody()->getContents());
 
-      $url = $this->getHelper()->saveBuildPath($_response['BuildPath'], "://atm/atm.min.js");
+      $atmMinJS = $this->getHelper()->get('atm_js_local_file');
+
+      $url = $this->getHelper()->saveBuildPath($_response['BuildPath'], "://" . $atmMinJS);
 
       $this->getHelper()->set('build_path', $url);
       $this->getHelper()->set('property_id', $_response['Id']);
     }
     catch (ClientException $exception) {
-      drupal_set_message($exception->getMessage() . PHP_EOL . 'X-Api-Key:' . $this->getHelper()->getApiKey(), 'error');
+      $responseError = Json::decode(
+        $exception->getResponse()->getBody()->getContents()
+      );
+
+      $json = json_encode($responseError, JSON_PRETTY_PRINT);
+
+      drupal_set_message(
+        $exception->getMessage() . PHP_EOL .
+        'X-Api-Key: ' . $this->getHelper()->getApiKey() . PHP_EOL .
+        'Response error: ' . $json, 'error');
     }
   }
 
