@@ -184,7 +184,7 @@ class AtmApiHelper {
     $dirname = dirname($realpath);
 
     if (!is_dir($dirname)) {
-      $file_system->mkdir($dirname, 0777, TRUE);
+      $file_system->mkdir($dirname, 0644, TRUE);
     }
 
     $script = file_get_contents($remote);
