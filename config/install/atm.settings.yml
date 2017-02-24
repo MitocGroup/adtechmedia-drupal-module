@@ -14,6 +14,9 @@ content_offset_type: elements
 
 content_lock: blur+scramble
 ads_video: ''
+ads_video_placeholder: ''
+
+atm_js_local_file: 'atm/atm.min.js'
 
 styles:
   target-cb:

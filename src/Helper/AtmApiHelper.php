@@ -46,7 +46,13 @@ class AtmApiHelper {
    * Get API Email.
    */
   public function getApiEmail() {
-    return $this->getConfig()->get('api_email');
+    $apiEmail = $this->getConfig()->get('api_email');
+
+    if (empty($apiEmail)) {
+      $apiEmail = \Drupal::config('system.site')->get('mail');
+    }
+
+    return $apiEmail;
   }
 
   /**
