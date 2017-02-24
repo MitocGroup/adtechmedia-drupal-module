@@ -87,18 +87,23 @@ class AtmHttpClient {
 
     $api_key = $this->getHelper()->getApiKey();
 
-    $response = $client->get($this->getBaseUrl() . '/atm-admin/property/supported-countries', [
-      'headers' => [
-        'X-Api-Key' => $api_key,
-      ],
-    ]);
+    try {
+      $response = $client->get($this->getBaseUrl() . '/atm-admin/property/supported-countries', [
+        'headers' => [
+          'X-Api-Key' => $api_key,
+        ],
+      ]);
 
-    if ($response->getStatusCode() == 200) {
-      $body = Json::decode(
+      if ($response->getStatusCode() == 200) {
+        $body = Json::decode(
           $response->getBody()->getContents()
-      );
+        );
 
-      return $body['Countries'];
+        return $body['Countries'];
+      }
+    }
+    catch (ClientException $exception) {
+      drupal_set_message($exception->getMessage() . PHP_EOL . 'X-Api-Key:' . $api_key, 'error');
     }
 
     return [];
@@ -120,7 +125,7 @@ class AtmHttpClient {
     $currency = $this->getHelper()->get('price_currency');
     $pledged_type = $this->getHelper()->get('pledged_type');
 
-    $response = $client->put($this->getBaseUrl() . '/atm-admin/property/create', [
+    $options = [
       'headers' => [
         'X-Api-Key' => $this->getHelper()->getApiKey(),
       ],
@@ -159,30 +164,59 @@ class AtmHttpClient {
           ],
         ],
       ],
-    ]);
+    ];
 
-    if ($response->getStatusCode() == 200) {
+    try {
+      $response = $client->put($this->getBaseUrl() . '/atm-admin/property/create', $options);
       $_response = Json::decode($response->getBody()->getContents());
 
-      $path_schema = file_default_scheme() . "://atm";
-
-      /** @var \Drupal\Core\File\FileSystem $file_system */
-      $file_system = \Drupal::service('file_system');
-
-      $path = \Drupal::service('file_system')->realpath($path_schema);
-
-      if (!is_dir($path)) {
-        $file_system->mkdir($path, 0777, TRUE);
-      }
-
-      $script = file_get_contents($_response['BuildPath']);
-      $script = gzdecode($script);
-
-      file_put_contents($path . '/atm.min.js', $script);
-
-      $url = file_create_url($path_schema . '/atm.min.js');
+      $url = $this->getHelper()->saveBuildPath($_response['BuildPath'], "://atm/atm.min.js");
 
       $this->getHelper()->set('build_path', $url);
+      $this->getHelper()->set('property_id', $_response['Id']);
+    }
+    catch (ClientException $exception) {
+      drupal_set_message($exception->getMessage() . PHP_EOL . 'X-Api-Key:' . $this->getHelper()->getApiKey(), 'error');
+    }
+  }
+
+  /**
+   * Method provides request to API for update atm.js.
+   */
+  public function propertyUpdateConfig($templates) {
+    $client = new Client();
+
+    $options = [
+      'headers' => [
+        'X-Api-Key' => $this->getHelper()->getApiKey(),
+      ],
+
+      'json' => [
+        "Id" => $this->getHelper()->get('property_id'),
+        'ConfigDefaults' => [
+          "templates" => $templates,
+          "targetModal" => [
+            "targetCb" => $this->getTargetCbJs(),
+            "toggleCb" => $this->getToggleCbJs(),
+          ],
+          'styles' => [
+            'main' => base64_encode(
+              $this->getHelper()->getTemplateOwerallStyles()
+            ),
+          ],
+        ],
+      ],
+    ];
+
+    try {
+      $response = $client->patch($this->getBaseUrl() . '/atm-admin/property/update-config', $options);
+      $_response = Json::decode($response->getBody()->getContents());
+
+      $url = $this->getHelper()->saveBuildPath($_response['BuildPath'], "://atm/atm.min.js");
+      $this->getHelper()->set('build_path', $url);
+    }
+    catch (ClientException $exception) {
+      drupal_set_message($exception->getMessage() . PHP_EOL . 'X-Api-Key:' . $this->getHelper()->getApiKey(), 'error');
     }
   }
 
@@ -195,17 +229,9 @@ class AtmHttpClient {
   public function getTargetCbJs() {
     $sticky = $this->getHelper()->get('styles.target-cb.sticky');
 
-    if (!$width = $this->getHelper()->get('styles.target-cb.width')) {
-      $width = '600px';
-    }
-
-    if (!$offset_top = $this->getHelper()->get('styles.target-cb.offset-top')) {
-      $offset_top = '0px';
-    }
-
-    if (!$offset_left = $this->getHelper()->get('styles.target-cb.offset-left')) {
-      $offset_left = '0px';
-    }
+    $width = $this->getHelper()->get('styles.target-cb.width');
+    $offset_top = $this->getHelper()->get('styles.target-cb.offset-top');
+    $offset_left = $this->getHelper()->get('styles.target-cb.offset-left');
 
     $content = '';
 
@@ -248,17 +274,16 @@ class AtmHttpClient {
   public function getToggleCbJs() {
     $sticky = $this->getHelper()->get('styles.target-cb.sticky');
 
-    if (!$scrolling_offset_top = $this->getHelper()->get('styles.target-cb.scrolling-offset-top')) {
-      $scrolling_offset_top = 0;
-    }
+    $scrollingOffsetTop = $this->getHelper()->get('styles.target-cb.scrolling-offset-top');
+    $scrollingOffsetTop *= 1;
 
     if (!$sticky) {
-      $scrolling_offset_top = -10;
+      $scrollingOffsetTop = -10;
     }
 
     return "function(cb) {
 	  var adjustMarginTop = function (e) {
-        var modalOffset = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) >= $scrolling_offset_top;
+        var modalOffset = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) >= $scrollingOffsetTop;
         if (modalOffset) {
           cb(true);
         } else {

@@ -36,7 +36,7 @@ class ConfigPageController extends ControllerBase {
                     [
                       '#theme' => 'admin_block',
                       '#block' => [
-                        'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmRegisterCustomerForm'),
+                        'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmGeneralConfigForm'),
                       ],
                     ],
                   ],
@@ -50,7 +50,7 @@ class ConfigPageController extends ControllerBase {
                     [
                       '#theme' => 'admin_block',
                       '#block' => [
-                        'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmRevenueModelForm'),
+                        'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmRegisterForm'),
                       ],
                     ],
                   ],
@@ -77,7 +77,7 @@ class ConfigPageController extends ControllerBase {
               '#theme' => 'admin_block',
               '#block' => [
                 'title' => t('Overall Position And Styling'),
-                'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmOverallPositionAndStylingForm'),
+                'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmOverallStylingAndPositionForm'),
               ],
             ],
             'content_templates' => [

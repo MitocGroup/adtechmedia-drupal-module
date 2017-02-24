@@ -2,19 +2,17 @@
 
 namespace Drupal\atm\Form;
 
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
-use Drupal\Core\Field\Plugin\Field\FieldFormatter\StringFormatter;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\locale\StringBase;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use GuzzleHttp\Exception\ClientException;
 
 /**
  * Provides form for save basic configs, register new customer and genearte atm.js file.
  */
-class AtmRegisterCustomerForm extends AtmAbstractForm {
+class AtmGeneralConfigForm extends AtmAbstractForm {
 
   /**
    * Returns a unique string identifying the form.
@@ -23,7 +21,7 @@ class AtmRegisterCustomerForm extends AtmAbstractForm {
    *   The unique string identifying the form.
    */
   public function getFormId() {
-    return 'atm-admin-register-customer-form';
+    return 'atm-general-config';
   }
 
   /**
@@ -61,6 +59,7 @@ class AtmRegisterCustomerForm extends AtmAbstractForm {
       '#title' => t('Country'),
       '#options' => $options,
       '#default_value' => $this->getHelper()->getApiCountry(),
+      '#description' => $this->t('Choose the country of origin where revenue will be collected'),
       '#required' => TRUE,
       '#ajax' => [
         'event' => 'change',
@@ -68,16 +67,21 @@ class AtmRegisterCustomerForm extends AtmAbstractForm {
       ],
     ];
 
-    $form['email'] = [
-      '#type' => 'email',
-      '#title' => t('Email'),
-      '#default_value' => \Drupal::config('system.site')->get('mail'),
-      '#required' => TRUE,
+    $form['revenue_method'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Revenue model'),
+      '#options' => [],
+      '#default_value' => $this->getHelper()->get('revenue_method'),
+      '#description' => $this->t('Choose the revenue model that will be used on this blog'),
     ];
+
+    foreach ($this->getHelper()->getRevenueModelList() as $value => $name) {
+      $form['revenue_method']['#options'][$value] = $name;
+    }
 
     $form['save'] = [
       '#type' => 'button',
-      '#value' => t('Register'),
+      '#value' => $this->t('Save'),
       '#ajax' => [
         'event' => 'click',
         'callback' => [$this, 'saveParams'],
@@ -111,19 +115,41 @@ class AtmRegisterCustomerForm extends AtmAbstractForm {
    *   Ajax response.
    */
   public function saveParams(array &$form, FormStateInterface $form_state) {
-    $values = $form_state->getValues();
+    $response = new AjaxResponse();
 
-    $email = $values['email'];
-    $country = $values['country'];
+    $this->getHelper()->setApiCountry($form_state->getValue('country'));
+    $this->getHelper()->set('revenue_method', $form_state->getValue('revenue_method'));
 
-    $this->getHelper()->setApiEmail($email);
-    $this->getHelper()->setApiCountry($country);
+    $this->getAtmHttpClient()->propertyCreate();
 
-    /** @var \Drupal\atm\AtmHttpClient $httpClient */
-    $httpClient = \Drupal::service('atm.http_client');
-    $httpClient->propertyCreate();
+    $errors = drupal_get_messages('error');
+    if ($errors) {
+      $errors = $errors['error'];
+    }
 
-    return new AjaxResponse();
+    $errors = array_merge($form_state->getErrors(), $errors);
+
+    if ($errors) {
+      $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+      $response->setAttachments($form['#attached']);
+
+      $_errors = [];
+      foreach ($errors as $error) {
+        if (!$error instanceof TranslatableMarkup) {
+          $error = $this->t($error);
+        }
+
+        $_errors[] = $this->getErrorMessage($error);
+      }
+
+      $response->addCommand(
+        new OpenModalDialogCommand('Form errors', $_errors)
+      );
+
+      $form_state->clearErrors();
+    }
+
+    return $response;
   }
 
   /**

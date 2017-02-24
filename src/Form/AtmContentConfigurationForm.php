@@ -20,7 +20,7 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
    *   The unique string identifying the form.
    */
   public function getFormId() {
-    return 'atm-content-configuration-form';
+    return 'atm-content-configuration';
   }
 
   /**
@@ -199,6 +199,7 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
     $contentPricing['ads_video'] = [
       '#type'    => 'textfield',
       '#default_value' => $this->getHelper()->get('ads_video'),
+      '#placeholder' => 'e.g. https://youtu.be/DiBh8r3lPpM',
     ];
 
     return $contentPricing;
@@ -242,8 +243,6 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
     $this->getHelper()->set('content_lock', $values['content_lock']);
 
     $this->getHelper()->set('ads_video', $values['ads_video']);
-
-    $this->getAtmHttpClient()->propertyCreate();
 
     $response = new AjaxResponse();
 

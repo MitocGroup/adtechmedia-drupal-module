@@ -115,7 +115,9 @@ class AtmApiHelper {
     $httpClient = \Drupal::service('atm.http_client');
 
     $countries = $httpClient->getPropertySupportedCountries();
-    \Drupal::cache()->set(__FUNCTION__, $countries);
+    if ($countries) {
+      \Drupal::cache()->set(__FUNCTION__, $countries);
+    }
 
     return $countries;
   }
@@ -156,6 +158,41 @@ class AtmApiHelper {
     }
 
     return $revenueModels;
+  }
+
+  /**
+   * Save remote file to local fs.
+   *
+   * @param string $remote
+   *   Remote file url.
+   * @param string $local
+   *   Local destination for save.
+   * @param null|string $scheme
+   *   File scheme.
+   *
+   * @return string
+   *   Return web-accessible URL of saved file.
+   */
+  public function saveBuildPath($remote, $local, $scheme = NULL) {
+    $scheme = is_null($scheme) ? file_default_scheme() : $scheme;
+    $path_schema = $scheme . $local;
+
+    /** @var \Drupal\Core\File\FileSystem $file_system */
+    $file_system = \Drupal::service('file_system');
+
+    $realpath = \Drupal::service('file_system')->realpath($path_schema);
+    $dirname = dirname($realpath);
+
+    if (!is_dir($dirname)) {
+      $file_system->mkdir($dirname, 0777, TRUE);
+    }
+
+    $script = file_get_contents($remote);
+    $script = gzdecode($script);
+
+    file_put_contents($realpath, $script);
+
+    return file_create_url($path_schema);
   }
 
   /**
