@@ -10,10 +10,14 @@ api.admin:
   js:
     js/jquery.set-options.js: {}
     js/admin.js: {}
-    https://adm.adtechmedia.io/atm-core/atm-build/atmTpl.js:  { type: external }
+    https://api.adtechmedia.io/atm-core/atm-build/atmTpl.js:  { type: external }
   dependencies:
     - core/jquery
     - core/drupal
   css:
     component:
       css/admin.css: {}
+
+atm.sw:
+  js:
+    /sw-min-js: {}

@@ -165,15 +165,14 @@ class AtmGeneralConfigForm extends AtmAbstractForm {
    */
   public function selectCountryCallback(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
+    $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+    $response->setAttachments($form['#attached']);
 
     $country = $form_state->getValue('country');
     if (empty($country)) {
-      $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
-      $response->setAttachments($form['#attached']);
-
       $response->addCommand(
         new OpenModalDialogCommand(
-          '', $this->getErrorMessage($this->t('Please, select country'))
+          '', $this->getErrorMessage($this->t('Please, select country')), $this->getModalDialogOptions()
         )
       );
       return $response;

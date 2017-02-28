@@ -7,12 +7,55 @@
     }
   };
 
+  $.fn.toggleAttr = function(attr, attr1, attr2) {
+    return this.each(function() {
+      var self = $(this);
+      if (self.attr(attr) === attr1)
+        self.attr(attr, attr2);
+      else
+        self.attr(attr, attr1);
+    });
+  };
+
 
   window.atmCloseModal = function () {
     $('#atm-terms-modal').hide();
   }
 
   $(function () {
+
+    function toggleTemplates() {
+      var id = $(this.$el).parent().attr('id');
+      var componentName = $('#' + id).data('view-component');
+
+      if (componentName) {
+        $('div[data-view-component="' + componentName + '"]').each(function (i, element) {
+          var id = $(element).attr('id');
+          var $element = $('#' + id);
+          var view = $element.data('view');
+
+          $element.toggleAttr('data-open', 'true', 'false');
+
+          var state = $element.attr('data-open');
+
+          if (view === 'expanded' && state === 'false') {
+            atmTemplates[componentName].expanded.small(true);
+            atmTemplates[componentName].collapsed.small(false);
+          }
+
+          if (view === 'expanded' && state === 'true') {
+            atmTemplates[componentName].expanded.small(false);
+            atmTemplates[componentName].collapsed.small(true);
+          }
+
+          atmTemplates[componentName].collapsed.redraw();
+          atmTemplates[componentName].expanded.redraw();
+
+          atmTemplates[componentName].collapsed.watch('showModalBody', toggleTemplates);
+          atmTemplates[componentName].expanded.watch('showModalBody', toggleTemplates);
+        });
+      }
+    }
 
     function updateComponent(componentName) {
       var options = {};
@@ -36,18 +79,25 @@
         });
       });
 
-      //console.log(componentName + 'Component', options, styles)
+      try {
+        atmTemplating.updateTemplate(componentName + 'Component', options, styles);
 
-      atmTemplating.updateTemplate(componentName + 'Component', options, styles);
+        for (var comp in atmTemplates) {
+          if (typeof atmTemplates[comp].expanded != 'undefined') {
+            atmTemplates[comp].expanded.redraw();
+            atmTemplates[comp].collapsed.redraw();
 
-      for (var comp in atmTemplates) {
-        if (typeof atmTemplates[comp].expanded != 'undefined') {
-          atmTemplates[comp].expanded.redraw();
-          atmTemplates[comp].collapsed.redraw();
+            atmTemplates[comp].expanded.watch('showModalBody', toggleTemplates);
+            atmTemplates[comp].collapsed.watch('showModalBody', toggleTemplates);
+          }
         }
-      }
 
-      var output = atmTemplating.templateRendition(componentName + 'Component').render(options, styles);
+        var output = atmTemplating.templateRendition(componentName + 'Component').render(options, styles);
+      } catch (Error) {
+
+        console.log(Error);
+        return;
+      }
 
       var $template = $(".templates-" + componentName);
 
@@ -79,7 +129,7 @@
     };
 
     for (var comp in atmTemplates) {
-      if (typeof atmTemplates[comp].expanded != 'undefined') {
+      if (typeof atmTemplates[comp].expanded !== 'undefined') {
         atmTemplates[comp].expanded.small(false);
       }
 

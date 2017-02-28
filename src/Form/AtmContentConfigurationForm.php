@@ -251,7 +251,7 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
 
     $response->addCommand(
       new OpenModalDialogCommand(
-        '', $this->getStatusMessage($this->t('Form data saved successfully'))
+        '', $this->getStatusMessage($this->t('Form data saved successfully')), $this->getModalDialogOptions()
       )
     );
 

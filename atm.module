@@ -5,6 +5,8 @@
  * AdTechMedia advertising module.
  */
 
+use Drupal\atm\Helper\AtmApiHelper;
+
 /**
  * Implements hook_preprocess_HOOK().
  */
@@ -84,6 +86,7 @@ function atm_theme($existing, $type, $theme, $path) {
  */
 function atm_page_attachments(array &$attachments) {
   $attachments['#attached']['library'][] = 'atm/api';
+  $attachments['#attached']['library'][] = 'atm/atm.sw';
 }
 
 function atm_admin_config_page_preprocess(&$variables) {
@@ -95,4 +98,22 @@ function atm_admin_config_page_preprocess(&$variables) {
  */
 function atm_preprocess_form_element(&$variables) {
   $element = &$variables['element'];
+}
+
+/**
+ * Implements hook_install().
+ */
+function atm_install() {
+  $timeLimit = ini_get('max_execution_time');
+  set_time_limit(0);
+
+  /** @var AtmApiHelper $helper */
+
+  $helper = \Drupal::service('atm.helper');
+
+  $helper->generateApiKey();
+  $helper->propertyCreate();
+  $helper->createThemeConfig();
+
+  set_time_limit($timeLimit);
 }

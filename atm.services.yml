@@ -9,4 +9,3 @@ services:
     arguments: []
     tags:
       - { name: event_subscriber }
-
