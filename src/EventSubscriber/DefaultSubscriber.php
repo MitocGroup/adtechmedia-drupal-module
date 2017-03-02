@@ -76,7 +76,15 @@ class DefaultSubscriber implements EventSubscriberInterface {
     set_time_limit(0);
 
     $this->getHelper()->propertyCreate();
-    $this->getHelper()->createThemeConfig();
+
+    $themeConfigId = $this->getHelper()->getThemeConfig()->get('theme-config-id');
+    if (!$themeConfigId) {
+
+      $isThemeRetrieved = $this->getHttpClient()->retrieveThemeConfig();
+      if ($isThemeRetrieved !== TRUE) {
+        $this->getHelper()->createThemeConfig();
+      }
+    }
 
     set_time_limit($timeLimit);
   }
@@ -93,6 +101,15 @@ class DefaultSubscriber implements EventSubscriberInterface {
     if ($config->getName() == 'system.theme') {
       if ($events->isChanged('default')) {
         $this->getHttpClient()->propertyCreate();
+
+        $themeConfigId = $this->getHelper()->getThemeConfig()->get('theme-config-id');
+        if (!$themeConfigId) {
+
+          $isThemeRetrieved = $this->getHttpClient()->retrieveThemeConfig();
+          if ($isThemeRetrieved !== TRUE) {
+            $this->getHelper()->createThemeConfig();
+          }
+        }
       }
     }
   }

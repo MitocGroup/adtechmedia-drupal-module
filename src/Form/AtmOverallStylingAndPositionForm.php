@@ -34,8 +34,6 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
    *   The form structure.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['#attached']['library'][] = 'atm/api.admin';
-
     $form['container_1'] = [
       '#type' => 'container',
     ];
@@ -49,17 +47,17 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
     $container1 = &$form['container_1'];
     $container2 = &$form['container_2'];
 
-    $backgroundColor = $themeConfig->get('background-color') ?: $this->getHelper()->get('styles.target-cb.background-color');
-    $border = $themeConfig->get('border') ?: $this->getHelper()->get('styles.target-cb.border');
-    $fontFamily = $themeConfig->get('font-family') ?: $this->getHelper()->get('styles.target-cb.font-family');
-    $boxShadow = $themeConfig->get('box-shadow') ?: $this->getHelper()->get('styles.target-cb.box-shadow');
-    $fBackgroundColor = $themeConfig->get('footer-background-color') ?: $this->getHelper()->get('styles.target-cb.footer-background-color');
-    $fBorder = $themeConfig->get('footer-border') ?: $this->getHelper()->get('styles.target-cb.footer-border');
-    $sticky = $themeConfig->get('sticky') ?: $this->getHelper()->get('styles.target-cb.sticky');
-    $width = $themeConfig->get('theme') ?: $this->getHelper()->get('styles.target-cb.width');
-    $offsetTop = $themeConfig->get('offset-top') ?: $this->getHelper()->get('styles.target-cb.offset-top');
-    $offsetLeft = $themeConfig->get('offset-left') ?: $this->getHelper()->get('styles.target-cb.offset-left');
-    $scrollingOffsetTop = $themeConfig->get('scrolling-offset-top') ?: $this->getHelper()->get('styles.target-cb.scrolling-offset-top');
+    $backgroundColor = $themeConfig->get('background-color') !== NULL ? $themeConfig->get('background-color') : $this->getHelper()->get('styles.target-cb.background-color');
+    $border = $themeConfig->get('border') !== NULL ? $themeConfig->get('border') : $this->getHelper()->get('styles.target-cb.border');
+    $fontFamily = $themeConfig->get('font-family') !== NULL ? $themeConfig->get('font-family') : $this->getHelper()->get('styles.target-cb.font-family');
+    $boxShadow = $themeConfig->get('box-shadow') !== NULL ? $themeConfig->get('box-shadow') : $this->getHelper()->get('styles.target-cb.box-shadow');
+    $fBackgroundColor = $themeConfig->get('footer-background-color') !== NULL ? $themeConfig->get('footer-background-color') : $this->getHelper()->get('styles.target-cb.footer-background-color');
+    $fBorder = $themeConfig->get('footer-border') !== NULL ? $themeConfig->get('footer-border') : $this->getHelper()->get('styles.target-cb.footer-border');
+    $sticky = $themeConfig->get('sticky') !== NULL ? $themeConfig->get('sticky') : $this->getHelper()->get('styles.target-cb.sticky');
+    $width = $themeConfig->get('width') !== NULL ? $themeConfig->get('width') : $this->getHelper()->get('styles.target-cb.width');
+    $offsetTop = $themeConfig->get('offset-top') !== NULL ? $themeConfig->get('offset-top') : $this->getHelper()->get('styles.target-cb.offset-top');
+    $offsetLeft = $themeConfig->get('offset-left') !== NULL ? $themeConfig->get('offset-left') : $this->getHelper()->get('styles.target-cb.offset-left');
+    $scrollingOffsetTop = $themeConfig->get('scrolling-offset-top') !== NULL ? $themeConfig->get('scrolling-offset-top') : $this->getHelper()->get('styles.target-cb.scrolling-offset-top');
 
     $container1['background-color'] = [
       '#type' => 'color',
@@ -182,6 +180,9 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
    *   An associative array containing the structure of the form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current state of the form.
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *   Ajax response.
    */
   public function saveParams(array &$form, FormStateInterface $form_state) {
     $themeConfig = $this->getHelper()->getThemeConfig(TRUE);

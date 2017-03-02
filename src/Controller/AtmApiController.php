@@ -3,6 +3,7 @@
 namespace Drupal\atm\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,6 +44,42 @@ class AtmApiController extends ControllerBase {
     }
 
     return new Response();
+  }
+
+  /**
+   * Return terms content.
+   */
+  public function getTerms() {
+    $ajaxResponse = new JsonResponse();
+
+    $cache = \Drupal::cache()->get('atm-terms');
+    if ($cache) {
+      $ajaxResponse->setData([
+        'errors' => FALSE,
+        'content' => $cache->data,
+      ]);
+    }
+    else {
+      try {
+        $response = \Drupal::httpClient()->get('https://www.adtechmedia.io/terms/dialog.html');
+        $content = $response->getBody()->getContents();
+
+        \Drupal::cache()->set('atm-terms', $content);
+
+        $ajaxResponse->setData([
+          'errors' => FALSE,
+          'content' => $content,
+        ]);
+      }
+      catch (ClientException $exception) {
+        $ajaxResponse->setData([
+          'errors' => TRUE,
+          'content' => $exception->getMessage(),
+        ]);
+      }
+    }
+
+    return $ajaxResponse;
   }
 
 }

@@ -1,9 +1,10 @@
-;(function ($, D, W) {
+(function ($, window, Drupal, drupalSettings) {
 
+  'use strict';
 
-  D.AjaxCommands.prototype.redirectInNewTab = function(ajax, response, status){
+  Drupal.AjaxCommands.prototype.redirectInNewTab = function(ajax, response, status){
     if (status == 'success') {
-      W.open(response.url, '_target');
+      open(response.url, '_target');
     }
   };
 
@@ -16,7 +17,6 @@
         self.attr(attr, attr1);
     });
   };
-
 
   window.atmCloseModal = function () {
     $('#atm-terms-modal').hide();
@@ -145,7 +145,6 @@
       }
 
       var componentName = $(this).data('component-name');
-      //console.log(componentName);
       updateComponent(componentName);
     });
 
@@ -155,9 +154,7 @@
         '<div class="atm-modal-content">' +
           '<span class="atm-close" onclick="atmCloseModal()">×</span>' +
           '<h1 class="atm-modal-header">Terms of Use</h1>' +
-          '<div id="atm-modal-content">' +
-            '<iframe src="https://www.adtechmedia.io/terms/dialog.html" frameborder="0"></iframe>' +
-          '</div>' +
+          '<div id="atm-terms-modal-content"></div>' +
         '</div>' +
       '</div>'
     ;
@@ -165,9 +162,24 @@
 
     $('#atm-terms').on('click', function (event) {
       event.preventDefault();
-      $('#atm-terms-modal').show();
-    });
 
+      $.ajax({
+        url: '/atm/terms',
+        dataType: 'json'
+      })
+        .done(function (response) {
+          if (!response.error) {
+
+            /*console.log(
+              $('#atm-modal-content'),
+              response.content
+            )*/
+
+            $('#atm-terms-modal-content').html(response.content);
+            $('#atm-terms-modal').show();
+          }
+        })
+    });
 
     $('.accordion-details').find('details').on('click', function (event) {
       if (event.target.nodeName === 'SUMMARY') {
@@ -176,4 +188,4 @@
     });
 
   });
-})(jQuery, Drupal, window);
+})(jQuery, window, Drupal, drupalSettings);

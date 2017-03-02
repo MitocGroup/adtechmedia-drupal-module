@@ -16,6 +16,13 @@ class ConfigPageController extends ControllerBase {
 
     return [
       '#theme' => 'atm-admin-config-page',
+      '#content_type_select' => [
+        '#theme' => 'admin_block',
+        '#block' => [
+          'title' => t('Select Content Type'),
+          'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmContentTypeSelectForm'),
+        ],
+      ],
       '#general_configuration' => [
         '#theme' => 'admin_block',
         '#block' => [
@@ -67,7 +74,6 @@ class ConfigPageController extends ControllerBase {
           'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmContentConfigurationForm'),
         ],
       ],
-
       '#templates_management' => [
         '#theme' => 'admin_block',
         '#block' => [

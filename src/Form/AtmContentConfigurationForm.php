@@ -244,6 +244,8 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
 
     $this->getHelper()->set('ads_video', $values['ads_video']);
 
+    $this->getAtmHttpClient()->propertyUpdateConfig();
+
     $response = new AjaxResponse();
 
     $form['#attached']['library'][] = 'core/drupal.dialog.ajax';

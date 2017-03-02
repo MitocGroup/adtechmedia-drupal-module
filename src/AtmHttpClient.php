@@ -35,8 +35,7 @@ class AtmHttpClient {
   /**
    * Method provides request to API.
    */
-  private function sendRequest($path, $method, $params, $headers = []) {
-    $client = new Client();
+  private function sendRequest($path, $method, $params = [], $headers = []) {
     $try = 0;
     $tries = 5;
 
@@ -64,7 +63,7 @@ class AtmHttpClient {
           $options[RequestOptions::JSON] = $params;
         }
 
-        $response = $client->request($method, $baseUrl . $path, $options);
+        $response = \Drupal::httpClient()->request($method, $baseUrl . $path, $options);
 
         return Json::decode($response->getBody()->getContents());
       }
@@ -191,12 +190,28 @@ class AtmHttpClient {
    * Method provides request to API for update atm.js.
    */
   public function propertyUpdateConfig($templates = FALSE) {
+    $price = $this->getHelper()->get('price');
+    $payment_pledged = $this->getHelper()->get('payment_pledged');
+    $currency = $this->getHelper()->get('price_currency');
+    $pledged_type = $this->getHelper()->get('pledged_type');
+
     $params = [
       "Id" => $this->getHelper()->get('property_id'),
       'ConfigDefaults' => [
         "targetModal" => [
           "targetCb" => $this->getTargetCbJs(),
           "toggleCb" => $this->getToggleCbJs(),
+        ],
+        'content' => [
+          'offset' => $this->getHelper()->get('content_offset'),
+          'lock' => $this->getHelper()->get('content_lock'),
+          'offsetType' => $this->getHelper()->get('content_offset_type'),
+        ],
+        'payment' => [
+          'price' => $price,
+          'pledged' => $payment_pledged,
+          'currency' => $currency,
+          'pledgedType' => $pledged_type,
         ],
         'styles' => [
           'main' => base64_encode(
@@ -231,11 +246,10 @@ class AtmHttpClient {
   public function getTargetCbJs() {
     $themeConfig = $this->getHelper()->getThemeConfig();
 
-    $sticky = $themeConfig->get('sticky') ?: $this->getHelper()->get('styles.target-cb.sticky');
-    $width = $themeConfig->get('theme') ?: $this->getHelper()->get('styles.target-cb.width');
-
-    $offsetTop = $themeConfig->get('offset-top') ?: $this->getHelper()->get('styles.target-cb.offset-top');
-    $offsetLeft = $themeConfig->get('offset-left') ?: $this->getHelper()->get('styles.target-cb.offset-left');
+    $sticky = $themeConfig->get('sticky') !== NULL ? $themeConfig->get('sticky') : $this->getHelper()->get('styles.target-cb.sticky');
+    $width = $themeConfig->get('width') !== NULL ? $themeConfig->get('width') : $this->getHelper()->get('styles.target-cb.width');
+    $offsetTop = $themeConfig->get('offset-top') !== NULL ? $themeConfig->get('offset-top') : $this->getHelper()->get('styles.target-cb.offset-top');
+    $offsetLeft = $themeConfig->get('offset-left') !== NULL ? $themeConfig->get('offset-left') : $this->getHelper()->get('styles.target-cb.offset-left');
 
     $content = '';
 
@@ -244,6 +258,7 @@ class AtmHttpClient {
       $content .= "mainModal.rootNode.style.top = '$offsetTop';\n";
       $content .= "mainModal.rootNode.style.width = '$width';\n";
       $offsetLeft = trim($offsetLeft);
+      $content .= "mainModal.rootNode.style.zIndex = 1;\n";
 
       if ('-' == $offsetLeft[0]) {
         $offsetLeft[0] = ' ';
@@ -278,8 +293,8 @@ class AtmHttpClient {
   public function getToggleCbJs() {
     $themeConfig = $this->getHelper()->getThemeConfig();
 
-    $sticky = $themeConfig->get('sticky') ?: $this->getHelper()->get('styles.target-cb.sticky');
-    $scrollingOffsetTop = $themeConfig->get('scrolling-offset-top') ?: $this->getHelper()->get('styles.target-cb.scrolling-offset-top');
+    $sticky = $themeConfig->get('sticky') !== NULL ? $themeConfig->get('sticky') : $this->getHelper()->get('styles.target-cb.sticky');
+    $scrollingOffsetTop = $themeConfig->get('scrolling-offset-top') !== NULL ? $themeConfig->get('scrolling-offset-top') : $this->getHelper()->get('styles.target-cb.scrolling-offset-top');
     $scrollingOffsetTop *= 1;
 
     if (!$sticky) {
@@ -354,6 +369,41 @@ class AtmHttpClient {
 
     try {
       $this->sendRequest('/atm-admin/theme-config/update', 'POST', $params);
+    }
+    catch (AtmException $exception) {
+      drupal_set_message($exception->getMessage(), 'error');
+    }
+  }
+
+  /**
+   * Retrieve Theme Config.
+   */
+  public function retrieveThemeConfig() {
+    /** @var \Drupal\Core\Extension\ThemeHandler $themeHandler */
+
+    $themeHandler = \Drupal::service('theme_handler');
+    $defaultTheme = $themeHandler->getTheme($themeHandler->getDefault());
+
+    $params = [
+      'Theme' => $defaultTheme->info['name'],
+    ];
+
+    $requestPath = implode('?', [
+      '/atm-admin/theme-config/retrieve', http_build_query($params),
+    ]);
+
+    try {
+      $response = $this->sendRequest($requestPath, 'GET');
+
+      if ($response) {
+        $this->getHelper()
+          ->getThemeConfig(TRUE)
+          ->setData(array_merge(
+            $response['Config'], ['theme-config-id' => $response['Id']]
+          ))
+          ->save();
+        return TRUE;
+      }
     }
     catch (AtmException $exception) {
       drupal_set_message($exception->getMessage(), 'error');

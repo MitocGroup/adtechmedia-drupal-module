@@ -33,12 +33,9 @@ function atm_theme($existing, $type, $theme, $path) {
 
   $items['atm-admin-config-page'] = [
     'variables' => [
-      'config_form' => NULL,
-      'api_key_info_form' => NULL,
-      'overall_position_and_styling' => NULL,
-      'content_configuration' => NULL,
-      'content_templates' => NULL,
+      'content_type_select' => NULL,
       'general_configuration' => NULL,
+      'content_configuration' => NULL,
       'templates_management' => NULL,
     ],
     'template' => 'admin/config-page',
@@ -85,19 +82,67 @@ function atm_theme($existing, $type, $theme, $path) {
  * Attach atm/js in page.
  */
 function atm_page_attachments(array &$attachments) {
-  $attachments['#attached']['library'][] = 'atm/api';
-  $attachments['#attached']['library'][] = 'atm/atm.sw';
-}
+  /** @var AtmApiHelper $helper */
+  $helper = \Drupal::service('atm.helper');
 
-function atm_admin_config_page_preprocess(&$variables) {
-  $variables['module_dir'] = drupal_get_path('module', 'atm');
+  $routName = \Drupal::routeMatch()->getRouteName();
+
+  if ($routName == 'atm.config.page') {
+    $attachments['#attached']['library'][] = 'atm/api.admin';
+  }
+
+  if ($routName == 'atm.config.page' || $routName == 'entity.node.canonical') {
+    /** @var \Drupal\node\Entity\Node $node */
+    $node = \Drupal::routeMatch()->getParameter('node');
+
+    if ($routName == 'atm.config.page' || in_array($node->getType(), $helper->getSelectedContentTypes())) {
+      $atmApi = $helper->get('build_path') . '?' . microtime();
+
+      $https = &$_SERVER['HTTPS'];
+
+      if ($https == 'on') {
+        $atmApi = preg_replace("/^http/", 'https', $atmApi);
+      }
+
+      $script = "
+        (function() {
+      
+          window.addEventListener('load', function() {
+            var body = document.getElementsByTagName('body')[0];
+            var js = document.createElement('script');
+            js.setAttribute('type', 'text/javascript');
+            js.setAttribute('src', '$atmApi');
+            js.setAttribute('id', 'atm-js')
+            body.appendChild(js);
+          })
+          
+        })()
+      ";
+
+      $attachments['#attached']['html_head'][] = [
+        [
+          '#tag' => 'script',
+          '#value' => "window.ATM_SERVICE_WORKER = '/sw-min-js'",
+        ],
+        'sw',
+      ];
+
+      $attachments['#attached']['html_head'][] = [
+        [
+          '#tag' => 'script',
+          '#value' => $script,
+        ],
+        'atm',
+      ];
+    }
+  }
 }
 
 /**
- * Implements hook_preprocess_HOOK().
+ * Preprocess for config-page.html.twig.
  */
-function atm_preprocess_form_element(&$variables) {
-  $element = &$variables['element'];
+function atm_admin_config_page_preprocess(&$variables) {
+  $variables['module_dir'] = drupal_get_path('module', 'atm');
 }
 
 /**
@@ -112,8 +157,12 @@ function atm_install() {
   $helper = \Drupal::service('atm.helper');
 
   $helper->generateApiKey();
-  $helper->propertyCreate();
-  $helper->createThemeConfig();
+  $helper->getAtmHttpClient()->propertyCreate();
+
+  $isThemeRetrieved = $helper->getAtmHttpClient()->retrieveThemeConfig();
+  if ($isThemeRetrieved !== TRUE) {
+    $helper->createThemeConfig();
+  }
 
   set_time_limit($timeLimit);
 }

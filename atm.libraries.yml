@@ -1,23 +1,32 @@
 api:
+  header: true
+  version: VERSION
   js:
-    /atm/api-js: { minified: false }
+    /atm/api-js: { preprocess: 0, weight: -21, minified: true }
   css:
     component:
       css/main.css: {}
 
+api.tpl:
+  version: VERSION
+  js:
+    https://api.adtechmedia.io/atm-core/atm-build/atmTpl.js: { type: external }
+
 api.admin:
   version: VERSION
   js:
-    js/jquery.set-options.js: {}
-    js/admin.js: {}
-    https://api.adtechmedia.io/atm-core/atm-build/atmTpl.js:  { type: external }
+    js/jquery.set-options.js: { preprocess: 0 }
+    js/admin.js: { preprocess: 0 }
   dependencies:
+    - atm/api.tpl
     - core/jquery
     - core/drupal
+    - core/drupal.ajax
   css:
     component:
       css/admin.css: {}
 
 atm.sw:
+  version: VERSION
   js:
     /sw-min-js: {}
