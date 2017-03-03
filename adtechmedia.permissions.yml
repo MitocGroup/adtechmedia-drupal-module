@@ -1,4 +1,0 @@
-'administer adtechmedia':
-  title: 'Administer AdTechMedia'
-  description: 'Administer AdTechMedia service.'
-  restrict access: true
