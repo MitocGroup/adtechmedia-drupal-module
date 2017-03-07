@@ -10,6 +10,10 @@
     }
   };
 
+  Drupal.AjaxCommands.prototype.showNoty = function(ajax, response, status){
+    noty(response.data.options);
+  };
+
   $.fn.toggleAttr = function(attr, attr1, attr2) {
     return this.each(function() {
       var self = $(this);
