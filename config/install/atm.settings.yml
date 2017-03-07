@@ -1,6 +1,5 @@
 register_url: https://www.adtechmedia.io/admin/accounts/signup
-base_endpoint: https://api-dev.adtechmedia.io/v1
-#base_endpoint: https://api.adtechmedia.io/v1/
+base_endpoint: https://api.adtechmedia.io/v1/
 sw_js_url: https://api.adtechmedia.io/atm-admin/atm-build/sw.min.js
 
 country: US
@@ -18,7 +17,10 @@ content_lock: blur+scramble
 ads_video: ''
 ads_video_placeholder: ''
 
-atm_js_local_file: 'atm.min.js'
+atm_js_local_file: 'atm/atm.min.js'
+
+sw_js_file: 'https://api.adtechmedia.io/atm-admin/atm-build/sw.min.js'
+terms_dialog_url: 'https://www.adtechmedia.io/terms/dialog.html'
 
 styles:
   target-cb:

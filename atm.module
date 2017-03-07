@@ -97,9 +97,8 @@ function atm_page_attachments(array &$attachments) {
     if ($routName == 'atm.config.page' || in_array($node->getType(), $helper->getSelectedContentTypes())) {
       $atmApi = $helper->get('build_path') . '?' . microtime();
 
-      $https = &$_SERVER['HTTPS'];
-
-      if ($https == 'on') {
+      $isSecure = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443);
+      if ($isSecure) {
         $atmApi = preg_replace("/^http/", 'https', $atmApi);
       }
 
@@ -164,4 +163,18 @@ function atm_install() {
   }
 
   set_time_limit($timeLimit);
+}
+
+/**
+ * Implements hook_cron().
+ */
+function atm_cron() {
+  if (REQUEST_TIME - \Drupal::state()->get('google_atm.last_cache') >= 86400) {
+
+    /** @var AtmApiHelper $helper */
+    $helper = \Drupal::service('atm.helper');
+    $helper->getAtmHttpClient()->propertyUpdateConfig();
+
+    \Drupal::state()->set('atm.last_cache', REQUEST_TIME);
+  }
 }

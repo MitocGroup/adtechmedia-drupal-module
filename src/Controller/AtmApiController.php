@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * Provides routers for controller atm.
@@ -34,16 +35,20 @@ class AtmApiController extends ControllerBase {
    * Return service worker js.
    */
   public function getSwJs() {
-    $https = &$_SERVER['HTTPS'];
-    if ($https == 'on') {
-      return new Response(
-        file_get_contents('https://api.adtechmedia.io/atm-admin/atm-build/sw.min.js'),
-        200,
-        ['Content-Type' => 'application/javascript']
-      );
+    /** @var \Drupal\atm\Helper\AtmApiHelper $helper */
+    $helper = \Drupal::service('atm.helper');
+
+    $response = new Response('', 200, ['Content-Type' => 'application/javascript']);
+
+    try {
+      $httpResponse = \Drupal::httpClient()->get($helper->get('sw_js_file'));
+      $response->setContent($httpResponse->getBody()->getContents());
+    }
+    catch (ClientException $e) {
+
     }
 
-    return new Response();
+    return $response;
   }
 
   /**
@@ -61,7 +66,10 @@ class AtmApiController extends ControllerBase {
     }
     else {
       try {
-        $response = \Drupal::httpClient()->get('https://www.adtechmedia.io/terms/dialog.html');
+        /** @var \Drupal\atm\Helper\AtmApiHelper $helper */
+        $helper = \Drupal::service('atm.helper');
+
+        $response = \Drupal::httpClient()->get($helper->get('terms_dialog_url'));
         $content = $response->getBody()->getContents();
 
         \Drupal::cache()->set('atm-terms', $content);

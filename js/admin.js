@@ -1,5 +1,7 @@
 (function ($, window, Drupal, drupalSettings) {
 
+  /*global atmTpl */
+
   'use strict';
 
   Drupal.AjaxCommands.prototype.redirectInNewTab = function(ajax, response, status){
@@ -93,9 +95,15 @@
         }
 
         var output = atmTemplating.templateRendition(componentName + 'Component').render(options, styles);
-      } catch (Error) {
+      } catch (error) {
 
-        console.log(Error);
+        noty({
+          type: 'error',
+          maxVisible: 1,
+          timeout: 2000,
+          text: error.message
+        });
+
         return;
       }
 
@@ -123,9 +131,7 @@
         "expanded": atmTemplating.render('refund', '#render-refund-expanded'),
         "collapsed": atmTemplating.render('refund', '#render-refund-collapsed')
       },
-      "auth": {
-
-      }
+      "auth": {}
     };
 
     for (var comp in atmTemplates) {
@@ -169,12 +175,6 @@
       })
         .done(function (response) {
           if (!response.error) {
-
-            /*console.log(
-              $('#atm-modal-content'),
-              response.content
-            )*/
-
             $('#atm-terms-modal-content').html(response.content);
             $('#atm-terms-modal').show();
           }
