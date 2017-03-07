@@ -25,10 +25,10 @@ terms_dialog_url: 'https://www.adtechmedia.io/terms/dialog.html'
 styles:
   target-cb:
     sticky: 1
-    width: 600px
-    offset-top: 20px
-    offset-left: -60px
-    scrolling-offset-top: 100px
+    width: 650px
+    offset-top: 30px
+    offset-left: -50px
+    scrolling-offset-top: 150px
 
     background-color: '#ffffff'
     border: '1px solid #e3e3e3'
