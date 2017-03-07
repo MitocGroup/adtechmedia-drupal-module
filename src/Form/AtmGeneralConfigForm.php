@@ -79,7 +79,7 @@ class AtmGeneralConfigForm extends AtmAbstractForm {
       $form['revenue_method']['#options'][$value] = $name;
     }
 
-    $form['save'] = [
+    $form['save-config'] = [
       '#type' => 'button',
       '#value' => $this->t('Save'),
       '#ajax' => [

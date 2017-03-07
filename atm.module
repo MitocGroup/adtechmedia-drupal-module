@@ -33,7 +33,6 @@ function atm_theme($existing, $type, $theme, $path) {
 
   $items['atm-admin-config-page'] = [
     'variables' => [
-      'content_type_select' => NULL,
       'general_configuration' => NULL,
       'content_configuration' => NULL,
       'templates_management' => NULL,

@@ -751,7 +751,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
       ],
     ];
 
-    $form['save'] = [
+    $form['save-template'] = [
       '#type' => 'button',
       '#value' => t('Save'),
       '#ajax' => [

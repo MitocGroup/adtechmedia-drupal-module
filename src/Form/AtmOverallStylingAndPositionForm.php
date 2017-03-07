@@ -3,9 +3,13 @@
 namespace Drupal\atm\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\BaseCommand;
+use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
+use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Theme\ThemeManager;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class AtmOverallPositionAndStylingForm.
@@ -147,7 +151,7 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
       '#suffix' => '</div>',
     ];
 
-    $form['save'] = [
+    $form['save-styles'] = [
       '#type' => 'button',
       '#value' => t('Save'),
       '#ajax' => [
@@ -208,6 +212,9 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
         '', $this->getStatusMessage($this->t('Form data saved successfully')), $this->getModalDialogOptions()
       )
     );
+
+    $src = $this->getHelper()->get('build_path') . '?' . microtime();
+    $response->addCommand(new ReplaceCommand('#atm-js', "<script src='$src' id='atm-js' />"));
 
     return $response;
   }

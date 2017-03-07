@@ -262,3 +262,13 @@ img {
   -webkit-transform: translateX(-50%) translateY(-50%);
   white-space: nowrap;
 }
+
+
+#edit-content-types .form-type-checkbox {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+#edit-content-types .form-type-checkbox * {
+  vertical-align: middle;
+}

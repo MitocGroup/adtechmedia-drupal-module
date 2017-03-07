@@ -16,13 +16,6 @@ class ConfigPageController extends ControllerBase {
 
     return [
       '#theme' => 'atm-admin-config-page',
-      '#content_type_select' => [
-        '#theme' => 'admin_block',
-        '#block' => [
-          'title' => t('Select Content Type'),
-          'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmContentTypeSelectForm'),
-        ],
-      ],
       '#general_configuration' => [
         '#theme' => 'admin_block',
         '#block' => [

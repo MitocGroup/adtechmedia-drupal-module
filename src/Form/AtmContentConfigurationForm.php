@@ -7,6 +7,7 @@ use Drupal\Core\Ajax\AlertCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element\StatusMessages;
+use Drupal\node\Entity\NodeType;
 
 /**
  * Class AtmContentConfigurationForm.
@@ -35,13 +36,14 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
    *   The form structure.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $form['content-type'] = $this->getContentTypeSelectSection();
     $form['content-pricing'] = $this->getContentPricingSection();
     $form['content-paywall'] = $this->getContentPaywallSection();
     $form['content-preview'] = $this->getContentPreviewSection();
     $form['content-unlocking-algorithm'] = $this->getContentUnlockAlg();
     $form['video-ad'] = $this->getVideoAd();
 
-    $form['save'] = [
+    $form['save-121212'] = [
       '#type' => 'button',
       '#value' => $this->t('Save'),
       '#ajax' => [
@@ -244,6 +246,16 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
 
     $this->getHelper()->set('ads_video', $values['ads_video']);
 
+    $selectedCT = [];
+    $cTypes = $form_state->getValue('content-types');
+    foreach ($cTypes as $key => $value) {
+      if ($value) {
+        $selectedCT[] = $value;
+      }
+    }
+
+    $this->getHelper()->set('selected-ct', $selectedCT);
+
     $this->getAtmHttpClient()->propertyUpdateConfig();
 
     $response = new AjaxResponse();
@@ -258,6 +270,35 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
     );
 
     return $response;
+  }
+
+  /**
+   * Generate CT selection section.
+   */
+  private function getContentTypeSelectSection() {
+    $fieldset = [
+      '#type' => 'fieldset',
+      '#title' => t('Content type'),
+      '#description' => t('Select the content type that will work atm module'),
+      'container' => [
+        '#type' => 'container',
+        '#suffix' => '<div class="layout-container"></div>',
+      ],
+    ];
+
+    $contentTypes = &$fieldset['container']['content-types'];
+    $contentTypes = [
+      '#type' => 'checkboxes',
+      '#options' => [],
+      '#default_value' => $this->getHelper()->getSelectedContentTypes(),
+    ];
+
+    /** @var NodeType $nodeType */
+    foreach (NodeType::loadMultiple() as $nodeType) {
+      $contentTypes['#options'][$nodeType->id()] = $nodeType->get('name');
+    }
+
+    return $fieldset;
   }
 
 }
