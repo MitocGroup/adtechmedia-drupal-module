@@ -22,9 +22,9 @@ class AtmApiController extends ControllerBase {
     $helper = \Drupal::service('atm.helper');
     $jsPath = $helper->get('build_path');
 
-    $https = &$_SERVER['HTTPS'];
+    $isSecure = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443);
 
-    if ($https == 'on') {
+    if ($isSecure) {
       $jsPath = preg_replace("/^http/", 'https', $jsPath);
     }
 
