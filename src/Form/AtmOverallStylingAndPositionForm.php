@@ -204,13 +204,15 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
 
     $response = new AjaxResponse();
 
-    $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
-    $response->setAttachments($form['#attached']);
-
     $response->addCommand(
-      new OpenModalDialogCommand(
-        '', $this->getStatusMessage($this->t('Form data saved successfully')), $this->getModalDialogOptions()
-      )
+      new BaseCommand('showNoty', [
+        'options' => [
+          'type' => 'information',
+          'text' => $this->t('Form data saved successfully'),
+          'maxVisible' => 1,
+          'timeout' => 2000,
+        ],
+      ])
     );
 
     $src = $this->getHelper()->get('build_path') . '?' . microtime();

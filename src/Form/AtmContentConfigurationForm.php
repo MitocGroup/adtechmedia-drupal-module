@@ -4,6 +4,7 @@ namespace Drupal\atm\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\AlertCommand;
+use Drupal\Core\Ajax\BaseCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element\StatusMessages;
@@ -43,7 +44,7 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
     $form['content-unlocking-algorithm'] = $this->getContentUnlockAlg();
     $form['video-ad'] = $this->getVideoAd();
 
-    $form['save-121212'] = [
+    $form['save-content-config'] = [
       '#type' => 'button',
       '#value' => $this->t('Save'),
       '#ajax' => [
@@ -260,13 +261,15 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
 
     $response = new AjaxResponse();
 
-    $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
-    $response->setAttachments($form['#attached']);
-
     $response->addCommand(
-      new OpenModalDialogCommand(
-        '', $this->getStatusMessage($this->t('Form data saved successfully')), $this->getModalDialogOptions()
-      )
+      new BaseCommand('showNoty', [
+        'options' => [
+          'type' => 'information',
+          'text' => $this->t('Form data saved successfully'),
+          'maxVisible' => 1,
+          'timeout' => 2000,
+        ],
+      ])
     );
 
     return $response;

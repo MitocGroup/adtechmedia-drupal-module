@@ -3,6 +3,7 @@
 namespace Drupal\atm\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\BaseCommand;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormStateInterface;
@@ -130,23 +131,30 @@ class AtmGeneralConfigForm extends AtmAbstractForm {
     $errors = array_merge($form_state->getErrors(), $errors);
 
     if ($errors) {
-      $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
-      $response->setAttachments($form['#attached']);
-
-      $_errors = [];
-      foreach ($errors as $error) {
-        if (!$error instanceof TranslatableMarkup) {
-          $error = $this->t($error);
-        }
-
-        $_errors[] = $this->getErrorMessage($error);
-      }
-
       $response->addCommand(
-        new OpenModalDialogCommand('Form errors', $_errors)
+        new BaseCommand('showNoty', [
+          'options' => [
+            'type' => 'error',
+            'text' => implode("<br>", $errors),
+            'maxVisible' => 1,
+            'timeout' => 5000,
+          ],
+        ])
       );
 
       $form_state->clearErrors();
+    }
+    else {
+      $response->addCommand(
+        new BaseCommand('showNoty', [
+          'options' => [
+            'type' => 'information',
+            'text' => $this->t('Form data saved successfully'),
+            'maxVisible' => 1,
+            'timeout' => 2000,
+          ],
+        ])
+      );
     }
 
     return $response;
