@@ -19,7 +19,7 @@ jquery.noty:
     name: MIT
     url: https://github.com/needim/noty/blob/master/LICENSE.txt
   js:
-    js/noty/js/noty/packaged/jquery.noty.packaged.min.js: { preprocess: 0 }
+    js/jquery.noty.packaged.min.js: { preprocess: 0 }
   dependencies:
     - core/jquery
 api.admin:

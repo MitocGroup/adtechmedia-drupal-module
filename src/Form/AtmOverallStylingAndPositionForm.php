@@ -113,10 +113,13 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
 
     $container2['sticky'] = [
       '#type' => 'checkbox',
-      '#title' => t('Sticky'),
+      '#title' => '<span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span>',
       '#default_value' => $sticky,
-      '#prefix' => '<div class="layout-column layout-column--one-sixth">',
-      '#suffix' => '</div>',
+      '#attributes' => [
+        'class' => ['onoffswitch-checkbox'],
+      ],
+      '#prefix' => '<div class="layout-column layout-column--one-sixth"><div class="onoffswitch">',
+      '#suffix' => '</div></div>',
     ];
 
     $container2['width'] = [

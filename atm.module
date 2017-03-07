@@ -178,3 +178,13 @@ function atm_cron() {
     \Drupal::state()->set('atm.last_cache', REQUEST_TIME);
   }
 }
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function atm_preprocess_form_element_label(&$variables) {
+  $element = &$variables['element'];
+  if ($element['#id'] == 'edit-sticky') {
+    $variables['attributes']['class'] = ['onoffswitch-label'];
+  }
+}
