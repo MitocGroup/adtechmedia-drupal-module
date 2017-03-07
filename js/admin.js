@@ -39,20 +39,32 @@
           $element.toggleAttr('data-open', 'true', 'false');
 
           var state = $element.attr('data-open');
+          var templateState = $('#' + id + '-text').find('strong');
 
-          if (view === 'expanded' && state === 'false') {
-            atmTemplates[componentName].expanded.small(true);
-            atmTemplates[componentName].collapsed.small(false);
+          if (view === 'expanded') {
+            if (state === 'false') {
+              atmTemplates[componentName].expanded.small(true);
+              atmTemplates[componentName].collapsed.small(false);
+              templateState.text(Drupal.t('Collapsed view'));
+            }
+            else {
+              atmTemplates[componentName].expanded.small(false);
+              atmTemplates[componentName].collapsed.small(true);
+              templateState.text(Drupal.t('Expanded view'));
+            }
           }
 
-          if (view === 'expanded' && state === 'true') {
-            atmTemplates[componentName].expanded.small(false);
-            atmTemplates[componentName].collapsed.small(true);
+          if (view === 'collapsed') {
+            if (state === 'false') {
+              templateState.text(Drupal.t('Collapsed view'));
+            }
+            else {
+              templateState.text(Drupal.t('Expanded view'));
+            }
           }
 
           atmTemplates[componentName].collapsed.redraw();
           atmTemplates[componentName].expanded.redraw();
-
           atmTemplates[componentName].collapsed.watch('showModalBody', toggleTemplates);
           atmTemplates[componentName].expanded.watch('showModalBody', toggleTemplates);
         });
@@ -109,9 +121,7 @@
 
       var $template = $(".templates-" + componentName);
 
-      $template.val(
-        JSON.stringify(output)
-      );
+      $template.val(JSON.stringify(output));
       $template.removeAttr("disabled");
     }
 
