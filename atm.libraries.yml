@@ -22,6 +22,7 @@ jquery.noty:
     js/jquery.noty.packaged.min.js: { preprocess: 0 }
   dependencies:
     - core/jquery
+
 api.admin:
   version: VERSION
   js:
@@ -36,6 +37,7 @@ api.admin:
   css:
     component:
       css/admin.css: {}
+      css/main.css: {}
 
 atm.sw:
   version: VERSION
