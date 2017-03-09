@@ -271,6 +271,8 @@ class AtmHttpClient {
     }
     else {
       $content .= "mainModal.rootNode.style.width = '100%';\n";
+      $content .= "mainModal.rootNode.style.position = 'relative';\n";
+      $content .= "mainModal.rootNode.style.zIndex = 1;\n";
     }
 
     return "function(modalNode, cb) {
