@@ -250,47 +250,45 @@ class AtmApiHelper {
   public function getTemplateOwerallStyles() {
     $themeConfig = $this->getThemeConfig();
 
-    $bg = $themeConfig->get('background-color') !== NULL ? $themeConfig->get('background-color') : $this->get('styles.target-cb.background-color');
-    $br = $themeConfig->get('border') !== NULL ? $themeConfig->get('border') : $this->get('styles.target-cb.border');
+    $bg  = $themeConfig->get('background-color') !== NULL ? $themeConfig->get('background-color') : $this->get('styles.target-cb.background-color');
+    $br  = $themeConfig->get('border') !== NULL ? $themeConfig->get('border') : $this->get('styles.target-cb.border');
     $fbg = $themeConfig->get('footer-background-color') !== NULL ? $themeConfig->get('footer-background-color') : $this->get('styles.target-cb.footer-background-color');
-    $fb = $themeConfig->get('footer-border') !== NULL ? $themeConfig->get('footer-border') : $this->get('styles.target-cb.footer-border');
-    $ff = $themeConfig->get('font-family') !== NULL ? $themeConfig->get('font-family') : $this->get('styles.target-cb.font-family');
-    $bs = $themeConfig->get('box-shadow') != NULL ? $themeConfig->get('box-shadow') : $this->get('styles.target-cb.box-shadow');
+    $fb  = $themeConfig->get('footer-border') !== NULL ? $themeConfig->get('footer-border') : $this->get('styles.target-cb.footer-border');
+    $ff  = $themeConfig->get('font-family') !== NULL ? $themeConfig->get('font-family') : $this->get('styles.target-cb.font-family');
+    $bs  = $themeConfig->get('box-shadow') != NULL ? $themeConfig->get('box-shadow') : $this->get('styles.target-cb.box-shadow');
 
-    return <<<CSS
+    return str_replace([
+      '{{background-color}}',
+      '{{border}}',
+      '{{box-shadow}}',
+      '{{footer-background-color}}',
+      '{{footer-border}}',
+      '{{font-family}}',
+    ], [
+      $bg,
+      $br,
+      $bs,
+      $fbg,
+      $fb,
+      $ff,
+    ], $this->getCssTemplate());
+  }
 
-    .atm-base-modal {
-      background-color: $bg;
-    }
-    
-    .atm-targeted-modal .atm-head-modal .atm-modal-heading {
-      background-color: $bg;
-    }
-    
-    .atm-targeted-modal{
-      border: $br;
-    }
-    
-    .atm-targeted-modal{
-      box-shadow: $bs;
-    }
-    
-    .atm-base-modal .atm-footer {
-      background-color: $fbg;
-      border: $fb;
-    }
-    
+  /**
+   * Get CSS template for atm-modal.
+   */
+  public function getCssTemplate() {
+    return "
+    .atm-base-modal {background-color: {{background-color}};}
+    .atm-targeted-modal .atm-head-modal .atm-modal-heading {background-color: {{background-color}};}
+    .atm-targeted-modal{border: {{border}};}
+    .atm-targeted-modal{box-shadow: {{box-shadow}};}
+    .atm-base-modal .atm-footer {background-color: {{footer-background-color}};border: {{footer-border}};}
     .atm-targeted-container .mood-block-info,
     .atm-targeted-modal,
     .atm-targeted-modal .atm-head-modal .atm-modal-body p,
-    .atm-unlock-line .unlock-btn {
-      font-family: $ff;
-    }
-    
-    .atm-button {
-      line-height: normal;
-    }
-CSS;
+    .atm-unlock-line .unlock-btn {font-family: {{font-family}};}
+    .atm-button {line-height: normal;}";
   }
 
   /**

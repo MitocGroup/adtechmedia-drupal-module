@@ -88,13 +88,37 @@ function atm_page_attachments(array &$attachments) {
 
   if ($routName == 'atm.config.page') {
     $attachments['#attached']['library'][] = 'atm/api.admin';
+
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#tag' => 'style',
+        '#value' => $helper->getTemplateOwerallStyles(),
+        '#attributes' => [
+          'id' => 'overall-styling-and-position',
+        ],
+      ],
+      'atm-styles',
+    ];
+
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#tag' => 'style',
+        '#value' => $helper->getCssTemplate(),
+        '#attributes' => [
+          'id' => 'overall-styling-and-position-template',
+          'type' => 'template/css',
+        ],
+      ],
+      'atm-styles-template',
+    ];
+
   }
 
-  if ($routName == 'atm.config.page' || $routName == 'entity.node.canonical') {
+  if ($routName == 'entity.node.canonical') {
     /** @var \Drupal\node\Entity\Node $node */
     $node = \Drupal::routeMatch()->getParameter('node');
 
-    if ($routName == 'atm.config.page' || in_array($node->getType(), $helper->getSelectedContentTypes())) {
+    if (in_array($node->getType(), $helper->getSelectedContentTypes())) {
       $atmApi = $helper->get('build_path') . '?' . microtime();
 
       $isSecure = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443);

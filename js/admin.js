@@ -201,5 +201,18 @@
       }
     });
 
+    $('#atm-overall-styling-and-position').on('change keyup', function () {
+      var template = $('#overall-styling-and-position-template').text();
+      var style = $('#overall-styling-and-position');
+      $(this).find('input').each(function (index, element) {
+        var input = $(element);
+        var replace = new RegExp("{{" + input.attr('name') + "}}", "g");
+        template = template.replace(replace, input.val());
+      });
+
+      style.text(template);
+      $('head style:last').after(style);
+    });
+
   });
 })(jQuery, window, Drupal, drupalSettings);
