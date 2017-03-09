@@ -350,3 +350,8 @@ img {
   right: 0px;
 }
 
+.onoffswitch-checkbox-label {
+  display: block;
+  font-weight: bold;
+  margin-top: 0.75em;
+}

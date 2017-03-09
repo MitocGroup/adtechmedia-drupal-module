@@ -118,7 +118,7 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
       '#attributes' => [
         'class' => ['onoffswitch-checkbox'],
       ],
-      '#prefix' => '<div class="layout-column layout-column--one-sixth"><div class="onoffswitch">',
+      '#prefix' => '<div class="layout-column layout-column--one-sixth"><span class="onoffswitch-checkbox-label">' . $this->t('Sticky') . '</span><div class="onoffswitch">',
       '#suffix' => '</div></div>',
     ];
 
@@ -160,6 +160,9 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
       '#ajax' => [
         'event' => 'click',
         'callback' => [$this, 'saveParams'],
+      ],
+      '#attributes' => [
+        'class' => ['form-item'],
       ],
       '#prefix' => '<div class="clearfix">',
       '#suffix' => '</div>',
