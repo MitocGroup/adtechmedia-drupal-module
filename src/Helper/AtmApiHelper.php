@@ -201,7 +201,7 @@ class AtmApiHelper {
       $file_system->mkdir($dirname, 0644, TRUE);
     }
 
-    $script = file_get_contents($remote);
+    $script = file_get_contents($remote . '?' . microtime());
     $script = gzdecode($script);
 
     if (file_exists($realpath)) {
@@ -251,6 +251,7 @@ class AtmApiHelper {
     $themeConfig = $this->getThemeConfig();
 
     $bg = $themeConfig->get('background-color') !== NULL ? $themeConfig->get('background-color') : $this->get('styles.target-cb.background-color');
+    $br = $themeConfig->get('border') !== NULL ? $themeConfig->get('border') : $this->get('styles.target-cb.border');
     $fbg = $themeConfig->get('footer-background-color') !== NULL ? $themeConfig->get('footer-background-color') : $this->get('styles.target-cb.footer-background-color');
     $fb = $themeConfig->get('footer-border') !== NULL ? $themeConfig->get('footer-border') : $this->get('styles.target-cb.footer-border');
     $ff = $themeConfig->get('font-family') !== NULL ? $themeConfig->get('font-family') : $this->get('styles.target-cb.font-family');
@@ -267,7 +268,7 @@ class AtmApiHelper {
     }
     
     .atm-targeted-modal{
-      border: 1px solid #d3d3d3;
+      border: $br;
     }
     
     .atm-targeted-modal{
