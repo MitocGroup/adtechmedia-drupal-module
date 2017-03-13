@@ -2,6 +2,10 @@
 
 namespace Drupal\atm\EventSubscriber;
 
+use Drupal\atm\AtmHttpClient;
+use Drupal\atm\Helper\AtmApiHelper;
+use Drupal\Core\Config\ConfigCrudEvent;
+use Drupal\Core\Config\ConfigEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -13,13 +17,45 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class DefaultSubscriber implements EventSubscriberInterface {
 
   /**
+   * AtmApiHelper.
+   *
+   * @var AtmApiHelper
+   */
+  protected $helper;
+
+  /**
+   * AtmHttpClient.
+   *
+   * @var AtmHttpClient
+   */
+  protected $httpClient;
+
+  /**
+   * DefaultSubscriber constructor.
+   */
+  public function __construct() {
+    $this->helper = \Drupal::service('atm.helper');
+    $this->httpClient = \Drupal::service('atm.http_client');
+  }
+
+  /**
    * Return AtmApiHelper.
    *
-   * @return \Drupal\atm\Helper\AtmApiHelper
+   * @return AtmApiHelper
    *   Return AtmApiHelper.
    */
   protected function getHelper() {
-    return \Drupal::service('atm.helper');
+    return $this->helper;
+  }
+
+  /**
+   * Get service AtmHttpClient.
+   *
+   * @return AtmHttpClient
+   *   Get service AtmHttpClient.
+   */
+  public function getHttpClient() {
+    return $this->httpClient;
   }
 
   /**
@@ -28,6 +64,7 @@ class DefaultSubscriber implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
     return [
       KernelEvents::REQUEST => 'onModuleInit',
+      ConfigEvents::SAVE => 'onConfigSave',
     ];
   }
 
@@ -35,10 +72,45 @@ class DefaultSubscriber implements EventSubscriberInterface {
    * Init. Check if api exists.
    */
   public function onModuleInit($events) {
-    $apiKey = $this->getHelper()->getApiKey();
+    $timeLimit = ini_get('max_execution_time');
+    set_time_limit(0);
 
-    if (empty($apiKey)) {
-      $this->getHelper()->generateApiKey();
+    $this->getHelper()->propertyCreate();
+
+    $themeConfigId = $this->getHelper()->getThemeConfig()->get('theme-config-id');
+    if (!$themeConfigId) {
+
+      $isThemeRetrieved = $this->getHttpClient()->retrieveThemeConfig();
+      if ($isThemeRetrieved !== TRUE) {
+        $this->getHelper()->createThemeConfig();
+      }
+    }
+
+    set_time_limit($timeLimit);
+  }
+
+  /**
+   * Event fired when saving a configuration object.
+   *
+   * @param ConfigCrudEvent $events
+   *   Configuration event for event listeners.
+   */
+  public function onConfigSave(ConfigCrudEvent $events) {
+    $config = $events->getConfig();
+
+    if ($config->getName() == 'system.theme') {
+      if ($events->isChanged('default')) {
+        $this->getHttpClient()->propertyCreate();
+
+        $themeConfigId = $this->getHelper()->getThemeConfig()->get('theme-config-id');
+        if (!$themeConfigId) {
+
+          $isThemeRetrieved = $this->getHttpClient()->retrieveThemeConfig();
+          if ($isThemeRetrieved !== TRUE) {
+            $this->getHelper()->createThemeConfig();
+          }
+        }
+      }
     }
   }
 
