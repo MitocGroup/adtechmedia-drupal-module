@@ -1,11 +1,11 @@
+'use strict';
+
 (function ($, window, Drupal, drupalSettings) {
 
   /*global atmTpl */
 
-  'use strict';
-
   Drupal.AjaxCommands.prototype.redirectInNewTab = function(ajax, response, status){
-    if (status == 'success') {
+    if (status === 'success') {
       open(response.url, '_target');
     }
   };
@@ -98,6 +98,42 @@
       });
 
       try {
+        for (var i in options) {
+
+          var inputName = componentName + '--' + i;
+          var input = $('input[name="' + inputName + '"]');
+
+          var invalidVar = '';
+          var inputVars = stories[componentName + 'Component'][i].components;
+          var inputValue = input.val();
+          var reg = /\{(.*?)}/g;
+          var match;
+
+          var $noty = $('#noty_topRight_layout_container');
+
+          while ((match = reg.exec(inputValue)) !== null) {
+            if (!inputVars.includes(match[1])) {
+              invalidVar = match[1];
+
+              var message = 'Variable {' + invalidVar + '} is not defined.';
+              if ($noty.length > 0) {
+                $noty.find('.noty_message').text(message);
+              }
+              else {
+                noty({
+                  type : 'error',
+                  text : message,
+                  maxVisible: 1
+                });
+              }
+
+              return false;
+            }
+          }
+        }
+
+        $noty.remove();
+
         atmTemplating.updateTemplate(componentName + 'Component', options, styles);
 
         for (var comp in atmTemplates) {
@@ -111,15 +147,7 @@
         }
 
         var output = atmTemplating.templateRendition(componentName + 'Component').render(options, styles);
-      } catch (error) {
-
-        noty({
-          type: 'error',
-          maxVisible: 1,
-          timeout: 2000,
-          text: error.message
-        });
-
+      } catch (e) {
         return;
       }
 
@@ -131,6 +159,7 @@
 
     atmTpl.default.config({revenueMethod: 'micropayments'});
     var atmTemplating = atmTpl.default;
+    var stories = atmTemplating.stories();
 
     var atmTemplates = {
       "pledge": {
@@ -156,7 +185,7 @@
       updateComponent(comp);
     }
 
-    $('.js-component-options, .js-component-styles, .js-sync-values').on('change keyup', function() {
+    $('.js-component-options, .js-component-styles, .js-sync-values').on('change keyup', function () {
       var $this = $(this);
 
       if ($this.hasClass('js-sync-values')) {
