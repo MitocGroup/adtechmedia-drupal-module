@@ -152,6 +152,7 @@ class AtmHttpClient {
           "container" => ".atm--node--view-mode--full",
           'offset' => $this->getHelper()->get('content_offset'),
           'lock' => $this->getHelper()->get('content_lock'),
+          'selector' => $this->getHelper()->get('selector'),
           'offsetType' => $this->getHelper()->get('content_offset_type'),
         ],
         'revenueMethod' => 'micropayments',
@@ -205,6 +206,7 @@ class AtmHttpClient {
         'content' => [
           'offset' => $this->getHelper()->get('content_offset'),
           'lock' => $this->getHelper()->get('content_lock'),
+          'selector' => $this->getHelper()->get('selector'),
           'offsetType' => $this->getHelper()->get('content_offset_type'),
         ],
         'payment' => [
