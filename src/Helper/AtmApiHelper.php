@@ -2,8 +2,6 @@
 
 namespace Drupal\atm\Helper;
 
-use Drupal\atm\AtmHttpClient;
-
 /**
  * Provides helper for ATM.
  */
@@ -93,23 +91,17 @@ class AtmApiHelper {
   }
 
   /**
-   * Get service AtmHttpClient.
-   *
-   * @return \Drupal\atm\AtmHttpClient
-   *   Get service AtmHttpClient.
-   */
-  public function getAtmHttpClient() {
-    return \Drupal::service('atm.http_client');
-  }
-
-  /**
-   * Generate atm api key.
+   * Genearete atm api key.
    */
   public function generateApiKey() {
-    $name = \Drupal::config('system.site')->get('name');
-    $apiKey = $this->getAtmHttpClient()->generateApiKey($name, TRUE);
+    /** @var \Drupal\atm\AtmHttpClient $http_client */
+    $http_client = \Drupal::service('atm.http_client');
 
-    $this->setApiKey($apiKey);
+    $name = \Drupal::config('system.site')->get('name');
+
+    $api_key = $http_client->generateApiKey($name, TRUE);
+
+    $this->setApiKey($api_key);
     $this->setApiName($name);
   }
 
@@ -201,44 +193,12 @@ class AtmApiHelper {
       $file_system->mkdir($dirname, 0644, TRUE);
     }
 
-    $script = file_get_contents($remote . '?' . microtime());
+    $script = file_get_contents($remote);
     $script = gzdecode($script);
-
-    if (file_exists($realpath)) {
-      unlink($realpath);
-    }
 
     file_put_contents($realpath, $script);
 
     return file_create_url($path_schema);
-  }
-
-  /**
-   * Return default theme config.
-   *
-   * @param bool $editable
-   *   Return editable or not config.
-   *
-   * @return \Drupal\Core\Config\Config
-   *   Return default theme config.
-   */
-  public function getThemeConfig($editable = FALSE) {
-    /** @var \Drupal\Core\Extension\ThemeHandler $themeHandler */
-    /** @var \Drupal\Core\Config\Config $themeConfig */
-
-    $themeHandler = \Drupal::service('theme_handler');
-    $defaultTheme = $themeHandler->getTheme($themeHandler->getDefault());
-
-    $themeName = $defaultTheme->getName();
-
-    if ($editable) {
-      $themeConfig = \Drupal::configFactory()->clearStaticCache()->getEditable("atm.styles.target-cb.{$themeName}");
-    }
-    else {
-      $themeConfig = \Drupal::configFactory()->clearStaticCache()->get("atm.styles.target-cb.{$themeName}");
-    }
-
-    return $themeConfig;
   }
 
   /**
@@ -248,75 +208,46 @@ class AtmApiHelper {
    *   Css.
    */
   public function getTemplateOwerallStyles() {
-    $themeConfig = $this->getThemeConfig();
+    $bg = $this->get('styles.target-cb.background-color');
+    $fbg = $this->get('styles.target-cb.footer-background-color');
+    $fb = $this->get('styles.target-cb.footer-border');
+    $ff = $this->get('styles.target-cb.font-family');
+    $bs = $this->get('styles.target-cb.box-shadow');
 
-    $bg  = $themeConfig->get('background-color') !== NULL ? $themeConfig->get('background-color') : $this->get('styles.target-cb.background-color');
-    $br  = $themeConfig->get('border') !== NULL ? $themeConfig->get('border') : $this->get('styles.target-cb.border');
-    $fbg = $themeConfig->get('footer-background-color') !== NULL ? $themeConfig->get('footer-background-color') : $this->get('styles.target-cb.footer-background-color');
-    $fb  = $themeConfig->get('footer-border') !== NULL ? $themeConfig->get('footer-border') : $this->get('styles.target-cb.footer-border');
-    $ff  = $themeConfig->get('font-family') !== NULL ? $themeConfig->get('font-family') : $this->get('styles.target-cb.font-family');
-    $bs  = $themeConfig->get('box-shadow') != NULL ? $themeConfig->get('box-shadow') : $this->get('styles.target-cb.box-shadow');
+    return <<<CSS
 
-    return str_replace([
-      '{{background-color}}',
-      '{{border}}',
-      '{{box-shadow}}',
-      '{{footer-background-color}}',
-      '{{footer-border}}',
-      '{{font-family}}',
-    ], [
-      $bg,
-      $br,
-      $bs,
-      $fbg,
-      $fb,
-      $ff,
-    ], $this->getCssTemplate());
-  }
-
-  /**
-   * Get CSS template for atm-modal.
-   */
-  public function getCssTemplate() {
-    return "
-    .atm-base-modal {background-color: {{background-color}};}
-    .atm-targeted-modal .atm-head-modal .atm-modal-heading {background-color: {{background-color}};}
-    .atm-targeted-modal{border: {{border}};}
-    .atm-targeted-modal{box-shadow: {{box-shadow}};}
-    .atm-base-modal .atm-footer {background-color: {{footer-background-color}};border: {{footer-border}};}
+    .atm-base-modal {
+      background-color: #ffffff;
+    }
+    
+    .atm-targeted-modal .atm-head-modal .atm-modal-heading {
+      background-color: $bg;
+    }
+    
+    .atm-targeted-modal{
+      border: 1px solid #d3d3d3;
+    }
+    
+    .atm-targeted-modal{
+      box-shadow: $bs;
+    }
+    
+    .atm-base-modal .atm-footer {
+      background-color: $fbg;
+      border: $fb;
+    }
+    
     .atm-targeted-container .mood-block-info,
     .atm-targeted-modal,
     .atm-targeted-modal .atm-head-modal .atm-modal-body p,
-    .atm-unlock-line .unlock-btn {font-family: {{font-family}};}
-    .atm-button {line-height: normal;}";
-  }
-
-  /**
-   * Generate atm.js.
-   */
-  public function propertyCreate() {
-    if (!$this->get('property_id')) {
-      $this->getAtmHttpClient()->propertyCreate();
+    .atm-unlock-line .unlock-btn {
+      font-family: $ff;
     }
-  }
-
-  /**
-   * Create theme config.
-   */
-  public function createThemeConfig() {
-    if (!$this->getThemeConfig()->get('theme-config-id') || !$this->get('property_id')) {
-      $this->getAtmHttpClient()->createThemeConfig();
+    
+    .atm-button {
+      line-height: normal;
     }
-  }
-
-  /**
-   * Get selected Content Types.
-   *
-   * @return array
-   *   Content Types.
-   */
-  public function getSelectedContentTypes() {
-    return $this->get('selected-ct') !== NULL ? $this->get('selected-ct') : [];
+CSS;
   }
 
 }

@@ -6,7 +6,6 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\RequestOptions;
 
 /**
  * Class AtmHttpClient. Client for API.
@@ -35,9 +34,8 @@ class AtmHttpClient {
   /**
    * Method provides request to API.
    */
-  private function sendRequest($path, $method, $params = [], $headers = []) {
-    $try = 0;
-    $tries = 5;
+  private function sendRequest($path, $method, $params, $headers = []) {
+    $client = new Client();
 
     $baseUrl = $this->getBaseUrl();
 
@@ -47,41 +45,11 @@ class AtmHttpClient {
       );
     }
 
-    $apiKey = $this->getHelper()->getApiKey();
-    if ($apiKey) {
-      $headers['X-Api-Key'] = $apiKey;
-    }
+    $response = $client->request($method, $baseUrl . $path, [
+      'json' => $params,
+    ]);
 
-    do {
-      try {
-        $options = [
-          RequestOptions::HEADERS => $headers,
-          RequestOptions::TIMEOUT => 15,
-        ];
-
-        if (count($params) > 0) {
-          $options[RequestOptions::JSON] = $params;
-        }
-
-        $response = \Drupal::httpClient()->request($method, $baseUrl . $path, $options);
-
-        return Json::decode($response->getBody()->getContents());
-      }
-      catch (ClientException $exception) {
-        if ($try < $tries) {
-          $try++; sleep(5);
-          continue;
-        }
-
-        $responseError = Json::decode(
-          $exception->getResponse()->getBody()->getContents()
-        );
-
-        throw new AtmException(
-          $exception->getMessage() . PHP_EOL . 'X-Api-Key: ' . $apiKey . PHP_EOL . 'Response error: ' . json_encode($responseError, JSON_PRETTY_PRINT)
-        );
-      }
-    } while (TRUE);
+    return Json::decode($response->getBody()->getContents());
   }
 
   /**
@@ -104,6 +72,9 @@ class AtmHttpClient {
     catch (AtmException $exception) {
       drupal_set_message($exception->getMessage(), 'error');
     }
+    catch (ClientException $exception) {
+      drupal_set_message($exception->getMessage(), 'error');
+    }
 
     return FALSE;
   }
@@ -112,12 +83,27 @@ class AtmHttpClient {
    * Method provides request to API and return supported countries.
    */
   public function getPropertySupportedCountries() {
+    $client = new Client();
+
+    $api_key = $this->getHelper()->getApiKey();
+
     try {
-      $response = $this->sendRequest('/atm-admin/property/supported-countries', 'GET', []);
-      return $response['Countries'];
+      $response = $client->get($this->getBaseUrl() . '/atm-admin/property/supported-countries', [
+        'headers' => [
+          'X-Api-Key' => $api_key,
+        ],
+      ]);
+
+      if ($response->getStatusCode() == 200) {
+        $body = Json::decode(
+          $response->getBody()->getContents()
+        );
+
+        return $body['Countries'];
+      }
     }
-    catch (AtmException $exception) {
-      drupal_set_message($exception->getMessage(), 'error');
+    catch (ClientException $exception) {
+      drupal_set_message($exception->getMessage() . PHP_EOL . 'X-Api-Key:' . $api_key, 'error');
     }
 
     return [];
@@ -127,6 +113,8 @@ class AtmHttpClient {
    * Method provides request to API for generating atm.js.
    */
   public function propertyCreate() {
+    $client = new Client();
+
     $website = $_SERVER['HTTP_HOST'];
     $name = $this->getHelper()->getApiName();
     $email = $this->getHelper()->getApiEmail();
@@ -137,103 +125,109 @@ class AtmHttpClient {
     $currency = $this->getHelper()->get('price_currency');
     $pledged_type = $this->getHelper()->get('pledged_type');
 
-    $params = [
-      'Name' => $name,
-      'Website' => $website,
-      'SupportEmail' => $email,
-      'Country' => $country,
-      'ConfigDefaults' => [
-        "targetModal" => [
-          "targetCb" => $this->getTargetCbJs(),
-          "toggleCb" => $this->getToggleCbJs(),
-        ],
-        'content' => [
-          'authorCb' => "function(onReady) {onReady({fullName: '$name', avatar: 'https://avatars.io/twitter/mitocgroup'})}",
-          "container" => ".atm--node--view-mode--full",
-          'offset' => $this->getHelper()->get('content_offset'),
-          'lock' => $this->getHelper()->get('content_lock'),
-          'offsetType' => $this->getHelper()->get('content_offset_type'),
-        ],
-        'revenueMethod' => 'micropayments',
-        'ads' => [
-          'relatedVideoCb' => "function (onReady) { }",
-        ],
-        'payment' => [
-          'price' => $price,
-          'pledged' => $payment_pledged,
-          'currency' => $currency,
-          'pledgedType' => $pledged_type,
-        ],
-        'styles' => [
-          'main' => base64_encode(
-            $this->getHelper()->getTemplateOwerallStyles()
-          ),
+    $options = [
+      'headers' => [
+        'X-Api-Key' => $this->getHelper()->getApiKey(),
+      ],
+
+      'json' => [
+        'Name' => $name,
+        'Website' => $website,
+        'SupportEmail' => $email,
+        'Country' => $country,
+        'ConfigDefaults' => [
+          "targetModal" => [
+            "targetCb" => $this->getTargetCbJs(),
+            "toggleCb" => $this->getToggleCbJs(),
+          ],
+          'content' => [
+            'authorCb' => "function(onReady) {onReady({fullName: '$name', avatar: 'https://avatars.io/twitter/mitocgroup'})}",
+            "container" => ".atm--node--view-mode--full",
+            'offset' => $this->getHelper()->get('content_offset'),
+            'lock' => $this->getHelper()->get('content_lock'),
+            'offsetType' => $this->getHelper()->get('content_offset_type'),
+          ],
+          'revenueMethod' => 'micropayments',
+          'ads' => [
+            'relatedVideoCb' => "function (onReady) { }",
+          ],
+          'payment' => [
+            'price' => $price,
+            'pledged' => $payment_pledged,
+            'currency' => $currency,
+            'pledgedType' => $pledged_type,
+          ],
+          'styles' => [
+            'main' => base64_encode(
+              $this->getHelper()->getTemplateOwerallStyles()
+            ),
+          ],
         ],
       ],
     ];
 
     try {
-      $response = $this->sendRequest('/atm-admin/property/create', 'PUT', $params);
+      $response = $client->put($this->getBaseUrl() . '/atm-admin/property/create', $options);
+      $_response = Json::decode($response->getBody()->getContents());
 
       $atmMinJS = $this->getHelper()->get('atm_js_local_file');
-      $url = $this->getHelper()->saveBuildPath($response['BuildPath'], "://" . $atmMinJS);
+
+      $url = $this->getHelper()->saveBuildPath($_response['BuildPath'], "://" . $atmMinJS);
 
       $this->getHelper()->set('build_path', $url);
-      $this->getHelper()->set('property_id', $response['Id']);
+      $this->getHelper()->set('property_id', $_response['Id']);
     }
-    catch (AtmException $exception) {
-      drupal_set_message($exception->getMessage(), 'error');
+    catch (ClientException $exception) {
+      $responseError = Json::decode(
+        $exception->getResponse()->getBody()->getContents()
+      );
+
+      $json = json_encode($responseError, JSON_PRETTY_PRINT);
+
+      drupal_set_message(
+        $exception->getMessage() . PHP_EOL .
+        'X-Api-Key: ' . $this->getHelper()->getApiKey() . PHP_EOL .
+        'Response error: ' . $json, 'error');
     }
   }
 
   /**
    * Method provides request to API for update atm.js.
    */
-  public function propertyUpdateConfig($templates = FALSE) {
-    $price = $this->getHelper()->get('price');
-    $payment_pledged = $this->getHelper()->get('payment_pledged');
-    $currency = $this->getHelper()->get('price_currency');
-    $pledged_type = $this->getHelper()->get('pledged_type');
+  public function propertyUpdateConfig($templates) {
+    $client = new Client();
 
-    $params = [
-      "Id" => $this->getHelper()->get('property_id'),
-      'ConfigDefaults' => [
-        "targetModal" => [
-          "targetCb" => $this->getTargetCbJs(),
-          "toggleCb" => $this->getToggleCbJs(),
-        ],
-        'content' => [
-          'offset' => $this->getHelper()->get('content_offset'),
-          'lock' => $this->getHelper()->get('content_lock'),
-          'offsetType' => $this->getHelper()->get('content_offset_type'),
-        ],
-        'payment' => [
-          'price' => $price,
-          'pledged' => $payment_pledged,
-          'currency' => $currency,
-          'pledgedType' => $pledged_type,
-        ],
-        'styles' => [
-          'main' => base64_encode(
-            $this->getHelper()->getTemplateOwerallStyles()
-          ),
+    $options = [
+      'headers' => [
+        'X-Api-Key' => $this->getHelper()->getApiKey(),
+      ],
+
+      'json' => [
+        "Id" => $this->getHelper()->get('property_id'),
+        'ConfigDefaults' => [
+          "templates" => $templates,
+          "targetModal" => [
+            "targetCb" => $this->getTargetCbJs(),
+            "toggleCb" => $this->getToggleCbJs(),
+          ],
+          'styles' => [
+            'main' => base64_encode(
+              $this->getHelper()->getTemplateOwerallStyles()
+            ),
+          ],
         ],
       ],
     ];
 
-    if ($templates) {
-      $params['ConfigDefaults']['templates'] = $templates;
-    }
-
     try {
-      $response = $this->sendRequest('/atm-admin/property/update-config', 'PATCH', $params);
+      $response = $client->patch($this->getBaseUrl() . '/atm-admin/property/update-config', $options);
+      $_response = Json::decode($response->getBody()->getContents());
 
-      $atmMinJS = $this->getHelper()->get('atm_js_local_file');
-      $url = $this->getHelper()->saveBuildPath($response['BuildPath'], "://" . $atmMinJS);
+      $url = $this->getHelper()->saveBuildPath($_response['BuildPath'], "://atm/atm.min.js");
       $this->getHelper()->set('build_path', $url);
     }
-    catch (AtmException $exception) {
-      drupal_set_message($exception->getMessage(), 'error');
+    catch (ClientException $exception) {
+      drupal_set_message($exception->getMessage() . PHP_EOL . 'X-Api-Key:' . $this->getHelper()->getApiKey(), 'error');
     }
   }
 
@@ -244,35 +238,31 @@ class AtmHttpClient {
    *   Return generated js.
    */
   public function getTargetCbJs() {
-    $themeConfig = $this->getHelper()->getThemeConfig();
+    $sticky = $this->getHelper()->get('styles.target-cb.sticky');
 
-    $sticky = $themeConfig->get('sticky') !== NULL ? $themeConfig->get('sticky') : $this->getHelper()->get('styles.target-cb.sticky');
-    $width = $themeConfig->get('width') !== NULL ? $themeConfig->get('width') : $this->getHelper()->get('styles.target-cb.width');
-    $offsetTop = $themeConfig->get('offset-top') !== NULL ? $themeConfig->get('offset-top') : $this->getHelper()->get('styles.target-cb.offset-top');
-    $offsetLeft = $themeConfig->get('offset-left') !== NULL ? $themeConfig->get('offset-left') : $this->getHelper()->get('styles.target-cb.offset-left');
+    $width = $this->getHelper()->get('styles.target-cb.width');
+    $offset_top = $this->getHelper()->get('styles.target-cb.offset-top');
+    $offset_left = $this->getHelper()->get('styles.target-cb.offset-left');
 
     $content = '';
 
     if ($sticky) {
       $content .= "mainModal.rootNode.style.position = 'fixed';\n";
-      $content .= "mainModal.rootNode.style.top = '$offsetTop';\n";
+      $content .= "mainModal.rootNode.style.top = '$offset_top';\n";
       $content .= "mainModal.rootNode.style.width = '$width';\n";
-      $offsetLeft = trim($offsetLeft);
-      $content .= "mainModal.rootNode.style.zIndex = 1;\n";
+      $offset_left = trim($offset_left);
 
-      if ('-' == $offsetLeft[0]) {
-        $offsetLeft[0] = ' ';
-        $content .= "mainModal.rootNode.style.left = 'calc(50% - $offsetLeft)';\n";
+      if ('-' == $offset_left[0]) {
+        $offset_left[0] = ' ';
+        $content .= "mainModal.rootNode.style.left = 'calc(50% - $offset_left)';\n";
       }
       else {
-        $content .= "mainModal.rootNode.style.left = 'calc(50% + $offsetLeft)';\n";
+        $content .= "mainModal.rootNode.style.left = 'calc(50% + $offset_left)';\n";
       }
       $content .= "mainModal.rootNode.style.transform = 'translateX(-50%)';\n";
     }
     else {
       $content .= "mainModal.rootNode.style.width = '100%';\n";
-      $content .= "mainModal.rootNode.style.position = 'relative';\n";
-      $content .= "mainModal.rootNode.style.zIndex = 1;\n";
     }
 
     return "function(modalNode, cb) {
@@ -293,10 +283,9 @@ class AtmHttpClient {
    *   Return generated js.
    */
   public function getToggleCbJs() {
-    $themeConfig = $this->getHelper()->getThemeConfig();
+    $sticky = $this->getHelper()->get('styles.target-cb.sticky');
 
-    $sticky = $themeConfig->get('sticky') !== NULL ? $themeConfig->get('sticky') : $this->getHelper()->get('styles.target-cb.sticky');
-    $scrollingOffsetTop = $themeConfig->get('scrolling-offset-top') !== NULL ? $themeConfig->get('scrolling-offset-top') : $this->getHelper()->get('styles.target-cb.scrolling-offset-top');
+    $scrollingOffsetTop = $this->getHelper()->get('styles.target-cb.scrolling-offset-top');
     $scrollingOffsetTop *= 1;
 
     if (!$sticky) {
@@ -315,101 +304,6 @@ class AtmHttpClient {
       document.addEventListener('scroll', adjustMarginTop);
       adjustMarginTop(null);
     }";
-  }
-
-  /**
-   * Generate Theme Config.
-   */
-  public function createThemeConfig() {
-
-    /** @var \Drupal\Core\Extension\ThemeHandler $themeHandler */
-    /** @var \Drupal\Core\Config\Config $themeConfig */
-
-    $themeHandler = \Drupal::service('theme_handler');
-    $defaultTheme = $themeHandler->getTheme($themeHandler->getDefault());
-    $themeVersion = isset($defaultTheme->info['version']) ? $defaultTheme->info['version'] : \Drupal::VERSION;
-
-    $params = [
-      'ThemeId' => $defaultTheme->info['name'] . '@' . $themeVersion,
-      'PropertyId' => $this->getHelper()->get('property_id'),
-      'ThemeVersion' => $themeVersion,
-      'ThemeName' => $defaultTheme->info['name'],
-      'PlatformId' => 'Drupal8',
-      'PlatformVersion' => \Drupal::VERSION,
-      'ConfigName' => 'Drupal8@' . \Drupal::VERSION . '-' . $defaultTheme->info['name'] . '@' . $themeVersion,
-      'Config' => $this->getHelper()->get('styles.target-cb'),
-    ];
-
-    try {
-      $response = $this->sendRequest('/atm-admin/theme-config/create', 'PUT', $params);
-
-      $this->getHelper()
-        ->getThemeConfig(TRUE)
-        ->set('theme-config-id', $response['Id'])
-        ->save();
-    }
-    catch (AtmException $exception) {
-      drupal_set_message($exception->getMessage(), 'error');
-    }
-
-  }
-
-  /**
-   * Update Theme Config.
-   */
-  public function updateThemeConfig() {
-    $themeConfigId = $this->getHelper()->getThemeConfig()->get('theme-config-id');
-    if (!$themeConfigId) {
-      $this->createThemeConfig();
-      return TRUE;
-    }
-
-    $params = [
-      "Id" => $themeConfigId,
-      "Config" => $this->getHelper()->get('styles.target-cb'),
-    ];
-
-    try {
-      $this->sendRequest('/atm-admin/theme-config/update', 'POST', $params);
-    }
-    catch (AtmException $exception) {
-      drupal_set_message($exception->getMessage(), 'error');
-    }
-  }
-
-  /**
-   * Retrieve Theme Config.
-   */
-  public function retrieveThemeConfig() {
-    /** @var \Drupal\Core\Extension\ThemeHandler $themeHandler */
-
-    $themeHandler = \Drupal::service('theme_handler');
-    $defaultTheme = $themeHandler->getTheme($themeHandler->getDefault());
-
-    $params = [
-      'Theme' => $defaultTheme->info['name'],
-    ];
-
-    $requestPath = implode('?', [
-      '/atm-admin/theme-config/retrieve', http_build_query($params),
-    ]);
-
-    try {
-      $response = $this->sendRequest($requestPath, 'GET');
-
-      if ($response) {
-        $this->getHelper()
-          ->getThemeConfig(TRUE)
-          ->setData(array_merge(
-            $response['Config'], ['theme-config-id' => $response['Id']]
-          ))
-          ->save();
-        return TRUE;
-      }
-    }
-    catch (AtmException $exception) {
-      drupal_set_message($exception->getMessage(), 'error');
-    }
   }
 
 }
