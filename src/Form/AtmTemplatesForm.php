@@ -4,6 +4,7 @@ namespace Drupal\atm\Form;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\BaseCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -751,7 +752,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
       ],
     ];
 
-    $form['save'] = [
+    $form['save-template'] = [
       '#type' => 'button',
       '#value' => t('Save'),
       '#ajax' => [
@@ -1768,6 +1769,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
    *   Ajax Response.
    */
   public function saveParams(array &$form, FormStateInterface $form_state) {
+    $response = new AjaxResponse();
 
     foreach ($form_state->getValues() as $elementName => $value) {
       if (!in_array($elementName, $form_state->getCleanValueKeys())) {
@@ -1782,24 +1784,34 @@ class AtmTemplatesForm extends AtmAbstractForm {
 
     foreach ($inputs['templates'] as $componentName => $rendered) {
       $component = Json::decode($rendered);
-
       $templates[$componentName] = base64_encode($component);
     }
 
     $this->getAtmHttpClient()->propertyUpdateConfig($templates);
 
-    $response = new AjaxResponse();
-
     $errors = drupal_get_messages('error');
-
     if ($errors) {
-      $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
-      $response->setAttachments($form['#attached']);
-
       $response->addCommand(
-        new OpenModalDialogCommand(
-          '', $errors
-        )
+        new BaseCommand('showNoty', [
+          'options' => [
+            'type' => 'error',
+            'text' => implode("<br>", $errors),
+            'maxVisible' => 1,
+            'timeout' => 5000,
+          ],
+        ])
+      );
+    }
+    else {
+      $response->addCommand(
+        new BaseCommand('showNoty', [
+          'options' => [
+            'type' => 'information',
+            'text' => $this->t('Form data saved successfully'),
+            'maxVisible' => 1,
+            'timeout' => 2000,
+          ],
+        ])
       );
     }
 

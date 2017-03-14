@@ -62,7 +62,7 @@ class AtmRegisterForm extends AtmAbstractForm {
       '#required' => TRUE,
     ];
 
-    $form['save'] = [
+    $form['register'] = [
       '#type' => 'button',
       '#value' => t('Register'),
       '#ajax' => [

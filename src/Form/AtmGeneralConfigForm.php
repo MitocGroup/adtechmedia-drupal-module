@@ -3,6 +3,7 @@
 namespace Drupal\atm\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\BaseCommand;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormStateInterface;
@@ -79,7 +80,7 @@ class AtmGeneralConfigForm extends AtmAbstractForm {
       $form['revenue_method']['#options'][$value] = $name;
     }
 
-    $form['save'] = [
+    $form['save-config'] = [
       '#type' => 'button',
       '#value' => $this->t('Save'),
       '#ajax' => [
@@ -130,23 +131,30 @@ class AtmGeneralConfigForm extends AtmAbstractForm {
     $errors = array_merge($form_state->getErrors(), $errors);
 
     if ($errors) {
-      $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
-      $response->setAttachments($form['#attached']);
-
-      $_errors = [];
-      foreach ($errors as $error) {
-        if (!$error instanceof TranslatableMarkup) {
-          $error = $this->t($error);
-        }
-
-        $_errors[] = $this->getErrorMessage($error);
-      }
-
       $response->addCommand(
-        new OpenModalDialogCommand('Form errors', $_errors)
+        new BaseCommand('showNoty', [
+          'options' => [
+            'type' => 'error',
+            'text' => implode("<br>", $errors),
+            'maxVisible' => 1,
+            'timeout' => 5000,
+          ],
+        ])
       );
 
       $form_state->clearErrors();
+    }
+    else {
+      $response->addCommand(
+        new BaseCommand('showNoty', [
+          'options' => [
+            'type' => 'information',
+            'text' => $this->t('Form data saved successfully'),
+            'maxVisible' => 1,
+            'timeout' => 2000,
+          ],
+        ])
+      );
     }
 
     return $response;
@@ -165,15 +173,14 @@ class AtmGeneralConfigForm extends AtmAbstractForm {
    */
   public function selectCountryCallback(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
+    $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+    $response->setAttachments($form['#attached']);
 
     $country = $form_state->getValue('country');
     if (empty($country)) {
-      $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
-      $response->setAttachments($form['#attached']);
-
       $response->addCommand(
         new OpenModalDialogCommand(
-          '', $this->getErrorMessage($this->t('Please, select country'))
+          '', $this->getErrorMessage($this->t('Please, select country')), $this->getModalDialogOptions()
         )
       );
       return $response;
