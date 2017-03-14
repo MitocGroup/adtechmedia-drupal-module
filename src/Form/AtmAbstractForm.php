@@ -104,30 +104,4 @@ abstract class AtmAbstractForm extends FormBase {
     return str_replace('--', '.', $elementName);
   }
 
-  /**
-   * Get enabled theme on frontend.
-   *
-   * @return \Drupal\Core\Extension\Extension|mixed
-   *   Return enabled theme.
-   */
-  protected function getDefaultTheme() {
-    /** @var \Drupal\Core\Extension\ThemeHandler $themeHandler */
-
-    $themeHandler = \Drupal::service('theme_handler');
-    return $themeHandler->getTheme($themeHandler->getDefault());
-  }
-
-  /**
-   * Return dialog options.
-   */
-  protected function getModalDialogOptions() {
-    return [
-      'maxWidth' => '90%',
-      'classes' => [
-        "ui-dialog" => "highlight atm-dialog",
-      ],
-      'dialogClass' => 'atm-dialog',
-    ];
-  }
-
 }
