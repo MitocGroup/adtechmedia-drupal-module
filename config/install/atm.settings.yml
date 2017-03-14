@@ -1,6 +1,6 @@
 register_url: https://www.adtechmedia.io/admin/accounts/signup
-#base_endpoint: https://api.adtechmedia.io/v1/
-base_endpoint: https://api-dev.adtechmedia.io/v1
+base_endpoint: https://api.adtechmedia.io/v1/
+#base_endpoint: https://api-dev.adtechmedia.io/v1
 sw_js_url: https://api.adtechmedia.io/atm-admin/atm-build/sw.min.js
 
 country: US
@@ -16,6 +16,7 @@ pledged_type: count
 
 content_offset: 2
 content_offset_type: elements
+selector: p,ol,ul,h1,h2,h3,h4,h5,h6
 
 content_lock: blur+scramble
 ads_video: ''
