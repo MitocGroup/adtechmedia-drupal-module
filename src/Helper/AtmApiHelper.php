@@ -185,8 +185,9 @@ class AtmApiHelper {
    * @param null|string $scheme
    *   File scheme.
    *
-   * @return string Return web-accessible URL of saved file.
-   * Return web-accessible URL of saved file.
+   * @return string
+   *   Return web-accessible URL of saved file.
+   *
    * @throws \Drupal\atm\AtmException
    */
   public function saveBuildPath($remote, $local, $scheme = NULL) {
