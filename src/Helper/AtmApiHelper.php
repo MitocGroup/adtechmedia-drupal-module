@@ -2,6 +2,7 @@
 
 namespace Drupal\atm\Helper;
 
+use Drupal\atm\AtmException;
 use Drupal\atm\AtmHttpClient;
 
 /**
@@ -186,6 +187,8 @@ class AtmApiHelper {
    *
    * @return string
    *   Return web-accessible URL of saved file.
+   *
+   * @throws \Drupal\atm\AtmException
    */
   public function saveBuildPath($remote, $local, $scheme = NULL) {
     $scheme = is_null($scheme) ? file_default_scheme() : $scheme;
