@@ -2,6 +2,7 @@
 
 namespace Drupal\atm\Helper;
 
+use Drupal\atm\AtmException;
 use Drupal\atm\AtmHttpClient;
 
 /**
@@ -194,12 +195,17 @@ class AtmApiHelper {
     /** @var \Drupal\Core\File\FileSystem $file_system */
     $file_system = \Drupal::service('file_system');
 
-    $realpath = \Drupal::service('file_system')->realpath($path_schema);
-    $dirname = dirname($realpath);
-
+    $dirname = dirname($path_schema);
     if (!is_dir($dirname)) {
-      $file_system->mkdir($dirname, 0644, TRUE);
+      $created = $file_system->mkdir($dirname, 0644, TRUE);
+      if (!$created) {
+        throw new AtmException(
+          "Directory `atm` wasn't created. Check permissions on public files directory. This directory must exist and be writable by Drupal"
+        );
+      }
     }
+
+    $realpath = $file_system->realpath($path_schema);
 
     $script = file_get_contents($remote . '?' . microtime());
     $script = gzdecode($script);
