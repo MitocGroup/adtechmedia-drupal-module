@@ -7,11 +7,10 @@ use Drupal\Core\Ajax\BaseCommand;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 use GuzzleHttp\Exception\ClientException;
 
 /**
- * Provides form for save basic configs, register new customer and genearte atm.js file.
+ * Provides form for register new customer and genearte atm.js file.
  */
 class AtmGeneralConfigForm extends AtmAbstractForm {
 

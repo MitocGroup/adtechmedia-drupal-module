@@ -2,13 +2,65 @@
 
 namespace Drupal\atm\Form;
 
+use Drupal\atm\AtmHttpClient;
+use Drupal\atm\Helper\AtmApiHelper;
+use Drupal\Core\Extension\ThemeHandler;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class AtmAbstractForm.
  */
 abstract class AtmAbstractForm extends FormBase {
+
+  /**
+   * Provides helper for ATM.
+   *
+   * @var \Drupal\atm\Helper\AtmApiHelper
+   */
+  private $atmApiHelper;
+
+  /**
+   * Client for API.
+   *
+   * @var \Drupal\atm\AtmHttpClient
+   */
+  private $atmHttpClient;
+
+  /**
+   * Default theme handler.
+   *
+   * @var \Drupal\Core\Extension\ThemeHandler
+   */
+  private $themeHandler;
+
+  /**
+   * AtmAbstractForm constructor.
+   *
+   * @param \Drupal\atm\Helper\AtmApiHelper $atmApiHelper
+   *   Provides helper for ATM.
+   * @param \Drupal\atm\AtmHttpClient $atmHttpClient
+   *   Client for API.
+   * @param \Drupal\Core\Extension\ThemeHandler $themeHandler
+   *   Default theme handler.
+   */
+  public function __construct(AtmApiHelper $atmApiHelper, AtmHttpClient $atmHttpClient, ThemeHandler $themeHandler) {
+    $this->atmApiHelper = $atmApiHelper;
+    $this->atmHttpClient = $atmHttpClient;
+    $this->themeHandler = $themeHandler;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('atm.helper'),
+      $container->get('atm.http_client'),
+      $container->get('theme_handler')
+    );
+  }
 
   /**
    * Return AtmApiHelper.
@@ -17,7 +69,7 @@ abstract class AtmAbstractForm extends FormBase {
    *   Return AtmApiHelper.
    */
   protected function getHelper() {
-    return \Drupal::service('atm.helper');
+    return $this->atmApiHelper;
   }
 
   /**
@@ -27,7 +79,7 @@ abstract class AtmAbstractForm extends FormBase {
    *   Return AtmHttpClient.
    */
   protected function getAtmHttpClient() {
-    return \Drupal::service('atm.http_client');
+    return $this->atmHttpClient;
   }
 
   /**
@@ -111,10 +163,7 @@ abstract class AtmAbstractForm extends FormBase {
    *   Return enabled theme.
    */
   protected function getDefaultTheme() {
-    /** @var \Drupal\Core\Extension\ThemeHandler $themeHandler */
-
-    $themeHandler = \Drupal::service('theme_handler');
-    return $themeHandler->getTheme($themeHandler->getDefault());
+    return $this->themeHandler->getTheme($this->themeHandler->getDefault());
   }
 
   /**

@@ -2,8 +2,6 @@
 
 namespace Drupal\atm\EventSubscriber;
 
-use Drupal\atm\AtmHttpClient;
-use Drupal\atm\Helper\AtmApiHelper;
 use Drupal\Core\Config\ConfigCrudEvent;
 use Drupal\Core\Config\ConfigEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -19,14 +17,14 @@ class DefaultSubscriber implements EventSubscriberInterface {
   /**
    * AtmApiHelper.
    *
-   * @var AtmApiHelper
+   * @var \Drupal\atm\Helper\AtmApiHelper
    */
   protected $helper;
 
   /**
    * AtmHttpClient.
    *
-   * @var AtmHttpClient
+   * @var \Drupal\atm\AtmHttpClient
    */
   protected $httpClient;
 
@@ -41,7 +39,7 @@ class DefaultSubscriber implements EventSubscriberInterface {
   /**
    * Return AtmApiHelper.
    *
-   * @return AtmApiHelper
+   * @return \Drupal\atm\Helper\AtmApiHelper
    *   Return AtmApiHelper.
    */
   protected function getHelper() {
@@ -51,7 +49,7 @@ class DefaultSubscriber implements EventSubscriberInterface {
   /**
    * Get service AtmHttpClient.
    *
-   * @return AtmHttpClient
+   * @return \Drupal\atm\AtmHttpClient
    *   Get service AtmHttpClient.
    */
   public function getHttpClient() {

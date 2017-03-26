@@ -2,12 +2,15 @@
 
 namespace Drupal\atm\Controller;
 
+use Drupal\atm\Helper\AtmApiHelper;
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Controller\ControllerBase;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * Provides routers for controller atm.
@@ -15,12 +18,58 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 class AtmApiController extends ControllerBase {
 
   /**
+   * Provides helper for ATM.
+   *
+   * @var \Drupal\atm\Helper\AtmApiHelper
+   */
+  private $atmApiHelper;
+
+  /**
+   * Http client.
+   *
+   * @var \GuzzleHttp\Client
+   */
+  private $httpClient;
+
+  /**
+   * Cache implementation.
+   *
+   * @var \Drupal\Core\Cache\CacheBackendInterface
+   */
+  private $cache;
+
+  /**
+   * AtmApiController constructor.
+   *
+   * @param \Drupal\atm\Helper\AtmApiHelper $atmApiHelper
+   *   Provides helper for ATM.
+   * @param \GuzzleHttp\Client $httpClient
+   *   Http client.
+   * @param \Drupal\Core\Cache\CacheBackendInterface $cache
+   *   Cache implementation.
+   */
+  public function __construct(AtmApiHelper $atmApiHelper, Client $httpClient, CacheBackendInterface $cache) {
+    $this->atmApiHelper = $atmApiHelper;
+    $this->httpClient = $httpClient;
+    $this->cache = $cache;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('atm.helper'),
+      $container->get('http_client'),
+      $container->get('cache.default')
+    );
+  }
+
+  /**
    * Redirect to atm.js.
    */
   public function getJs() {
-    /** @var \Drupal\atm\Helper\AtmApiHelper $helper */
-    $helper = \Drupal::service('atm.helper');
-    $jsPath = $helper->get('build_path');
+    $jsPath = $this->atmApiHelper->get('build_path');
 
     $isSecure = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443);
 
@@ -35,13 +84,10 @@ class AtmApiController extends ControllerBase {
    * Return service worker js.
    */
   public function getSwJs() {
-    /** @var \Drupal\atm\Helper\AtmApiHelper $helper */
-    $helper = \Drupal::service('atm.helper');
-
     $response = new Response('', 200, ['Content-Type' => 'application/javascript']);
 
     try {
-      $httpResponse = \Drupal::httpClient()->get($helper->get('sw_js_file'));
+      $httpResponse = $this->httpClient->get($this->atmApiHelper->get('sw_js_file'));
       $response->setContent($httpResponse->getBody()->getContents());
     }
     catch (ClientException $e) {
@@ -57,7 +103,7 @@ class AtmApiController extends ControllerBase {
   public function getTerms() {
     $ajaxResponse = new JsonResponse();
 
-    $cache = \Drupal::cache()->get('atm-terms');
+    $cache = $this->cache->get('atm-terms');
     if ($cache) {
       $ajaxResponse->setData([
         'errors' => FALSE,
@@ -66,13 +112,10 @@ class AtmApiController extends ControllerBase {
     }
     else {
       try {
-        /** @var \Drupal\atm\Helper\AtmApiHelper $helper */
-        $helper = \Drupal::service('atm.helper');
-
-        $response = \Drupal::httpClient()->get($helper->get('terms_dialog_url'));
+        $response = $this->httpClient->get($this->atmApiHelper->get('terms_dialog_url'));
         $content = $response->getBody()->getContents();
 
-        \Drupal::cache()->set('atm-terms', $content);
+        $this->cache->set('atm-terms', $content);
 
         $ajaxResponse->setData([
           'errors' => FALSE,
