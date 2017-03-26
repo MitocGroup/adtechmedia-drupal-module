@@ -15,14 +15,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class AtmAbstractForm extends FormBase {
 
   /**
-   * AtmApiHelper.
+   * Provides helper for ATM.
    *
    * @var \Drupal\atm\Helper\AtmApiHelper
    */
   private $atmApiHelper;
 
   /**
-   * AtmHttpClient.
+   * Client for API.
    *
    * @var \Drupal\atm\AtmHttpClient
    */
@@ -39,9 +39,9 @@ abstract class AtmAbstractForm extends FormBase {
    * AtmAbstractForm constructor.
    *
    * @param \Drupal\atm\Helper\AtmApiHelper $atmApiHelper
-   *   AtmApiHelper.
+   *   Provides helper for ATM.
    * @param \Drupal\atm\AtmHttpClient $atmHttpClient
-   *   AtmHttpClient.
+   *   Client for API.
    * @param \Drupal\Core\Extension\ThemeHandler $themeHandler
    *   Default theme handler.
    */
@@ -173,9 +173,7 @@ abstract class AtmAbstractForm extends FormBase {
    *   Return enabled theme.
    */
   protected function getDefaultTheme() {
-    return $this->getThemeHandler()->getTheme(
-      $this->getThemeHandler()->getDefault()
-    );
+    return $this->themeHandler->getTheme($this->themeHandler->getDefault());
   }
 
   /**

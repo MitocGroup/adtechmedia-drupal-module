@@ -3,7 +3,6 @@
 namespace Drupal\atm\Helper;
 
 use Drupal\atm\AtmException;
-use Drupal\atm\AtmHttpClient;
 
 /**
  * Provides helper for ATM.

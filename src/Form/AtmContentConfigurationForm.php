@@ -3,11 +3,8 @@
 namespace Drupal\atm\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\AlertCommand;
 use Drupal\Core\Ajax\BaseCommand;
-use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element\StatusMessages;
 use Drupal\node\Entity\NodeType;
 
 /**
@@ -249,7 +246,7 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
 
     $selectedCT = [];
     $cTypes = $form_state->getValue('content-types');
-    foreach ($cTypes as $key => $value) {
+    foreach ($cTypes as $value) {
       if ($value) {
         $selectedCT[] = $value;
       }
