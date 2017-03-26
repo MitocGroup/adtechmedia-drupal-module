@@ -4,12 +4,8 @@ namespace Drupal\atm\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\BaseCommand;
-use Drupal\Core\Ajax\InvokeCommand;
-use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Theme\ThemeManager;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class AtmOverallPositionAndStylingForm.

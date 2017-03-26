@@ -5,7 +5,6 @@ namespace Drupal\atm\Form;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\BaseCommand;
-use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -135,7 +134,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
     ];
 
     foreach ($elements as &$line) {
-      foreach ($line as $name => &$element) {
+      foreach ($line as &$element) {
         if ($element != 'container') {
           $attributes = &$element['#attributes'];
 

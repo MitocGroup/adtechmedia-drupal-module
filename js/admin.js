@@ -1,6 +1,10 @@
-'use strict';
+/**
+ * @file
+ * Provides atm admin feature.
+ */
 
 (function ($, window, Drupal, drupalSettings) {
+  "use strict";
 
   /*global atmTpl */
 
