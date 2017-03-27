@@ -198,7 +198,7 @@ class AtmApiHelper {
 
     $dirname = dirname($path_schema);
     if (!is_dir($dirname)) {
-      $created = $file_system->mkdir($dirname, 0644, TRUE);
+      $created = $file_system->mkdir($dirname, 0755, TRUE);
       if (!$created) {
         throw new AtmException(
           "Directory `atm` wasn't created. Check permissions on public files directory. This directory must exist and be writable by Drupal"
