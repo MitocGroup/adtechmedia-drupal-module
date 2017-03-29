@@ -2,6 +2,8 @@
 
 namespace Drupal\atm\EventSubscriber;
 
+use Drupal\atm\AtmHttpClient;
+use Drupal\atm\Helper\AtmApiHelper;
 use Drupal\Core\Config\ConfigCrudEvent;
 use Drupal\Core\Config\ConfigEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -30,10 +32,15 @@ class DefaultSubscriber implements EventSubscriberInterface {
 
   /**
    * DefaultSubscriber constructor.
+   *
+   * @param \Drupal\atm\AtmHttpClient $atmHttpClient
+   *   AtmHttpClient.
+   * @param \Drupal\atm\Helper\AtmApiHelper $atmApiHelper
+   *   AtmApiHelper.
    */
-  public function __construct() {
-    $this->helper = \Drupal::service('atm.helper');
-    $this->httpClient = \Drupal::service('atm.http_client');
+  public function __construct(AtmHttpClient $atmHttpClient, AtmApiHelper $atmApiHelper) {
+    $this->httpClient = $atmHttpClient;
+    $this->helper = $atmApiHelper;
   }
 
   /**
@@ -90,7 +97,7 @@ class DefaultSubscriber implements EventSubscriberInterface {
   /**
    * Event fired when saving a configuration object.
    *
-   * @param ConfigCrudEvent $events
+   * @param \Drupal\Core\Config\ConfigCrudEvent $events
    *   Configuration event for event listeners.
    */
   public function onConfigSave(ConfigCrudEvent $events) {

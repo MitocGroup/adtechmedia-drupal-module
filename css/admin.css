@@ -151,7 +151,8 @@ img {
   min-width: 0;
 }
 
-#edit-line1, #edit-line2 {
+#edit-line1,
+#edit-line2 {
   clear: both;
 }
 
@@ -200,7 +201,8 @@ img {
   width: 100%;
 }
 
-#atm-admin-config-page .form-submit, #atm-admin-config-page .form-checkbox {
+#atm-admin-config-page .form-submit,
+#atm-admin-config-page .form-checkbox {
   padding: 4px 1.5em;
   line-height: normal;
   font-size: 16px;
@@ -299,7 +301,8 @@ img {
   transition: margin 0.3s ease-in 0s;
 }
 
-.onoffswitch-inner:before, .onoffswitch-inner:after {
+.onoffswitch-inner:before,
+.onoffswitch-inner:after {
   display: block;
   float: left;
   width: 50%;
@@ -316,14 +319,14 @@ img {
 .onoffswitch-inner:before {
   content: "ON";
   padding-left: 12px;
-  background-color: #34A7C1;
-  color: #FFFFFF;
+  background-color: #34a7c1;
+  color: #ffffff;
 }
 
 .onoffswitch-inner:after {
   content: "OFF";
   padding-right: 12px;
-  background-color: #EEEEEE;
+  background-color: #eeeeee;
   color: #999999;
   text-align: right;
 }
@@ -332,7 +335,7 @@ img {
   display: block;
   width: 31px;
   margin: -3.5px;
-  background: #FFFFFF;
+  background: #ffffff;
   position: absolute;
   top: 0;
   bottom: 0;

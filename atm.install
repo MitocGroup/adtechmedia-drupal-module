@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * AdTechMedia advertising install module file.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function atm_install() {
+  $timeLimit = ini_get('max_execution_time');
+  set_time_limit(0);
+
+  /** @var \Drupal\atm\Helper\AtmApiHelper $helper */
+
+  $helper = \Drupal::service('atm.helper');
+
+  $helper->generateApiKey();
+  $helper->getAtmHttpClient()->propertyCreate();
+
+  $isThemeRetrieved = $helper->getAtmHttpClient()->retrieveThemeConfig();
+  if ($isThemeRetrieved !== TRUE) {
+    $helper->createThemeConfig();
+  }
+
+  set_time_limit($timeLimit);
+}

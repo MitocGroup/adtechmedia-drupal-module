@@ -2,9 +2,12 @@
 
 namespace Drupal\atm\Form;
 
+use Drupal\atm\AtmHttpClient;
+use Drupal\atm\Helper\AtmApiHelper;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\BaseCommand;
+use Drupal\Core\Extension\ThemeHandler;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -13,6 +16,22 @@ use Drupal\Core\Form\FormStateInterface;
 class AtmTemplatesForm extends AtmAbstractForm {
 
   private $tabsGroup = 'atm_templates';
+
+  /**
+   * AtmAbstractForm constructor.
+   *
+   * @param \Drupal\atm\Helper\AtmApiHelper $atmApiHelper
+   *   Provides helper for ATM.
+   * @param \Drupal\atm\AtmHttpClient $atmHttpClient
+   *   Client for API.
+   * @param \Drupal\Core\Extension\ThemeHandler $themeHandler
+   *   Default theme handler.
+   */
+  public function __construct(AtmApiHelper $atmApiHelper, AtmHttpClient $atmHttpClient, ThemeHandler $themeHandler) {
+    $this->atmApiHelper = $atmApiHelper;
+    $this->atmHttpClient = $atmHttpClient;
+    $this->themeHandler = $themeHandler;
+  }
 
   /**
    * Returns a unique string identifying the form.
@@ -769,7 +788,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
    * Get detail tab.
    *
    * @return array
-   *    Form element.
+   *   Form element.
    */
   private function getPledgeTemplateDetailsTab() {
     return [
@@ -783,7 +802,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
    * Get detail tab.
    *
    * @return array
-   *    Form element.
+   *   Form element.
    */
   private function getPayTemplateDetailsTab() {
     return [
@@ -797,7 +816,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
    * Get detail tab.
    *
    * @return array
-   *    Form element.
+   *   Form element.
    */
   private function getRefundTemplateDetailsTab() {
     return [
@@ -811,7 +830,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
    * Get detail tab.
    *
    * @return array
-   *    Form element.
+   *   Form element.
    */
   private function getOtherTemplateDetailsTab() {
     return [

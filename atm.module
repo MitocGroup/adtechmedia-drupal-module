@@ -5,8 +5,6 @@
  * AdTechMedia advertising module.
  */
 
-use Drupal\atm\Helper\AtmApiHelper;
-
 /**
  * Implements hook_preprocess_HOOK().
  */
@@ -76,7 +74,7 @@ function atm_theme($existing, $type, $theme, $path) {
  * Attach atm/js in page.
  */
 function atm_page_attachments(array &$attachments) {
-  /** @var AtmApiHelper $helper */
+  /** @var \Drupal\atm\Helper\AtmApiHelper $helper */
   $helper = \Drupal::service('atm.helper');
 
   $routName = \Drupal::routeMatch()->getRouteName();
@@ -160,28 +158,6 @@ function atm_page_attachments(array &$attachments) {
  */
 function atm_admin_config_page_preprocess(&$variables) {
   $variables['module_dir'] = drupal_get_path('module', 'atm');
-}
-
-/**
- * Implements hook_install().
- */
-function atm_install() {
-  $timeLimit = ini_get('max_execution_time');
-  set_time_limit(0);
-
-  /** @var AtmApiHelper $helper */
-
-  $helper = \Drupal::service('atm.helper');
-
-  $helper->generateApiKey();
-  $helper->getAtmHttpClient()->propertyCreate();
-
-  $isThemeRetrieved = $helper->getAtmHttpClient()->retrieveThemeConfig();
-  if ($isThemeRetrieved !== TRUE) {
-    $helper->createThemeConfig();
-  }
-
-  set_time_limit($timeLimit);
 }
 
 /**

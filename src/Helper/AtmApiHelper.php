@@ -3,6 +3,10 @@
 namespace Drupal\atm\Helper;
 
 use Drupal\atm\AtmException;
+use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Extension\ThemeHandler;
+use Drupal\Core\File\FileSystem;
 
 /**
  * Provides helper for ATM.
@@ -10,10 +14,67 @@ use Drupal\atm\AtmException;
 class AtmApiHelper {
 
   /**
+   * Default theme handler.
+   *
+   * @var \Drupal\Core\Extension\ThemeHandler
+   */
+  private $themeHandler;
+
+  /**
+   * Configuration object factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  private $configFactory;
+
+  /**
+   * Cache.
+   *
+   * @var \Drupal\Core\Cache\CacheBackendInterface
+   */
+  private $cache;
+
+  /**
+   * File system.
+   *
+   * @var \Drupal\Core\File\FileSystem
+   */
+  private $fileSystem;
+
+  /**
+   * AtmApiHelper constructor.
+   *
+   * @param \Drupal\Core\Extension\ThemeHandler $themeHandler
+   *   Default theme handler.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   Configuration object factory.
+   * @param \Drupal\Core\Cache\CacheBackendInterface $cache
+   *   Cache.
+   * @param \Drupal\Core\File\FileSystem $fileSystem
+   *   File system.
+   */
+  public function __construct(ThemeHandler $themeHandler, ConfigFactoryInterface $configFactory, CacheBackendInterface $cache, FileSystem $fileSystem) {
+    $this->themeHandler = $themeHandler;
+    $this->configFactory = $configFactory;
+    $this->cache = $cache;
+    $this->fileSystem = $fileSystem;
+  }
+
+  /**
+   * Default theme handler.
+   *
+   * @return \Drupal\Core\Extension\ThemeHandler
+   *   Default theme handler.
+   */
+  public function getThemeHandler() {
+    return $this->themeHandler;
+  }
+
+  /**
    * Get config.
    */
   private function getConfig() {
-    return \Drupal::configFactory()->getEditable('atm.settings');
+    return $this->configFactory->getEditable('atm.settings');
   }
 
   /**
@@ -51,7 +112,7 @@ class AtmApiHelper {
     $apiEmail = $this->getConfig()->get('api_email');
 
     if (empty($apiEmail)) {
-      $apiEmail = \Drupal::config('system.site')->get('mail');
+      $apiEmail = $this->configFactory->get('system.site')->get('mail');
     }
 
     return $apiEmail;
@@ -106,7 +167,7 @@ class AtmApiHelper {
    * Generate atm api key.
    */
   public function generateApiKey() {
-    $name = \Drupal::config('system.site')->get('name');
+    $name = $this->configFactory->get('system.site')->get('name');
     $apiKey = $this->getAtmHttpClient()->generateApiKey($name, TRUE);
 
     $this->setApiKey($apiKey);
@@ -120,17 +181,14 @@ class AtmApiHelper {
    *   List of countries.
    */
   public function getSupportedCountries() {
-    $cache = \Drupal::cache()->get(__FUNCTION__);
+    $cache = $this->cache->get(__FUNCTION__);
     if ($cache) {
       return $cache->data;
     }
 
-    /** @var \Drupal\atm\AtmHttpClient $httpClient */
-    $httpClient = \Drupal::service('atm.http_client');
-
-    $countries = $httpClient->getPropertySupportedCountries();
+    $countries = $this->getAtmHttpClient()->getPropertySupportedCountries();
     if ($countries) {
-      \Drupal::cache()->set(__FUNCTION__, $countries);
+      $this->cache->set(__FUNCTION__, $countries);
     }
 
     return $countries;
@@ -193,12 +251,9 @@ class AtmApiHelper {
     $scheme = is_null($scheme) ? file_default_scheme() : $scheme;
     $path_schema = $scheme . $local;
 
-    /** @var \Drupal\Core\File\FileSystem $file_system */
-    $file_system = \Drupal::service('file_system');
-
     $dirname = dirname($path_schema);
     if (!is_dir($dirname)) {
-      $created = $file_system->mkdir($dirname, 0755, TRUE);
+      $created = $this->fileSystem->mkdir($dirname, 0755, TRUE);
       if (!$created) {
         throw new AtmException(
           "Directory `atm` wasn't created. Check permissions on public files directory. This directory must exist and be writable by Drupal"
@@ -206,7 +261,7 @@ class AtmApiHelper {
       }
     }
 
-    $realpath = $file_system->realpath($path_schema);
+    $realpath = $this->fileSystem->realpath($path_schema);
 
     $script = file_get_contents($remote . '?' . microtime());
     $script = gzdecode($script);
@@ -230,19 +285,14 @@ class AtmApiHelper {
    *   Return default theme config.
    */
   public function getThemeConfig($editable = FALSE) {
-    /** @var \Drupal\Core\Extension\ThemeHandler $themeHandler */
-    /** @var \Drupal\Core\Config\Config $themeConfig */
-
-    $themeHandler = \Drupal::service('theme_handler');
-    $defaultTheme = $themeHandler->getTheme($themeHandler->getDefault());
-
+    $defaultTheme = $this->themeHandler->getTheme($this->themeHandler->getDefault());
     $themeName = $defaultTheme->getName();
 
     if ($editable) {
-      $themeConfig = \Drupal::configFactory()->clearStaticCache()->getEditable("atm.styles.target-cb.{$themeName}");
+      $themeConfig = $this->configFactory->clearStaticCache()->getEditable("atm.styles.target-cb.{$themeName}");
     }
     else {
-      $themeConfig = \Drupal::configFactory()->clearStaticCache()->get("atm.styles.target-cb.{$themeName}");
+      $themeConfig = $this->configFactory->clearStaticCache()->get("atm.styles.target-cb.{$themeName}");
     }
 
     return $themeConfig;
@@ -257,12 +307,12 @@ class AtmApiHelper {
   public function getTemplateOwerallStyles() {
     $themeConfig = $this->getThemeConfig();
 
-    $bg  = $themeConfig->get('background-color') !== NULL ? $themeConfig->get('background-color') : $this->get('styles.target-cb.background-color');
-    $br  = $themeConfig->get('border') !== NULL ? $themeConfig->get('border') : $this->get('styles.target-cb.border');
+    $bg = $themeConfig->get('background-color') !== NULL ? $themeConfig->get('background-color') : $this->get('styles.target-cb.background-color');
+    $br = $themeConfig->get('border') !== NULL ? $themeConfig->get('border') : $this->get('styles.target-cb.border');
     $fbg = $themeConfig->get('footer-background-color') !== NULL ? $themeConfig->get('footer-background-color') : $this->get('styles.target-cb.footer-background-color');
-    $fb  = $themeConfig->get('footer-border') !== NULL ? $themeConfig->get('footer-border') : $this->get('styles.target-cb.footer-border');
-    $ff  = $themeConfig->get('font-family') !== NULL ? $themeConfig->get('font-family') : $this->get('styles.target-cb.font-family');
-    $bs  = $themeConfig->get('box-shadow') != NULL ? $themeConfig->get('box-shadow') : $this->get('styles.target-cb.box-shadow');
+    $fb = $themeConfig->get('footer-border') !== NULL ? $themeConfig->get('footer-border') : $this->get('styles.target-cb.footer-border');
+    $ff = $themeConfig->get('font-family') !== NULL ? $themeConfig->get('font-family') : $this->get('styles.target-cb.font-family');
+    $bs = $themeConfig->get('box-shadow') != NULL ? $themeConfig->get('box-shadow') : $this->get('styles.target-cb.box-shadow');
 
     return str_replace([
       '{{background-color}}',
