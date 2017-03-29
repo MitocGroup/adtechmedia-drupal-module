@@ -143,6 +143,11 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
       '#default_value' => $width,
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
+      '#states' => [
+        'enabled' => [
+          ':input[name="sticky"]' => ['checked' => TRUE],
+        ],
+      ],
     ];
 
     $container2['offset-top'] = [
@@ -151,6 +156,11 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
       '#default_value' => $offsetTop,
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
+      '#states' => [
+        'enabled' => [
+          ':input[name="sticky"]' => ['checked' => TRUE],
+        ],
+      ],
     ];
 
     $container2['offset-left'] = [
@@ -159,6 +169,11 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
       '#default_value' => $offsetLeft,
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
+      '#states' => [
+        'enabled' => [
+          ':input[name="sticky"]' => ['checked' => TRUE],
+        ],
+      ],
     ];
 
     $container2['scrolling-offset-top'] = [
@@ -167,6 +182,11 @@ class AtmOverallStylingAndPositionForm extends AtmAbstractForm {
       '#default_value' => $scrollingOffsetTop,
       '#prefix' => '<div class="layout-column layout-column--one-sixth">',
       '#suffix' => '</div>',
+      '#states' => [
+        'enabled' => [
+          ':input[name="sticky"]' => ['checked' => TRUE],
+        ],
+      ],
     ];
 
     $form['save-styles'] = [
