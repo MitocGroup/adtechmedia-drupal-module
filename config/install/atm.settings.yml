@@ -16,7 +16,7 @@ pledged_type: count
 
 content_offset: 2
 content_offset_type: elements
-selector: p,ol,ul,h1,h2,h3,h4,h5,h6
+selector: p,ol,ul:not(.contextual-links),h1,h2,h3,h4,h5,h6
 
 content_lock: blur+scramble
 ads_video: ''
