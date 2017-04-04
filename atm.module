@@ -184,7 +184,6 @@ function atm_preprocess_form_element_label(&$variables) {
   }
 }
 
-
 /**
  * Return Atm Helper.
  *
