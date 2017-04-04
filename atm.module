@@ -166,7 +166,7 @@ function atm_admin_config_page_preprocess(&$variables) {
 function atm_cron() {
   if (REQUEST_TIME - \Drupal::state()->get('google_atm.last_cache') >= 86400) {
 
-    /** @var AtmApiHelper $helper */
+    /** @var \Drupal\atm\Helper\AtmApiHelper $helper */
     $helper = \Drupal::service('atm.helper');
     $helper->getAtmHttpClient()->propertyUpdateConfig();
 
@@ -182,4 +182,20 @@ function atm_preprocess_form_element_label(&$variables) {
   if ($element['#id'] == 'edit-sticky') {
     $variables['attributes']['class'] = ['onoffswitch-label'];
   }
+}
+
+/**
+ * Return Atm Helper.
+ *
+ * @return \Drupal\atm\Helper\AtmApiHelper
+ *   Atm Helper.
+ */
+function atm_get_helper() {
+  static $helper;
+
+  if (!$helper) {
+    $helper = \Drupal::service('atm.helper');
+  }
+
+  return $helper;
 }
