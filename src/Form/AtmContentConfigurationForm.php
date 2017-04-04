@@ -90,6 +90,8 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
 
     $contentPricing['container']['price'] = [
       '#type' => 'number',
+      '#title' => $this->t('Price'),
+      '#title_display' => 'invisible',
       '#prefix' => '<div class="layout-column layout-column--half">',
       '#suffix' => '</div>',
       '#default_value' => $this->getHelper()->get('price'),
