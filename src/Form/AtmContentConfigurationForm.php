@@ -2,8 +2,12 @@
 
 namespace Drupal\atm\Form;
 
+use Drupal\atm\AtmHttpClient;
+use Drupal\atm\Helper\AtmApiHelper;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\BaseCommand;
+use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\Extension\ThemeHandler;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\Entity\NodeType;
 
@@ -11,6 +15,22 @@ use Drupal\node\Entity\NodeType;
  * Class AtmContentConfigurationForm.
  */
 class AtmContentConfigurationForm extends AtmAbstractForm {
+
+  /**
+   * AtmAbstractForm constructor.
+   *
+   * @param \Drupal\atm\Helper\AtmApiHelper $atmApiHelper
+   *   Provides helper for ATM.
+   * @param \Drupal\atm\AtmHttpClient $atmHttpClient
+   *   Client for API.
+   * @param \Drupal\Core\Extension\ThemeHandler $themeHandler
+   *   Default theme handler.
+   */
+  public function __construct(AtmApiHelper $atmApiHelper, AtmHttpClient $atmHttpClient, ThemeHandler $themeHandler) {
+    $this->atmApiHelper = $atmApiHelper;
+    $this->atmHttpClient = $atmHttpClient;
+    $this->themeHandler = $themeHandler;
+  }
 
   /**
    * Returns a unique string identifying the form.
@@ -70,9 +90,15 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
 
     $contentPricing['container']['price'] = [
       '#type' => 'number',
+      '#title' => $this->t('Price'),
+      '#title_display' => 'invisible',
       '#prefix' => '<div class="layout-column layout-column--half">',
       '#suffix' => '</div>',
       '#default_value' => $this->getHelper()->get('price'),
+      '#required' => TRUE,
+      '#attributes' => [
+        'min' => 1,
+      ],
     ];
 
     $contentPricing['container']['price_currency'] = [
@@ -229,6 +255,25 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
    *   Ajax response.
    */
   public function saveParams(array &$form, FormStateInterface $form_state) {
+    $response = new AjaxResponse();
+
+    $errors = $form_state->getErrors();
+    if ($errors) {
+      $response->addCommand(
+        new BaseCommand('showNoty', [
+          'options' => [
+            'type' => 'error',
+            'text' => implode('<br>', $errors),
+            'maxVisible' => 1,
+            'timeout' => 2000,
+          ],
+        ])
+      );
+
+      $response->addCommand(new ReplaceCommand('.atm-content-configuration', $form));
+      return $response;
+    }
+
     $values = $form_state->getValues();
 
     $this->getHelper()->set('price', $values['price']);
@@ -253,10 +298,7 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
     }
 
     $this->getHelper()->set('selected-ct', $selectedCT);
-
     $this->getAtmHttpClient()->propertyUpdateConfig();
-
-    $response = new AjaxResponse();
 
     $response->addCommand(
       new BaseCommand('showNoty', [
@@ -269,7 +311,25 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
       ])
     );
 
+    $response->addCommand(new ReplaceCommand('.atm-content-configuration', $form));
     return $response;
+  }
+
+  /**
+   * Form validation handler.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+
+    $price = (int) $form_state->getValue('price');
+    if ($price <= 0) {
+      $form_state->setErrorByName('price', $this->t('The `price` field must be greater than zero'));
+    }
   }
 
   /**
@@ -293,7 +353,7 @@ class AtmContentConfigurationForm extends AtmAbstractForm {
       '#default_value' => $this->getHelper()->getSelectedContentTypes(),
     ];
 
-    /** @var NodeType $nodeType */
+    /** @var \Drupal\node\Entity\NodeType $nodeType */
     foreach (NodeType::loadMultiple() as $nodeType) {
       $contentTypes['#options'][$nodeType->id()] = $nodeType->get('name');
     }
