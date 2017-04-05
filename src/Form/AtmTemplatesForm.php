@@ -2,12 +2,9 @@
 
 namespace Drupal\atm\Form;
 
-use Drupal\atm\AtmHttpClient;
-use Drupal\atm\Helper\AtmApiHelper;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\BaseCommand;
-use Drupal\Core\Extension\ThemeHandler;
+use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -16,22 +13,6 @@ use Drupal\Core\Form\FormStateInterface;
 class AtmTemplatesForm extends AtmAbstractForm {
 
   private $tabsGroup = 'atm_templates';
-
-  /**
-   * AtmAbstractForm constructor.
-   *
-   * @param \Drupal\atm\Helper\AtmApiHelper $atmApiHelper
-   *   Provides helper for ATM.
-   * @param \Drupal\atm\AtmHttpClient $atmHttpClient
-   *   Client for API.
-   * @param \Drupal\Core\Extension\ThemeHandler $themeHandler
-   *   Default theme handler.
-   */
-  public function __construct(AtmApiHelper $atmApiHelper, AtmHttpClient $atmHttpClient, ThemeHandler $themeHandler) {
-    $this->atmApiHelper = $atmApiHelper;
-    $this->atmHttpClient = $atmHttpClient;
-    $this->themeHandler = $themeHandler;
-  }
 
   /**
    * Returns a unique string identifying the form.
@@ -120,6 +101,21 @@ class AtmTemplatesForm extends AtmAbstractForm {
           ],
         ],
 
+        "{$component}--{$section}--text-align" => [
+          '#type' => 'select',
+          '#title' => $this->t('Text align'),
+          '#attributes' => [
+            'data-style-name' => 'text-align',
+          ],
+          '#options' => [
+            'inherit' => 'inherit',
+            'center' => 'center',
+            'justify' => 'justify',
+            'left' => 'left',
+            'right' => 'right',
+          ],
+        ],
+
         "{$component}--{$section}--text-transform" => [
           '#type' => 'select',
           '#title' => $this->t('Text transform'),
@@ -138,7 +134,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
     ];
 
     foreach ($elements as &$line) {
-      foreach ($line as &$element) {
+      foreach ($line as $name => &$element) {
         if ($element != 'container') {
           $attributes = &$element['#attributes'];
 
@@ -311,6 +307,21 @@ class AtmTemplatesForm extends AtmAbstractForm {
         'italic' => 'italic',
         'oblique' => 'oblique',
         'inherit' => 'inherit',
+      ],
+    ];
+
+    $line3["{$component}--button--text-align"] = [
+      '#type' => 'select',
+      '#title' => $this->t('Text align'),
+      '#attributes' => [
+        'data-style-name' => 'text-align',
+      ],
+      '#options' => [
+        'inherit' => 'inherit',
+        'center' => 'center',
+        'justify' => 'justify',
+        'left' => 'left',
+        'right' => 'right',
       ],
     ];
 
@@ -740,7 +751,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
       ],
     ];
 
-    $form['save-template'] = [
+    $form['save'] = [
       '#type' => 'button',
       '#value' => t('Save'),
       '#ajax' => [
@@ -758,7 +769,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
    * Get detail tab.
    *
    * @return array
-   *   Form element.
+   *    Form element.
    */
   private function getPledgeTemplateDetailsTab() {
     return [
@@ -772,7 +783,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
    * Get detail tab.
    *
    * @return array
-   *   Form element.
+   *    Form element.
    */
   private function getPayTemplateDetailsTab() {
     return [
@@ -786,7 +797,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
    * Get detail tab.
    *
    * @return array
-   *   Form element.
+   *    Form element.
    */
   private function getRefundTemplateDetailsTab() {
     return [
@@ -800,7 +811,7 @@ class AtmTemplatesForm extends AtmAbstractForm {
    * Get detail tab.
    *
    * @return array
-   *   Form element.
+   *    Form element.
    */
   private function getOtherTemplateDetailsTab() {
     return [
@@ -1757,7 +1768,6 @@ class AtmTemplatesForm extends AtmAbstractForm {
    *   Ajax Response.
    */
   public function saveParams(array &$form, FormStateInterface $form_state) {
-    $response = new AjaxResponse();
 
     foreach ($form_state->getValues() as $elementName => $value) {
       if (!in_array($elementName, $form_state->getCleanValueKeys())) {
@@ -1772,34 +1782,24 @@ class AtmTemplatesForm extends AtmAbstractForm {
 
     foreach ($inputs['templates'] as $componentName => $rendered) {
       $component = Json::decode($rendered);
+
       $templates[$componentName] = base64_encode($component);
     }
 
     $this->getAtmHttpClient()->propertyUpdateConfig($templates);
 
+    $response = new AjaxResponse();
+
     $errors = drupal_get_messages('error');
+
     if ($errors) {
+      $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+      $response->setAttachments($form['#attached']);
+
       $response->addCommand(
-        new BaseCommand('showNoty', [
-          'options' => [
-            'type' => 'error',
-            'text' => implode("<br>", $errors),
-            'maxVisible' => 1,
-            'timeout' => 5000,
-          ],
-        ])
-      );
-    }
-    else {
-      $response->addCommand(
-        new BaseCommand('showNoty', [
-          'options' => [
-            'type' => 'information',
-            'text' => $this->t('Form data saved successfully'),
-            'maxVisible' => 1,
-            'timeout' => 2000,
-          ],
-        ])
+        new OpenModalDialogCommand(
+          '', $errors
+        )
       );
     }
 

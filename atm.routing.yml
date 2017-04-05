@@ -12,17 +12,3 @@ atm.api.js:
     _controller: '\Drupal\atm\Controller\AtmApiController::getJs'
   requirements:
     _permission: 'atm atmjs'
-
-sw.min.js:
-  path: '/sw-min-js'
-  defaults:
-    _controller: '\Drupal\atm\Controller\AtmApiController::getSwJs'
-  requirements:
-    _permission: 'atm atmjs'
-
-atm.terms:
-  path: '/atm/terms'
-  defaults:
-    _controller: '\Drupal\atm\Controller\AtmApiController::getTerms'
-  requirements:
-    _permission: 'atm atmjs'
