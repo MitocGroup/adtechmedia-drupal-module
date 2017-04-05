@@ -3,17 +3,33 @@
 namespace Drupal\atm\Form;
 
 use Drupal\atm\Ajax\RedirectInNewTabCommand;
+use Drupal\atm\AtmHttpClient;
+use Drupal\atm\Helper\AtmApiHelper;
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\BaseCommand;
-use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
-use Drupal\Core\Ajax\RedirectCommand;
+use Drupal\Core\Extension\ThemeHandler;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Class AtmRevenueModelForm.
  */
 class AtmRegisterForm extends AtmAbstractForm {
+
+  /**
+   * AtmAbstractForm constructor.
+   *
+   * @param \Drupal\atm\Helper\AtmApiHelper $atmApiHelper
+   *   Provides helper for ATM.
+   * @param \Drupal\atm\AtmHttpClient $atmHttpClient
+   *   Client for API.
+   * @param \Drupal\Core\Extension\ThemeHandler $themeHandler
+   *   Default theme handler.
+   */
+  public function __construct(AtmApiHelper $atmApiHelper, AtmHttpClient $atmHttpClient, ThemeHandler $themeHandler) {
+    $this->atmApiHelper = $atmApiHelper;
+    $this->atmHttpClient = $atmHttpClient;
+    $this->themeHandler = $themeHandler;
+  }
 
   /**
    * Returns a unique string identifying the form.

@@ -3,11 +3,32 @@
 namespace Drupal\atm\Admin\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Form\FormBuilderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides routers for admin area controller atm.
  */
 class ConfigPageController extends ControllerBase {
+
+  /**
+   * ConfigPageController constructor.
+   *
+   * @param \Drupal\Core\Form\FormBuilderInterface $formBuilder
+   *   Form builder.
+   */
+  public function __construct(FormBuilderInterface $formBuilder) {
+    $this->formBuilder = $formBuilder;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('form_builder')
+    );
+  }
 
   /**
    * Return content for config page ATM.
@@ -19,7 +40,7 @@ class ConfigPageController extends ControllerBase {
       '#general_configuration' => [
         '#theme' => 'admin_block',
         '#block' => [
-          'title' => t('General Configuration'),
+          'title' => $this->t('General Configuration'),
           'content' => [
             [
               '#theme' => 'container',
@@ -36,7 +57,7 @@ class ConfigPageController extends ControllerBase {
                     [
                       '#theme' => 'admin_block',
                       '#block' => [
-                        'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmGeneralConfigForm'),
+                        'content' => $this->formBuilder->getForm('\Drupal\atm\Form\AtmGeneralConfigForm'),
                       ],
                     ],
                   ],
@@ -50,7 +71,7 @@ class ConfigPageController extends ControllerBase {
                     [
                       '#theme' => 'admin_block',
                       '#block' => [
-                        'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmRegisterForm'),
+                        'content' => $this->formBuilder->getForm('\Drupal\atm\Form\AtmRegisterForm'),
                       ],
                     ],
                   ],
@@ -63,27 +84,27 @@ class ConfigPageController extends ControllerBase {
       '#content_configuration' => [
         '#theme' => 'admin_block',
         '#block' => [
-          'title' => t('Content configuration'),
-          'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmContentConfigurationForm'),
+          'title' => $this->t('Content configuration'),
+          'content' => $this->formBuilder->getForm('\Drupal\atm\Form\AtmContentConfigurationForm'),
         ],
       ],
 
       '#templates_management' => [
         '#theme' => 'admin_block',
         '#block' => [
-          'title' => t('Templates management'),
+          'title' => $this->t('Templates management'),
           'content' => [
             'overall_position_and_styling' => [
               '#theme' => 'admin_block',
               '#block' => [
-                'title' => t('Overall Position And Styling'),
-                'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmOverallStylingAndPositionForm'),
+                'title' => $this->t('Overall Position And Styling'),
+                'content' => $this->formBuilder->getForm('\Drupal\atm\Form\AtmOverallStylingAndPositionForm'),
               ],
             ],
             'content_templates' => [
               '#theme' => 'admin_block',
               '#block' => [
-                'content' => \Drupal::formBuilder()->getForm('\Drupal\atm\Form\AtmTemplatesForm'),
+                'content' => $this->formBuilder->getForm('\Drupal\atm\Form\AtmTemplatesForm'),
               ],
             ],
           ],
