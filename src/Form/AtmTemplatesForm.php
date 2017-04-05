@@ -120,21 +120,6 @@ class AtmTemplatesForm extends AtmAbstractForm {
           ],
         ],
 
-        "{$component}--{$section}--text-align" => [
-          '#type' => 'select',
-          '#title' => $this->t('Text align'),
-          '#attributes' => [
-            'data-style-name' => 'text-align',
-          ],
-          '#options' => [
-            'inherit' => 'inherit',
-            'center' => 'center',
-            'justify' => 'justify',
-            'left' => 'left',
-            'right' => 'right',
-          ],
-        ],
-
         "{$component}--{$section}--text-transform" => [
           '#type' => 'select',
           '#title' => $this->t('Text transform'),
@@ -326,21 +311,6 @@ class AtmTemplatesForm extends AtmAbstractForm {
         'italic' => 'italic',
         'oblique' => 'oblique',
         'inherit' => 'inherit',
-      ],
-    ];
-
-    $line3["{$component}--button--text-align"] = [
-      '#type' => 'select',
-      '#title' => $this->t('Text align'),
-      '#attributes' => [
-        'data-style-name' => 'text-align',
-      ],
-      '#options' => [
-        'inherit' => 'inherit',
-        'center' => 'center',
-        'justify' => 'justify',
-        'left' => 'left',
-        'right' => 'right',
       ],
     ];
 
