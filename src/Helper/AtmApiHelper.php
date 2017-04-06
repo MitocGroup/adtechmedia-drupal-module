@@ -91,7 +91,17 @@ class AtmApiHelper {
   }
 
   /**
-   * Genearete atm api key.
+   * Get service AtmHttpClient.
+   *
+   * @return \Drupal\atm\AtmHttpClient
+   *   Get service AtmHttpClient.
+   */
+  public function getAtmHttpClient() {
+    return atm_get_api_client();
+  }
+
+  /**
+   * Generate atm api key.
    */
   public function generateApiKey() {
     /** @var \Drupal\atm\AtmHttpClient $http_client */

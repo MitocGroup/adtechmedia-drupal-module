@@ -96,3 +96,19 @@ function atm_admin_config_page_preprocess(&$variables) {
 function atm_preprocess_form_element(&$variables) {
   $element = &$variables['element'];
 }
+
+/**
+ * Return Atm Api Client.
+ *
+ * @return \Drupal\atm\AtmHttpClient
+ *   Atm Helper.
+ */
+function atm_get_api_client() {
+  static $apiClient;
+
+  if (!$apiClient) {
+    $apiClient = \Drupal::service('atm.http_client');
+  }
+
+  return $apiClient;
+}
