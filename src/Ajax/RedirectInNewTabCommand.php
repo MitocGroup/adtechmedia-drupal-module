@@ -31,10 +31,10 @@ class RedirectInNewTabCommand implements CommandInterface {
    * Implements \Drupal\Core\Ajax\CommandInterface:render().
    */
   public function render() {
-    return array(
+    return [
       'command' => 'redirectInNewTab',
       'url' => $this->url,
-    );
+    ];
   }
 
 }
