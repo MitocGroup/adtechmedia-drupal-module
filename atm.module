@@ -199,3 +199,19 @@ function atm_get_helper() {
 
   return $helper;
 }
+
+/**
+ * Return Atm Api Client.
+ *
+ * @return \Drupal\atm\AtmHttpClient
+ *   Atm Helper.
+ */
+function atm_get_api_client() {
+  static $apiClient;
+
+  if (!$apiClient) {
+    $apiClient = \Drupal::service('atm.http_client');
+  }
+
+  return $apiClient;
+}
