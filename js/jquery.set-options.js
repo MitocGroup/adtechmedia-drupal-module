@@ -11,7 +11,7 @@
 
     $this.html(
       $('<option/>', {
-        "html": D.t('- Select -')
+        html: D.t('- Select -')
       })
     );
 
@@ -19,8 +19,8 @@
       if (options.hasOwnProperty(value)) {
         $this.append(
           $('<option/>', {
-            "value": value,
-            "html": options[value]
+            value: value,
+            html: options[value]
           })
         );
       }
