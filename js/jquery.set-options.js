@@ -1,17 +1,19 @@
+/* global this, jQuery, Drupal, drupalSettings */
+
 (function ($, D) {
 
   $.fn.setOptions = function (options) {
-    var $this = $(this)
+    var $this = $(this);
 
     if ($this[0].tagName !== 'SELECT') {
-      return
+      return;
     }
 
     $this.html(
       $('<option/>', {
         'html': D.t('- Select -')
       })
-    )
+    );
 
     for (var value in options) {
       if (options.hasOwnProperty(value)) {
@@ -20,9 +22,9 @@
             'value': value,
             'html': options[value]
           })
-        )
+        );
       }
     }
-  }
+  };
 
-})(jQuery, Drupal)
+})(jQuery, Drupal);

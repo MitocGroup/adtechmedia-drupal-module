@@ -36,7 +36,7 @@
 
   $(function () {
 
-    function toggleTemplates () {
+    function toggleTemplates() {
       var id = $(this.$el).parent().attr('id');
       var componentName = $('#' + id).data('view-component');
 
@@ -81,7 +81,7 @@
       }
     }
 
-    function updateComponent (componentName) {
+    function updateComponent(componentName) {
       var options = {};
       var styles = {};
       var output = [];
@@ -108,31 +108,33 @@
         var $noty = $('#noty_topRight_layout_container');
 
         for (var i in options) {
-          var inputName = componentName + '--' + i;
-          var input = $('input[name="' + inputName + '"]');
-          var invalidVar = '';
-          var inputVars = stories[componentName + 'Component'][i].components;
-          var inputValue = input.val();
-          var reg = /\{(.*?)}/g;
-          var match;
+          if (options.hasOwnProperty(i)) {
+            var inputName = componentName + '--' + i;
+            var input = $('input[name="' + inputName + '"]');
+            var invalidVar = '';
+            var inputVars = stories[componentName + 'Component'][i].components;
+            var inputValue = input.val();
+            var reg = /\{(.*?)}/g;
+            var match;
 
-          while ((match = reg.exec(inputValue)) !== null) {
-            if (!inputVars.includes(match[1])) {
-              invalidVar = match[1];
+            while ((match = reg.exec(inputValue)) !== null) {
+              if (!inputVars.includes(match[1])) {
+                invalidVar = match[1];
 
-              var message = 'Variable {' + invalidVar + '} is not defined.';
-              if ($noty.length > 0) {
-                $noty.find('.noty_message').text(message);
+                var message = 'Variable {' + invalidVar + '} is not defined.';
+                if ($noty.length > 0) {
+                  $noty.find('.noty_message').text(message);
+                }
+                else {
+                  noty({
+                    type: 'error',
+                    text: message,
+                    maxVisible: 1
+                  });
+                }
+
+                return false;
               }
-              else {
-                noty({
-                  type: 'error',
-                  text: message,
-                  maxVisible: 1
-                });
-              }
-
-              return false;
             }
           }
         }
@@ -183,11 +185,12 @@
     };
 
     for (var comp in atmTemplates) {
-      if (typeof atmTemplates[comp].expanded !== 'undefined') {
-        atmTemplates[comp].expanded.small(false);
+      if (atmTemplates.hasOwnProperty(comp)) {
+        if (typeof atmTemplates[comp].expanded !== 'undefined') {
+          atmTemplates[comp].expanded.small(false);
+        }
+        updateComponent(comp);
       }
-
-      updateComponent(comp);
     }
 
     $('.js-component-options, .js-component-styles, .js-sync-values').on('change keyup', function () {
