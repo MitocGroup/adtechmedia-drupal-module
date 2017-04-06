@@ -154,7 +154,8 @@
         }
 
         output = atmTemplating.templateRendition(componentName + 'Component').render(options, styles);
-      } catch (e) {
+      }
+      catch (e) {
         return;
       }
 
@@ -169,19 +170,19 @@
     var stories = atmTemplating.stories();
 
     var atmTemplates = {
-      'pledge': {
-        'expanded': atmTemplating.render('pledge', '#render-pledge-expanded'),
-        'collapsed': atmTemplating.render('pledge', '#render-pledge-collapsed')
+      "pledge": {
+        "expanded": atmTemplating.render('pledge', '#render-pledge-expanded'),
+        "collapsed": atmTemplating.render('pledge', '#render-pledge-collapsed')
       },
-      'pay': {
-        'expanded': atmTemplating.render('pay', '#render-pay-expanded'),
-        'collapsed': atmTemplating.render('pay', '#render-pay-collapsed')
+      "pay": {
+        "expanded": atmTemplating.render('pay', '#render-pay-expanded'),
+        "collapsed": atmTemplating.render('pay', '#render-pay-collapsed')
       },
-      'refund': {
-        'expanded': atmTemplating.render('refund', '#render-refund-expanded'),
-        'collapsed': atmTemplating.render('refund', '#render-refund-collapsed')
+      "refund": {
+        "expanded": atmTemplating.render('refund', '#render-refund-expanded'),
+        "collapsed": atmTemplating.render('refund', '#render-refund-collapsed')
       },
-      'auth': {}
+      "auth": {}
     };
 
     for (var comp in atmTemplates) {
