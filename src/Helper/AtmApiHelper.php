@@ -160,7 +160,7 @@ class AtmApiHelper {
    *   Get service AtmHttpClient.
    */
   public function getAtmHttpClient() {
-    return \Drupal::service('atm.http_client');
+    return atm_get_api_client();
   }
 
   /**
