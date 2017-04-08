@@ -4,11 +4,10 @@ AdTechMedia Module for Drupal
 [![Build Status](https://travis-ci.org/AdTechMedia/drupal-module.svg?branch=master)](https://travis-ci.org/AdTechMedia/drupal-module)
 [![Test Coverage](https://codeclimate.com/repos/57dff2b4f01b5b648b0042b0/badges/aed49615ace44e12bda8/coverage.svg)](https://codeclimate.com/repos/57dff2b4f01b5b648b0042b0/coverage)
 
-[AdTechMedia](https://www.adtechmedia.io) AdTechMedia is an advertising
-platform with micropayments capabilities for media content monetization.
-We help publishers and content providers to generate complementary revenue
-streams that are immune to ad blocking software (e.g. native advertising
-or native micropayments).
+[AdTechMedia](https://www.adtechmedia.io) is an advertising platform with
+micropayments capabilities for media content monetization. We help publishers
+and content providers to generate complementary revenue streams that are immune
+to ad blocking software (e.g. native advertising or native micropayments).
 
 [AdTechMedia Module for Drupal](https://drupal.org/project/adtechmedia)
 enables websites powered by Drupal CMS to integrate natively with
