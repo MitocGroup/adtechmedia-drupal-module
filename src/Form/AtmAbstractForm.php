@@ -64,6 +64,16 @@ abstract class AtmAbstractForm extends FormBase {
   }
 
   /**
+   * Return Default theme handler.
+   *
+   * @return \Drupal\Core\Extension\ThemeHandler
+   *   Default theme handler.
+   */
+  public function getThemeHandler() {
+    return $this->themeHandler;
+  }
+
+  /**
    * Return lazy_builder for status message.
    *
    * @param \Drupal\Core\StringTranslation\TranslatableMarkup $message
