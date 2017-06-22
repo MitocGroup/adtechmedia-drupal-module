@@ -1,0 +1,3 @@
+Component |	Test Case ID |	Description |	Designed Steps |	Expected Result |	Created By |	Last Updated |
+ --- | --- | --- | --- | --- | --- | --- |
+ Setup Payment | DP_19 | "Setup payment" view appears after 2 pledges | 1. Open "Demo" post <br> 2. Make [Pledge] on the first article and open the second article <br> 3. Make [Pledge] on the second article and open the third article | 1. "Demo" post article is displayed <br> 2. Default view with [Pledge] and [Show Ad] buttons is displayed <br> 3. "Please support quality journalism." text and "Setup payment method now" link are dispalyed instead of [Pledge] and [Show Ad] buttons | Alexandr Vozicov | 31.05.2017

@@ -1,0 +1,3 @@
+Component |	Test Case ID |	Description |	Designed Steps |	Expected Result |	Created By |	Last Updated |
+ --- | --- | --- | --- | --- | --- | --- |
+ Content behavior | DP_14 | Clicking on [Pledge] button in expanded view unscrambles the content | 1. Open "Demo" post <br> 2. Scroll down until the plugin appears <br> 3. Click on [UNLOCK PREMIUM CONTENT] button <br> 4. Click on [Pledge] button | 1. "Demo" post article is displayed <br> 2. Plugin is displayed <br> 3. Plugin is expanded <br> 4. All article content becomes unscrambled. Plugin collapses and text changes to "Premium content unlocked. Not satisfied? Get immediate" and the [Refund] button | Alexandr Vozicov | 31.05.2017
