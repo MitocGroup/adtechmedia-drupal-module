@@ -1,0 +1,3 @@
+Component |	Test Case ID |	Description |	Designed Steps |	Expected Result |	Created By |	Last Updated |
+ --- | --- | --- | --- | --- | --- | --- |
+ Plugin view | DP_10 | Check the plugin default expanded view  | 1. Open "Demo" post <br> 2. Scroll down until the plugin appears <br> 3. Click on [Expand] button  | 1. "Demo" post article is displayed <br> 2. Plugin is displayed <br> 3. Plugin is expanded: <br> a) [Expand] button changes to [Collapse] button <br> b) Text is changed to "Dear reader, Please support quality journalism. Would you pledge to pay a small fee of 5¢ to continue reading? Or, as an alternative, watch this ad and continue reading for free." <br> c) "Already used us before?" text and [Connect here] link appear | Alexandr Vozicov | 31.05.2017

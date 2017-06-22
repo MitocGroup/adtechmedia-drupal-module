@@ -1,0 +1,3 @@
+Component |	Test Case ID |	Description |	Designed Steps |	Expected Result |	Created By |	Last Updated |
+ --- | --- | --- | --- | --- | --- | --- |
+ ATM Plugin installation | DP_2 | ATM Plugin become applied to content after activation | - User should be already registered in ATM Platform <br> - ATM Drupal Plugin should be already installed and activated <br> - User should have published content <br> 1. Navigate to "Content" page | "Demo" post article is displayed and All content expect for two first paragraphs is scrambled(blurred). <br> Plugin is displayed and contains the following controls: <br> a) "Please support quality journalism." text <br> b) [Pledge] and [Show Ad] buttons <br> c) [Expand] button | Alexandr Vozicov | 31.05.2017.
