@@ -4,11 +4,44 @@ namespace Drupal\atm\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class AtmAbstractForm.
  */
 abstract class AtmAbstractForm extends FormBase {
+
+  /**
+   * Provides helper for ATM.
+   *
+   * @var \Drupal\atm\Helper\AtmApiHelper
+   */
+  protected $atmApiHelper;
+
+  /**
+   * Client for API.
+   *
+   * @var \Drupal\atm\AtmHttpClient
+   */
+  protected $atmHttpClient;
+
+  /**
+   * Default theme handler.
+   *
+   * @var \Drupal\Core\Extension\ThemeHandler
+   */
+  protected $themeHandler;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('atm.helper'),
+      $container->get('atm.http_client'),
+      $container->get('theme_handler')
+    );
+  }
 
   /**
    * Return AtmApiHelper.
@@ -17,7 +50,7 @@ abstract class AtmAbstractForm extends FormBase {
    *   Return AtmApiHelper.
    */
   protected function getHelper() {
-    return \Drupal::service('atm.helper');
+    return $this->atmApiHelper;
   }
 
   /**
@@ -27,7 +60,17 @@ abstract class AtmAbstractForm extends FormBase {
    *   Return AtmHttpClient.
    */
   protected function getAtmHttpClient() {
-    return \Drupal::service('atm.http_client');
+    return $this->atmHttpClient;
+  }
+
+  /**
+   * Return Default theme handler.
+   *
+   * @return \Drupal\Core\Extension\ThemeHandler
+   *   Default theme handler.
+   */
+  public function getThemeHandler() {
+    return $this->themeHandler;
   }
 
   /**
@@ -102,6 +145,29 @@ abstract class AtmAbstractForm extends FormBase {
    */
   protected function prepareElementName($elementName) {
     return str_replace('--', '.', $elementName);
+  }
+
+  /**
+   * Get enabled theme on frontend.
+   *
+   * @return \Drupal\Core\Extension\Extension|mixed
+   *   Return enabled theme.
+   */
+  protected function getDefaultTheme() {
+    return $this->themeHandler->getTheme($this->themeHandler->getDefault());
+  }
+
+  /**
+   * Return dialog options.
+   */
+  protected function getModalDialogOptions() {
+    return [
+      'maxWidth' => '90%',
+      'classes' => [
+        "ui-dialog" => "highlight atm-dialog",
+      ],
+      'dialogClass' => 'atm-dialog',
+    ];
   }
 
 }

@@ -1,0 +1,3 @@
+Component |	Test Case ID |	Description |	Designed Steps |	Expected Result |	Created By |	Last Updated |
+ --- | --- | --- | --- | --- | --- | --- |
+ Setup Payment | DP_27 | Error message is displayed after trying to connect with invalid code | Prerequisites: user must not be logged in <br> 1. Open "Demo" post <br> 2. Click on "Connect Here" link <br> 3. Input invalid code into "Temporary code" field, click on [Connect] button | 1. "Demo" post article is displayed <br> 2. "Your email" input becomes displayed with [Send Code] button <br> 3. "Error siging in" error message is displayed and [Connect] button becomes enabled | Alexandr Vozicov | 31.05.2017

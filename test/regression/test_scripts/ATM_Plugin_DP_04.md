@@ -1,0 +1,3 @@
+Component |	Test Case ID |	Description |	Designed Steps |	Expected Result |	Created By |	Last Updated |
+ --- | --- | --- | --- | --- | --- | --- |
+ ATM Plugin installation | DP_4 | Content becomes visible after clicking on "Pledge" button | - User should be already registered in ATM Platform <br> - ATM Drupal Plugin should be already installed and activated <br> - User should have published content  <br> 1. Navigate to "Content" page <br> 2. Click on "Pledge" button from ATM Widget | 1. "Demo" post article is displayed and ATM Plugin is displayed <br> 2. All article content becomes unscrambled. Text in plugin changes to "Premium content unlocked. Not satisfied? Get immediate" and the [Refund] button | Alexandr Vozicov | 31.05.2017.
