@@ -1,4 +1,4 @@
-register_url: https://www.adtechmedia.io/admin/accounts/signup
+register_url: https://www.manage.adtechmedia.io/accounts/signup
 #base_endpoint: https://api-dev.adtechmedia.io/v1
 base_endpoint: https://api.adtechmedia.io/v1/
 country: US
