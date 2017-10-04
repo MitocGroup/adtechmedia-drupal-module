@@ -1,0 +1,3 @@
+Component |	Test Case ID |	Description |	Designed Steps |	Expected Result |	Created By |	Last Updated |
+ --- | --- | --- | --- | --- | --- | --- |
+ Setup Payment | DP_25 | Guest user cannot request email code | - user must not be logged in <br> <br> 1. Open "Demo" post <br> 2. Click on "Connect Here" link <br> 3. Type the email which hasn't been used before by any user and click on [Send Code] button | 1. "Demo" post article is displayed <br> 2. "Your email" input becomes displayed with [Send Code] button <br> 3. Error message is displayed and code isn't sent to provided email | Alexandr Vozicov | 31.05.2017

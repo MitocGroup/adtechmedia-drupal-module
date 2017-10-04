@@ -88,7 +88,6 @@ class ConfigPageController extends ControllerBase {
           'content' => $this->formBuilder->getForm('\Drupal\atm\Form\AtmContentConfigurationForm'),
         ],
       ],
-
       '#templates_management' => [
         '#theme' => 'admin_block',
         '#block' => [

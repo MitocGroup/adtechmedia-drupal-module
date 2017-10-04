@@ -1,0 +1,3 @@
+Component |	Test Case ID |	Description |	Designed Steps |	Expected Result |	Created By |	Last Updated |
+ --- | --- | --- | --- | --- | --- | --- |
+ Setup Payment | DP_30 | Pay is performed automatically after the first login | 1. Open "Demo" post <br> 2. Make pledges in two articles and open the third <br> 3. Click on "Setup payment method now" link <br> 4. Add any payment method | 1. "Demo" post article is displayed <br> 2. "Setup payment method now" link is displayed instead of [Pledge] and [Show Ad] buttons in collapsed view <br> 3. Plugin view changes to expanded <br> 4. Payment method is added and current article becomes paid | Alexandr Vozicov | 31.05.2017

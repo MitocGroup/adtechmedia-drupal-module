@@ -1,7 +1,12 @@
-register_url: https://www.adtechmedia.io/admin/accounts/signup
-#base_endpoint: https://api-dev.adtechmedia.io/v1
+register_url: https://www.manage.adtechmedia.io/accounts/signup
 base_endpoint: https://api.adtechmedia.io/v1/
+#base_endpoint: https://api-dev.adtechmedia.io/v1
+sw_js_url: https://api.adtechmedia.io/atm-admin/atm-build/sw.min.js
+
 country: US
+
+selected-ct:
+  - article
 
 price: 5
 price_currency: usd
@@ -11,6 +16,7 @@ pledged_type: count
 
 content_offset: 2
 content_offset_type: elements
+selector: p,ol,ul:not(.contextual-links),h1,h2,h3,h4,h5,h6
 
 content_lock: blur+scramble
 ads_video: ''
@@ -18,13 +24,16 @@ ads_video_placeholder: ''
 
 atm_js_local_file: 'atm/atm.min.js'
 
+sw_js_file: 'https://api.adtechmedia.io/atm-admin/atm-build/sw.min.js'
+terms_dialog_url: 'https://www.adtechmedia.io/terms/dialog.html'
+
 styles:
   target-cb:
     sticky: 1
-    width: 600px
-    offset-top: 0
-    offset-left: 0
-    scrolling-offset-top: 0
+    width: 650px
+    offset-top: 30px
+    offset-left: -50px
+    scrolling-offset-top: 150px
 
     background-color: '#ffffff'
     border: '1px solid #e3e3e3'
