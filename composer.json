@@ -7,7 +7,7 @@
     ],
     "homepage": "https://github.com/AdTechMedia/drupal-module",
     "type": "project",
-    "license": "MIT",
+    "license": "MPL-2.0",
     "authors": [
         {
             "name": "Maxim Sergienko",
